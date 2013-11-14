@@ -36,9 +36,9 @@
   <inceptionYear>2013</inceptionYear>
 
   <scm>
-    <url>https://svn.apache.org/viewvc/onami/trunk/cache</url>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/onami/trunk/cache</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/onami/trunk/cache</developerConnection>
+    <url>https://svn.apache.org/viewvc/onami/trunk/sandbox/persist</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/onami/trunk/sandbox/persist</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/onami/trunk/sandbox/persist</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
@@ -54,7 +54,7 @@
   </issueManagement>
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://builds.apache.org/job/Onami-Persist/</url> <!-- TODO -->
+    <url>https://builds.apache.org/job/?????/</url> <!-- TODO -->
     <notifiers>
       <notifier>
         <type>mail</type>
@@ -161,7 +161,7 @@
         <inherited>false</inherited>
         <configuration>
           <checkinComment>Onami Persist site deployment</checkinComment>
-          <checkoutDirectory>${user.home}/onami-sites/onami-persist-site</checkoutDirectory>
+          <checkoutDirectory>${user.home}/onami-sites/?????</checkoutDirectory> <!-- TODO -->
         </configuration>
         <executions>
           <execution>
