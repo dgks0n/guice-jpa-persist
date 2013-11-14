@@ -19,16 +19,13 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import com.google.common.collect.MapMaker;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 import javax.persistence.EntityManager;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Abstract super class for all @{@link Transactional} annotation interceptors.
@@ -54,10 +51,7 @@ abstract class AbstractTxnInterceptor
      */
     private final Class<? extends Annotation> puAnntoation;
 
-    /**
-     * cache for {@link Transactional} annotations per method.
-     */
-    private final Map<Method, Transactional> transactionalCache = new MapMaker().weakKeys().makeMap();
+    private final TransactionalAnnotationReader transactionalAnnotationReader = new TransactionalAnnotationReader();
 
     // ---- Constructor
 
@@ -131,7 +125,7 @@ abstract class AbstractTxnInterceptor
             return true;
         }
 
-        final Transactional localTransaction = readTransactionMetadata( methodInvocation );
+        final Transactional localTransaction = transactionalAnnotationReader.readAnnotationFrom( methodInvocation );
         final Class<? extends Annotation>[] units = localTransaction.onUnits();
         if ( null == units || 0 == units.length )
         {
@@ -195,7 +189,7 @@ abstract class AbstractTxnInterceptor
         }
         catch ( Throwable e )
         {
-            final Transactional t = readTransactionMetadata( methodInvocation );
+            final Transactional t = transactionalAnnotationReader.readAnnotationFrom( methodInvocation );
             if ( rollbackIsNecessary( t, e ) )
             {
                 transactionFacade.rollback();
@@ -207,36 +201,6 @@ abstract class AbstractTxnInterceptor
             // In any case: throw the original exception.
             throw e;
         }
-    }
-
-    /**
-     * Reads the @{@link Transactional} of a given method invocation.
-     *
-     * @param methodInvocation the method invocation for which to obtain the @{@link Transactional}.
-     * @return the @{@link Transactional} of the given method invocation. Never {@code null}.
-     */
-    private Transactional readTransactionMetadata( MethodInvocation methodInvocation )
-    {
-        final Method method = methodInvocation.getMethod();
-        Transactional result;
-
-        result = transactionalCache.get( method );
-        if ( null == result )
-        {
-            result = method.getAnnotation( Transactional.class );
-            if ( null == result )
-            {
-                final Class<?> targetClass = methodInvocation.getThis().getClass();
-                result = targetClass.getAnnotation( Transactional.class );
-            }
-            if ( null == result )
-            {
-                result = DefaultTransactional.class.getAnnotation( Transactional.class );
-            }
-
-            transactionalCache.put( method, result );
-        }
-        return result;
     }
 
     /**
@@ -263,14 +227,6 @@ abstract class AbstractTxnInterceptor
             }
         }
         return false;
-    }
-
-    /**
-     * Helper class for obtaining the default of @{@link Transactional}.
-     */
-    @Transactional
-    private static class DefaultTransactional
-    {
     }
 
 }

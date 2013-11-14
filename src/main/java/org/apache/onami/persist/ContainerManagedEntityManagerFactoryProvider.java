@@ -23,7 +23,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Implementation of {@link PersistenceService} and {@link EntityManagerFactoryProvider} for

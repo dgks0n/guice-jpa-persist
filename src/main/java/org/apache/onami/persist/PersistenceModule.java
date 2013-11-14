@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.onami.persist.Preconditions.checkNotNull;
 import static com.google.inject.matcher.Matchers.any;
 
 /**

@@ -22,7 +22,7 @@ package org.apache.onami.persist;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Persistence module for an container managed persistence unit.

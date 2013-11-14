@@ -23,7 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Implementation of {@link EntityManagerProvider} and {@link UnitOfWork}.

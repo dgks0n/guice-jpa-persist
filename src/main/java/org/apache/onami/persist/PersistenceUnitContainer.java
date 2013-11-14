@@ -22,7 +22,7 @@ package org.apache.onami.persist;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Container of persistence units. This is a convenience wrapper for multiple

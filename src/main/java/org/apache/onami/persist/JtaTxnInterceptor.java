@@ -25,7 +25,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Status;
 import java.lang.annotation.Annotation;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * {@link MethodInterceptor} for intercepting methods of persistence units of type JTA.
