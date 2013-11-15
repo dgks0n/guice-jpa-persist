@@ -79,7 +79,7 @@ abstract class AbstractTxnInterceptor
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public final Object invoke( MethodInvocation methodInvocation )
         throws Throwable
     {

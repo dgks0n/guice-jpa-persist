@@ -96,7 +96,7 @@ class JtaTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void begin()
         {
             em.joinTransaction();
@@ -105,7 +105,7 @@ class JtaTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void commit()
         {
             // Do nothing
@@ -114,7 +114,7 @@ class JtaTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void rollback()
         {
             txn.setRollbackOnly();
@@ -142,7 +142,7 @@ class JtaTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void begin()
         {
             txn.begin();
@@ -152,7 +152,7 @@ class JtaTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void commit()
         {
             if ( Status.STATUS_ACTIVE == txn.getStatus() )
@@ -168,7 +168,7 @@ class JtaTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void rollback()
         {
             txn.rollback();

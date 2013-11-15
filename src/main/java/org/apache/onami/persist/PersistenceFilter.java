@@ -66,7 +66,7 @@ public class PersistenceFilter
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
         throws IOException, ServletException
     {
@@ -84,7 +84,7 @@ public class PersistenceFilter
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void init( FilterConfig filterConfig )
         throws ServletException
     {
@@ -94,7 +94,7 @@ public class PersistenceFilter
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void destroy()
     {
         persistenceUnitsContainer.stop();

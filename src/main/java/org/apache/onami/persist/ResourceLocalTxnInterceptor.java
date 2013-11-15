@@ -84,7 +84,7 @@ class ResourceLocalTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void begin()
         {
             // Do nothing
@@ -93,7 +93,7 @@ class ResourceLocalTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void commit()
         {
             // Do nothing
@@ -102,7 +102,7 @@ class ResourceLocalTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void rollback()
         {
             txn.setRollbackOnly();
@@ -131,7 +131,7 @@ class ResourceLocalTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void begin()
         {
             txn.begin();
@@ -140,7 +140,7 @@ class ResourceLocalTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void commit()
         {
             if ( txn.getRollbackOnly() )
@@ -156,7 +156,7 @@ class ResourceLocalTxnInterceptor
         /**
          * {@inheritDoc}
          */
-        @Override
+        // @Override
         public void rollback()
         {
             txn.rollback();

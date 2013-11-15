@@ -80,7 +80,7 @@ final class EntityManagerProviderImpl
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public EntityManager get()
     {
         final EntityManager entityManager = entityManagers.get();
@@ -95,7 +95,7 @@ final class EntityManagerProviderImpl
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void begin()
     {
         if ( isActive() )
@@ -120,7 +120,7 @@ final class EntityManagerProviderImpl
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public boolean isActive()
     {
         return null != entityManagers.get();
@@ -129,7 +129,7 @@ final class EntityManagerProviderImpl
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void end()
     {
         final EntityManager em = entityManagers.get();

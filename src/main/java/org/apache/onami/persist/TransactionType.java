@@ -33,5 +33,5 @@ enum TransactionType
     /**
      * A transaction which is global and is managed by a container.
      */
-    JTA;
+    JTA
 }

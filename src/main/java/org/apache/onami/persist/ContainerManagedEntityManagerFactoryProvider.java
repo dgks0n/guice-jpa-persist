@@ -63,7 +63,7 @@ final class ContainerManagedEntityManagerFactoryProvider
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public EntityManagerFactory get()
     {
         if ( isRunning() )
@@ -77,7 +77,7 @@ final class ContainerManagedEntityManagerFactoryProvider
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void start()
     {
         if ( isRunning() )
@@ -99,7 +99,7 @@ final class ContainerManagedEntityManagerFactoryProvider
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public boolean isRunning()
     {
         return null != emf;
@@ -108,7 +108,7 @@ final class ContainerManagedEntityManagerFactoryProvider
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void stop()
     {
         emf = null;

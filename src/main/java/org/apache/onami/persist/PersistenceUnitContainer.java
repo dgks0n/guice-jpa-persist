@@ -64,7 +64,7 @@ class PersistenceUnitContainer
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public synchronized void start()
     {
         for ( PersistenceService ps : persistenceServices )
@@ -76,7 +76,7 @@ class PersistenceUnitContainer
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public synchronized boolean isRunning()
     {
         for ( PersistenceService ps : persistenceServices )
@@ -92,7 +92,7 @@ class PersistenceUnitContainer
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public synchronized void stop()
     {
         for ( PersistenceService ps : persistenceServices )
@@ -104,7 +104,7 @@ class PersistenceUnitContainer
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void begin()
     {
         for ( UnitOfWork unitOfWork : unitsOfWork )
@@ -116,7 +116,7 @@ class PersistenceUnitContainer
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public boolean isActive()
     {
         for ( UnitOfWork unitOfWork : unitsOfWork )
@@ -132,7 +132,7 @@ class PersistenceUnitContainer
     /**
      * {@inheritDoc}
      */
-    @Override
+    // @Override
     public void end()
     {
         for ( UnitOfWork unitOfWork : unitsOfWork )
