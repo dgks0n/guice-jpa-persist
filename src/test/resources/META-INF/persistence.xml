@@ -8,7 +8,7 @@
     <persistence-unit name="testUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-        <class>org.apache.onami.persist.testframework.TransactionTestEntity</class>
+        <class>org.apache.onami.oldPersist.testframework.TransactionTestEntity</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
