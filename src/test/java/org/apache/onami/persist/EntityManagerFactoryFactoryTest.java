@@ -23,14 +23,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.naming.Context;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link EntityManagerFactoryFactory}.
@@ -86,5 +86,17 @@ public class EntityManagerFactoryFactoryTest
         final EntityManagerFactory result = sut.getEntityManagerFactoryByJndiLookup( JNDI_NAME );
         // then
         assertThat( result, sameInstance( emf ) );
+    }
+
+    @Test( expected = RuntimeException.class )
+    public void shouldWrapNamingException()
+        throws Exception
+    {
+        // given
+        final Context context = mock( Context.class );
+        doThrow( new NamingException() ).when( context ).lookup( JNDI_NAME );
+        InitialContextFactoryStub.registerContext( context );
+        // when
+        sut.getEntityManagerFactoryByJndiLookup( JNDI_NAME );
     }
 }

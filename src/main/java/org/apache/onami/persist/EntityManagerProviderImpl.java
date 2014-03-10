@@ -134,7 +134,18 @@ public class EntityManagerProviderImpl
         final EntityManager em = entityManagers.get();
         if ( em != null )
         {
+            closeAndRemoveEntityManager( em );
+        }
+    }
+
+    private void closeAndRemoveEntityManager( EntityManager em )
+    {
+        try
+        {
             em.close();
+        }
+        finally
+        {
             entityManagers.remove();
         }
     }

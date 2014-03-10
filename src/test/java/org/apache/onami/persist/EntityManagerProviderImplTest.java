@@ -29,6 +29,7 @@ import java.util.Properties;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 /**
@@ -83,7 +84,7 @@ public class EntityManagerProviderImplTest
     {
         sut.begin();
 
-        verify( emf ).createEntityManager(properties);
+        verify( emf ).createEntityManager( properties );
         assertThat( sut.isActive(), is( true ) );
     }
 
@@ -93,9 +94,30 @@ public class EntityManagerProviderImplTest
         sut.begin();
         sut.end();
 
-        verify( emf ).createEntityManager(properties);
+        verify( emf ).createEntityManager( properties );
         verify( em ).close();
         assertThat( sut.isActive(), is( false ) );
+    }
+
+    @Test
+    public void shouldNotBeActiveAfterStartingAndStoppingEvenWhenExceptionThrown()
+    {
+        doThrow( new RuntimeException() ).when( em ).close();
+
+        try
+        {
+            sut.begin();
+            sut.end();
+        }
+
+        catch ( RuntimeException e )
+        {
+            verify( emf ).createEntityManager( properties );
+            verify( em ).close();
+            assertThat( sut.isActive(), is( false ) );
+            return;
+        }
+        fail( "expected RuntimeException to be thrown" );
     }
 
     @Test
@@ -105,7 +127,7 @@ public class EntityManagerProviderImplTest
         sut.end();
         sut.begin();
 
-        verify( emf, times( 2 ) ).createEntityManager(properties);
+        verify( emf, times( 2 ) ).createEntityManager( properties );
         verify( em ).close();
         assertThat( sut.isActive(), is( true ) );
     }
@@ -124,6 +146,12 @@ public class EntityManagerProviderImplTest
         final EntityManager result = sut.get();
 
         assertThat( result, sameInstance( em ) );
+    }
+
+    @Test( expected = IllegalStateException.class )
+    public void shouldThrowExceptionWhenGettingEntityManagerAndUnitOfWorkIsNotActive()
+    {
+        sut.get();
     }
 
     @Test( expected = NullPointerException.class )

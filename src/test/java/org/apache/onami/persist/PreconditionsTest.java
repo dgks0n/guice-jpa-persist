@@ -21,8 +21,7 @@ package org.apache.onami.persist;
 
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -35,7 +34,7 @@ public class PreconditionsTest
     private static final String MESSAGE = "test message";
 
     @Test
-    public void testCheckNotNull()
+    public void throwing()
         throws Exception
     {
         try
@@ -51,7 +50,15 @@ public class PreconditionsTest
     }
 
     @Test
-    public void testCheckNotNullWithMessage()
+    public void notThrowing()
+    {
+        final Object input = new Object();
+        final Object result = Preconditions.checkNotNull( input );
+        assertThat( result, sameInstance( input ) );
+    }
+
+    @Test
+    public void throwingWithMessage()
         throws Exception
     {
         try
@@ -64,5 +71,19 @@ public class PreconditionsTest
             return;
         }
         fail( "expected NullPointerException to be thrown" );
+    }
+
+    @Test
+    public void notThrowingWithMessage()
+    {
+        final Object input = new Object();
+        final Object result = Preconditions.checkNotNull( input, MESSAGE );
+        assertThat( result, sameInstance( input ) );
+    }
+
+    @Test
+    public void canBeCreated()
+    {
+        new Preconditions();
     }
 }
