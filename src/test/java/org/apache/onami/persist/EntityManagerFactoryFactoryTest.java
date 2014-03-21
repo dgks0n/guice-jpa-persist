@@ -88,6 +88,18 @@ public class EntityManagerFactoryFactoryTest
         assertThat( result, sameInstance( emf ) );
     }
 
+    @Test( expected = NullPointerException.class )
+    public void shouldThrowExceptionIfContextReturnsNull()
+        throws Exception
+    {
+        // given
+        final Context context = mock( Context.class );
+        doReturn( null ).when( context ).lookup( JNDI_NAME );
+        InitialContextFactoryStub.registerContext( context );
+        // when
+        final EntityManagerFactory result = sut.getEntityManagerFactoryByJndiLookup( JNDI_NAME );
+    }
+
     @Test( expected = RuntimeException.class )
     public void shouldWrapNamingException()
         throws Exception

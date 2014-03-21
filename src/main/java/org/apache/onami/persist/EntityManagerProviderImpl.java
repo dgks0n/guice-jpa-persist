@@ -28,7 +28,7 @@ import java.util.Properties;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
-public class EntityManagerProviderImpl
+class EntityManagerProviderImpl
     implements EntityManagerProvider, UnitOfWork
 {
 

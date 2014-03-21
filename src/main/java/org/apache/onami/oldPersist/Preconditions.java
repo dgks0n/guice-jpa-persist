@@ -28,14 +28,16 @@ class Preconditions
     /**
      * Check that a reference is not null.
      *
-     * @param <T> the type of the reference
+     * @param <T>       the type of the reference
      * @param reference the reference to check.
      * @return the reference itself.
      * @throws NullPointerException if the reference is null.
      */
-    static <T> T checkNotNull(T reference) {
-        if (reference == null) {
-            throw new NullPointerException(  );
+    static <T> T checkNotNull( T reference )
+    {
+        if ( reference == null )
+        {
+            throw new NullPointerException();
         }
         return reference;
     }

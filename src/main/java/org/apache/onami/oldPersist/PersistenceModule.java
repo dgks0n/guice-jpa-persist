@@ -34,8 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.apache.onami.oldPersist.Preconditions.checkNotNull;
 import static com.google.inject.matcher.Matchers.any;
+import static org.apache.onami.oldPersist.Preconditions.checkNotNull;
 
 /**
  * Main module of the jpa-persistence guice extension.

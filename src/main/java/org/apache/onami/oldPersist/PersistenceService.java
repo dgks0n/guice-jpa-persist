@@ -22,6 +22,7 @@ package org.apache.onami.oldPersist;
 /**
  * This is the main control to the entire persistence engine. Before calling any other method
  * of either {@link UnitOfWork}, {@link EntityManagerProvider}, or any method annotated with
+ *
  * @{@link Transactional} the persistence service must be started.
  */
 public interface PersistenceService
