@@ -28,11 +28,12 @@ import java.util.Properties;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
+/**
+ * Implementation of {@link EntityManagerProvider} and {@link UnitOfWork}.
+ */
 class EntityManagerProviderImpl
     implements EntityManagerProvider, UnitOfWork
 {
-
-    // ---- Members
 
     /**
      * Provider for {@link javax.persistence.EntityManagerFactory}.
@@ -49,8 +50,6 @@ class EntityManagerProviderImpl
      */
     private final ThreadLocal<EntityManager> entityManagers = new ThreadLocal<EntityManager>();
 
-    // ---- Constructor
-
     /**
      * Constructor.
      *
@@ -64,9 +63,6 @@ class EntityManagerProviderImpl
         this.emfProvider = checkNotNull( emfProvider, "emfProvider is mandatory!" );
         this.properties = properties;
     }
-
-    // ---- Methods
-
 
     /**
      * {@inheritDoc}
@@ -103,6 +99,9 @@ class EntityManagerProviderImpl
         }
     }
 
+    /**
+     * @return a new entity manager instance.
+     */
     private EntityManager createEntityManager()
     {
         final EntityManagerFactory emf = emfProvider.get();
@@ -138,6 +137,11 @@ class EntityManagerProviderImpl
         }
     }
 
+    /**
+     * closes the entity manager and removes it from the internal storage.
+     *
+     * @param em the entity manager to close
+     */
     private void closeAndRemoveEntityManager( EntityManager em )
     {
         try

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 @RunWith( HierarchicalContextRunner.class )
 public class ResourceLocalTransactionFacadeProviderTest
 {
-    private ResourceLocalTransactionFacadeProvider sut;
+    private ResourceLocalTransactionFacadeFactory sut;
 
     private EntityManagerProvider emProvider;
 
@@ -47,7 +47,7 @@ public class ResourceLocalTransactionFacadeProviderTest
         emProvider = mock( EntityManagerProvider.class );
 
         // subject under test
-        sut = new ResourceLocalTransactionFacadeProvider( emProvider );
+        sut = new ResourceLocalTransactionFacadeFactory( emProvider );
 
         // environment
         em = mock( EntityManager.class );
@@ -66,7 +66,7 @@ public class ResourceLocalTransactionFacadeProviderTest
         public void setUp()
         {
             doReturn( true ).when( txn ).isActive();
-            sut = ResourceLocalTransactionFacadeProviderTest.this.sut.getTransactionFacade();
+            sut = ResourceLocalTransactionFacadeProviderTest.this.sut.createTransactionFacade();
         }
 
         @Test
@@ -103,7 +103,7 @@ public class ResourceLocalTransactionFacadeProviderTest
         public void setUp()
         {
             doReturn( false ).when( txn ).isActive();
-            sut = ResourceLocalTransactionFacadeProviderTest.this.sut.getTransactionFacade();
+            sut = ResourceLocalTransactionFacadeProviderTest.this.sut.createTransactionFacade();
         }
 
         @Test

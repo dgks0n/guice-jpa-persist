@@ -25,13 +25,11 @@ import org.aopalliance.intercept.MethodInvocation;
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
- * Abstract super class for all @{@link org.apache.onami.persist.Transactional} annotation interceptors.
+ * Interceptor for methods and classes annotated with @{@link Transactional} annotation.
  */
 class TxnInterceptor
     implements MethodInterceptor
 {
-
-    // ---- Members
 
     /**
      * Unit of work.
@@ -39,16 +37,14 @@ class TxnInterceptor
     private final UnitOfWork unitOfWork;
 
     /**
-     * Provider for {@link TransactionFacade}.
+     * Factory for {@link TransactionFacade}.
      */
-    private final TransactionFacadeProvider tfProvider;
+    private final TransactionFacadeFactory tfProvider;
 
     /**
-     * Reader which extracts the {@link Transactional @Transactional} from a method invocation.
+     * Helper for working with the concrete transactional annotations on methods and classes.
      */
     private final TransactionalAnnotationHelper txnAnnotationHelper;
-
-    // ---- Constructor
 
     /**
      * Constructor.
@@ -57,15 +53,13 @@ class TxnInterceptor
      * @param tfProvider          the provider for the {@link TransactionFacade}. Must not be {@code null}.
      * @param txnAnnotationHelper the reader for the annotations of a method. Must not be {@code null}.
      */
-    public TxnInterceptor( UnitOfWork unitOfWork, TransactionFacadeProvider tfProvider,
+    public TxnInterceptor( UnitOfWork unitOfWork, TransactionFacadeFactory tfProvider,
                            TransactionalAnnotationHelper txnAnnotationHelper )
     {
         this.unitOfWork = checkNotNull( unitOfWork, "unitOfWork is mandatory!" );
         this.tfProvider = checkNotNull( tfProvider, "tfProvider is mandatory!" );
         this.txnAnnotationHelper = checkNotNull( txnAnnotationHelper, "txnAnnotationHelper is mandatory!" );
     }
-
-    // ---- Methods
 
     /**
      * {@inheritDoc}
@@ -161,7 +155,7 @@ class TxnInterceptor
     private Object invokeInTransaction( MethodInvocation methodInvocation )
         throws Throwable
     {
-        final TransactionFacade transactionFacade = tfProvider.getTransactionFacade();
+        final TransactionFacade transactionFacade = tfProvider.createTransactionFacade();
         transactionFacade.begin();
         final Object result = invokeAndHandleException( methodInvocation, transactionFacade );
         transactionFacade.commit();

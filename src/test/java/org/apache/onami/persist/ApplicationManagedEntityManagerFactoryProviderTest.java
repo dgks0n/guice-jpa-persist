@@ -112,6 +112,24 @@ public class ApplicationManagedEntityManagerFactoryProviderTest
         verify( emf ).close();
     }
 
+    @Test(expected = RuntimeException.class)
+    public void stopShouldWorkEvenInCaseOfException()
+    {
+        doThrow( new RuntimeException() ).when( emf ).close();
+
+        sut.start();
+        try
+        {
+            sut.stop();
+        }
+        finally
+        {
+
+            assertThat( sut.isRunning(), is( false ) );
+            verify( emf ).close();
+        }
+    }
+
     @Test( expected = IllegalStateException.class )
     public void getShouldThrowExceptionWhenNotStarted()
     {

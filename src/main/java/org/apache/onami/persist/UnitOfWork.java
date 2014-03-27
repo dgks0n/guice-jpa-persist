@@ -19,8 +19,6 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import org.apache.onami.oldPersist.PersistenceFilter;
-
 import javax.persistence.EntityManager;
 
 /**

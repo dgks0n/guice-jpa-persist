@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 @RunWith( HierarchicalContextRunner.class )
 public class JtaTransactionFacadeProviderTest
 {
-    private JtaTransactionFacadeProvider sut;
+    private JtaTransactionFacadeFactory sut;
 
     private UserTransactionFacade utFacade;
 
@@ -47,7 +47,7 @@ public class JtaTransactionFacadeProviderTest
         emProvider = mock( EntityManagerProvider.class );
 
         // subject under test
-        sut = new JtaTransactionFacadeProvider( utFacade, emProvider );
+        sut = new JtaTransactionFacadeFactory( utFacade, emProvider );
 
         // environment
         em = mock( EntityManager.class );
@@ -63,7 +63,7 @@ public class JtaTransactionFacadeProviderTest
         public void setUp()
         {
             doReturn( true ).when( utFacade ).isActive();
-            sut = JtaTransactionFacadeProviderTest.this.sut.getTransactionFacade();
+            sut = JtaTransactionFacadeProviderTest.this.sut.createTransactionFacade();
         }
 
         @Test
@@ -101,7 +101,7 @@ public class JtaTransactionFacadeProviderTest
         public void setUp()
         {
             doReturn( false ).when( utFacade ).isActive();
-            sut = JtaTransactionFacadeProviderTest.this.sut.getTransactionFacade();
+            sut = JtaTransactionFacadeProviderTest.this.sut.createTransactionFacade();
         }
 
         @Test

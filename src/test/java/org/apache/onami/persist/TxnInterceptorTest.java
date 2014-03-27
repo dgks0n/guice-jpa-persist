@@ -38,7 +38,7 @@ public class TxnInterceptorTest
 
     private TransactionalAnnotationHelper txnAnnotationHelper;
 
-    private TransactionFacadeProvider tfProvider;
+    private TransactionFacadeFactory tfProvider;
 
     private TransactionFacade txnFacade;
 
@@ -51,7 +51,7 @@ public class TxnInterceptorTest
         throws Exception
     {
         unitOfWork = mock( UnitOfWork.class );
-        tfProvider = mock( TransactionFacadeProvider.class );
+        tfProvider = mock( TransactionFacadeFactory.class );
         txnAnnotationHelper = mock( TransactionalAnnotationHelper.class );
 
         sut = new TxnInterceptor( unitOfWork, tfProvider, txnAnnotationHelper );
@@ -89,7 +89,7 @@ public class TxnInterceptorTest
             doReturn( true ).when( txnAnnotationHelper ).persistenceUnitParticipatesInTransactionFor( invocation );
 
             txnFacade = mock( TransactionFacade.class );
-            doReturn( txnFacade ).when( tfProvider ).getTransactionFacade();
+            doReturn( txnFacade ).when( tfProvider ).createTransactionFacade();
         }
 
         public class UnitOfWorkInactive

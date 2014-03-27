@@ -40,19 +40,16 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 class UserTransactionFacade
 {
 
-    // ---- Statics
-
+    /**
+     * Transaction states in which only a rollback is possible
+     */
     private static final Set<Integer> ROLLBACK_ONLY_STATES = new HashSet<Integer>(
         Arrays.asList( Status.STATUS_MARKED_ROLLBACK, Status.STATUS_ROLLING_BACK, Status.STATUS_ROLLEDBACK ) );
-
-    // ---- Members
 
     /**
      * The wrapped user transaction.
      */
     private final UserTransaction txn;
-
-    // ---- Constructor
 
     /**
      * Constructor.
@@ -63,8 +60,6 @@ class UserTransactionFacade
     {
         this.txn = checkNotNull( txn, "txn is mandatory!" );
     }
-
-    // ---- Methods
 
     /**
      * @see {@link javax.transaction.UserTransaction#begin()}.

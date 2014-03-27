@@ -20,6 +20,7 @@ package org.apache.onami.persist;
  */
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
@@ -28,14 +29,15 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 
 /**
- * Implementation of {@link org.apache.onami.oldPersist.PersistenceService} and {@link org.apache.onami.oldPersist.EntityManagerFactoryProvider} for
+ * Implementation of {@link PersistenceService} and {@link EntityManagerFactoryProvider} for
  * application managed persistence units.
+ * <p/>
+ * This class is a singleton and all methods of the {@link PersistenceService} interface are synchronized.
  */
+@Singleton
 class ApplicationManagedEntityManagerFactoryProvider
     implements EntityManagerFactoryProvider, PersistenceService
 {
-
-    // ---- Members
 
     /**
      * Name of the persistence unit as defined in the persistence.xml.
@@ -58,8 +60,6 @@ class ApplicationManagedEntityManagerFactoryProvider
      */
     private EntityManagerFactory emf;
 
-    // ---- Constructor
-
     /**
      * Constructor.
      *
@@ -68,15 +68,13 @@ class ApplicationManagedEntityManagerFactoryProvider
      * @param emfFactory the factory for the  {@link EntityManagerFactory}. Must not be {@code null}.
      */
     @Inject
-    public ApplicationManagedEntityManagerFactoryProvider( String puName, Properties properties,
-                                                           EntityManagerFactoryFactory emfFactory )
+    ApplicationManagedEntityManagerFactoryProvider( String puName, Properties properties,
+                                                    EntityManagerFactoryFactory emfFactory )
     {
         this.puName = checkNotNull( puName, "puName is mandatory!" );
         this.properties = checkNotNull( properties, "properties is mandatory!" );
         this.emfFactory = checkNotNull( emfFactory, "emfFactory is mandatory!" );
     }
-
-    // ---- Methods
 
     /**
      * {@inheritDoc}
@@ -96,7 +94,7 @@ class ApplicationManagedEntityManagerFactoryProvider
      * {@inheritDoc}
      */
     // @Override
-    public void start()
+    public synchronized void start()
     {
         if ( isRunning() )
         {
@@ -109,7 +107,7 @@ class ApplicationManagedEntityManagerFactoryProvider
      * {@inheritDoc}
      */
     // @Override
-    public boolean isRunning()
+    public synchronized boolean isRunning()
     {
         return null != emf;
     }
@@ -118,12 +116,18 @@ class ApplicationManagedEntityManagerFactoryProvider
      * {@inheritDoc}
      */
     // @Override
-    public void stop()
+    public synchronized void stop()
     {
         if ( isRunning() )
         {
-            emf.close();
-            emf = null;
+            try
+            {
+                emf.close();
+            }
+            finally
+            {
+                emf = null;
+            }
         }
     }
 

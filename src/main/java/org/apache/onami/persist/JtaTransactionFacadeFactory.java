@@ -20,49 +20,72 @@ package org.apache.onami.persist;
  */
 
 
-import javax.persistence.EntityTransaction;
+import javax.persistence.EntityManager;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
-class ResourceLocalTransactionFacadeProvider
-    implements TransactionFacadeProvider
+/**
+ * Factory for transaction facades in case of JTA transactions.
+ */
+class JtaTransactionFacadeFactory
+    implements TransactionFacadeFactory
 {
+
+    /**
+     * The facade to the user transaction.
+     */
+    private final UserTransactionFacade utFacade;
+
+    /**
+     * Provider for the entity manager.
+     * The entity manager will be joined to the the transaction.
+     */
     private final EntityManagerProvider emProvider;
 
-    public ResourceLocalTransactionFacadeProvider( EntityManagerProvider emProvider )
+    /**
+     * Constructor.
+     *
+     * @param utFacade   the user transaction facade.
+     * @param emProvider the entity manager provider.
+     */
+    public JtaTransactionFacadeFactory( UserTransactionFacade utFacade, EntityManagerProvider emProvider )
     {
+        this.utFacade = checkNotNull( utFacade, "utFacade is mandatory!" );
         this.emProvider = checkNotNull( emProvider, "emProvider is mandatory!" );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     // @Override
-    public TransactionFacade getTransactionFacade()
+    public TransactionFacade createTransactionFacade()
     {
-        final EntityTransaction txn = emProvider.get().getTransaction();
-        if ( txn.isActive() )
+        if ( utFacade.isActive() )
         {
-            return new Inner( txn );
+            return new Inner( utFacade, emProvider.get() );
         }
         else
         {
-            return new Outer( txn );
+            return new Outer( utFacade, emProvider.get() );
         }
     }
 
-    // ---- Inner Classes
-
     /**
-     * TransactionFacade representing an inner (nested) transaction.
-     * Starting and committing a transaction has no effect.
-     * This Facade will set the rollbackOnly flag in case of a roll back.
+     * TransactionFacade representing an inner (nested) transaction. Starting and
+     * committing a transaction has no effect. This Facade will set the
+     * rollbackOnly flag on the underlying transaction in case of a rollback.
      */
     private static class Inner
         implements TransactionFacade
     {
-        private final EntityTransaction txn;
+        private final UserTransactionFacade txn;
 
-        Inner( EntityTransaction txn )
+        private final EntityManager em;
+
+        Inner( UserTransactionFacade txn, EntityManager em )
         {
             this.txn = checkNotNull( txn, "txn is mandatory!" );
+            this.em = checkNotNull( em, "em is mandatory!" );
         }
 
         /**
@@ -71,7 +94,7 @@ class ResourceLocalTransactionFacadeProvider
         // @Override
         public void begin()
         {
-            // Do nothing
+            em.joinTransaction();
         }
 
         /**
@@ -94,22 +117,21 @@ class ResourceLocalTransactionFacadeProvider
     }
 
     /**
-     * TransactionFacade representing an outer transaction.
-     * This Facade starts and ends the transaction.
-     * If an inner transaction has set the rollbackOnly flag the transaction will be rolled back
-     * in any case.
+     * TransactionFacade representing an outer transaction. This Facade starts
+     * and ends the transaction. If an inner transaction has set the rollbackOnly
+     * flag the transaction will be rolled back in any case.
      */
     private static class Outer
         implements TransactionFacade
     {
-        private final EntityTransaction txn;
+        private final UserTransactionFacade txn;
 
-        /**
-         * {@inheritDoc}
-         */
-        Outer( EntityTransaction txn )
+        private final EntityManager em;
+
+        Outer( UserTransactionFacade txn, EntityManager em )
         {
             this.txn = checkNotNull( txn, "txn is mandatory!" );
+            this.em = checkNotNull( em, "em is mandatory!" );
         }
 
         /**
@@ -119,6 +141,7 @@ class ResourceLocalTransactionFacadeProvider
         public void begin()
         {
             txn.begin();
+            em.joinTransaction();
         }
 
         /**

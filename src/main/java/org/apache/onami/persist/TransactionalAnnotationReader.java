@@ -24,30 +24,26 @@ import org.aopalliance.intercept.MethodInvocation;
 import java.lang.reflect.Method;
 
 /**
- * Reader which obtains the concrete @{@link Transactional} annotation on a method.
- * The reader may use some sort of caching (in future releases).
+ * Reader which obtains the concrete {@link Transactional @Transactional} annotation of a method.
  */
 class TransactionalAnnotationReader
 {
+    /**
+     * Constant holding the a transactional instance with all default values.
+     */
     private static final Transactional DEFAULT_TRANSACTIONAL =
         DefaultTransactional.class.getAnnotation( Transactional.class );
 
-
     /**
-     * Reads the @{@link Transactional} of a given method invocation.
+     * Reads the {@link Transactional @Transactional} of a given method invocation.
      *
-     * @param methodInvocation the method invocation for which to obtain the @{@link Transactional}.
-     * @return the @{@link Transactional} of the given method invocation. Never {@code null}.
+     * @param methodInvocation the method invocation for which to obtain the {@link Transactional @Transactional}.
+     * @return the {@link Transactional @Transactional} of the given method invocation. Never {@code null}.
      */
     Transactional readAnnotationFrom( MethodInvocation methodInvocation )
     {
-        final Method method = methodInvocation.getMethod();
-        return getTransactional( methodInvocation, method );
-    }
-
-    private Transactional getTransactional( MethodInvocation methodInvocation, Method method )
-    {
         Transactional result;
+        final Method method = methodInvocation.getMethod();
         result = method.getAnnotation( Transactional.class );
         if ( null == result )
         {
@@ -62,7 +58,7 @@ class TransactionalAnnotationReader
     }
 
     /**
-     * Helper class for obtaining the default of @{@link Transactional}.
+     * Helper class for obtaining the default of {@link Transactional @Transactional}.
      */
     @Transactional
     private static class DefaultTransactional

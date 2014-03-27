@@ -31,7 +31,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * Annotation for {@link PersistenceService} and {@link UnitOfWork}.
  * <p/>
  * This is a special annotation for retrieving a container holding all registered persistence units.
- * Calling a method on such a container will trigger the method call on all registered instances. In other words on all persistence units.
+ * Calling a method on such a container will trigger the method call on all registered instances.
+ * In other words on all persistence units.
  */
 @Retention( RUNTIME )
 @Target( { ElementType.FIELD, ElementType.PARAMETER } )

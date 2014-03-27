@@ -19,7 +19,16 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-interface TransactionFacadeProvider
+/**
+ * Factory for {@link TransactionFacade}.
+ */
+interface TransactionFacadeFactory
 {
-    TransactionFacade getTransactionFacade();
+
+    /**
+     * Creates a new transaction facade.
+     *
+     * @return the transaction facade
+     */
+    TransactionFacade createTransactionFacade();
 }
