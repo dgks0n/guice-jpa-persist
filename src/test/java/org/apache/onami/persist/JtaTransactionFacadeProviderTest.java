@@ -28,6 +28,9 @@ import javax.persistence.EntityManager;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * Test for {@link JtaTransactionFacadeFactory}.
+ */
 @RunWith( HierarchicalContextRunner.class )
 public class JtaTransactionFacadeProviderTest
 {

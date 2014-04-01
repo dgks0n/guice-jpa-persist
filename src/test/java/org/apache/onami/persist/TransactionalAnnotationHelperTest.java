@@ -16,6 +16,9 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Test for {@link TransactionalAnnotationHelper}.
+ */
 @RunWith( HierarchicalContextRunner.class )
 public class TransactionalAnnotationHelperTest
 {

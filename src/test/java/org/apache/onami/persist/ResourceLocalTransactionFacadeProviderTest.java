@@ -29,6 +29,9 @@ import javax.persistence.EntityTransaction;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * Test for {@link ResourceLocalTransactionFacadeFactory}.
+ */
 @RunWith( HierarchicalContextRunner.class )
 public class ResourceLocalTransactionFacadeProviderTest
 {

@@ -19,25 +19,19 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import com.google.inject.BindingAnnotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
- * Annotation for {@link PersistenceService} and {@link UnitOfWork}.
- * <p/>
- * This is a special annotation for retrieving a container holding all registered persistence units.
- * Calling a method on such a container will trigger the method call on all registered instances.
- * In other words on all persistence units.
+ * Interface for aggregation of multiple {@link UnitOfWork UnitsOfWork}.
  */
-@Retention( RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
-@BindingAnnotation
-public @interface AllPersistenceUnits
+public interface AllUnitsOfWork
 {
 
+    /**
+     * Calls {@link UnitOfWork#begin()} on all units of work which are not active
+     */
+    void beginAllInactiveUnitsOfWork();
+
+    /**
+     * Calls {@link UnitOfWork#end()} on all units of work
+     */
+    void endAllUnitsOfWork();
 }

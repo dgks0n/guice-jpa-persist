@@ -8,6 +8,9 @@ import org.junit.Test;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
 
+/**
+ * Test for {@link TransactionalAnnotationReader}.
+ */
 public class TransactionalAnnotationReaderTest
 {
     private TransactionalAnnotationReader sut;
