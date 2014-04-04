@@ -20,6 +20,7 @@ package org.apache.onami.persist;
  */
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -29,6 +30,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * Source for {@link javax.persistence.EntityManagerFactory}.
  * The sourced instance is looked up via a JNDI call.
  */
+@Singleton
 class EntityManagerFactorySourceByJndiLookup
     implements EntityManagerFactorySource
 {

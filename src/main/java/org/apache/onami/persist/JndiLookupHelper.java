@@ -1,11 +1,14 @@
 package org.apache.onami.persist;
 
+import com.google.inject.Singleton;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
  * Helper class which does a JNDI lookup and handles exceptions.
  */
+@Singleton
 public class JndiLookupHelper
 {
 

@@ -21,6 +21,7 @@ package org.apache.onami.persist;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -28,6 +29,7 @@ import javax.persistence.EntityManagerFactory;
  * Source for {@link javax.persistence.EntityManagerFactory}.
  * The sourced instance is provided by guice.
  */
+@Singleton
 public class EntityManagerFactorySourceViaProvider implements EntityManagerFactorySource
 {
     private final Provider<EntityManagerFactory> emfProvider;

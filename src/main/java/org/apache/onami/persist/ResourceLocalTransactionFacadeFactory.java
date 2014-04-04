@@ -21,6 +21,7 @@ package org.apache.onami.persist;
 
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import javax.persistence.EntityTransaction;
 
@@ -29,6 +30,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 /**
  * Factory for transaction facades in case of resource local transactions.
  */
+@Singleton
 class ResourceLocalTransactionFacadeFactory
     implements TransactionFacadeFactory
 {

@@ -20,6 +20,7 @@ package org.apache.onami.persist;
  */
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.aopalliance.intercept.MethodInvocation;
 
 import java.lang.annotation.Annotation;
@@ -30,6 +31,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 /**
  * Helper class for working with {@link Transactional @Transactional} annotations.
  */
+@Singleton
 class TransactionalAnnotationHelper
 {
 

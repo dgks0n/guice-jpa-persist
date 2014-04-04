@@ -20,6 +20,7 @@ package org.apache.onami.persist;
  */
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -30,6 +31,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 /**
  * Factory for {@link EntityManagerFactory}.
  */
+@Singleton
 class EntityManagerFactoryFactory
 {
 

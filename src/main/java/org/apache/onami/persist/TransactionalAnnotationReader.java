@@ -19,6 +19,7 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import com.google.inject.Singleton;
 import org.aopalliance.intercept.MethodInvocation;
 
 import java.lang.reflect.Method;
@@ -26,6 +27,7 @@ import java.lang.reflect.Method;
 /**
  * Reader which obtains the concrete {@link Transactional @Transactional} annotation of a method.
  */
+@Singleton
 class TransactionalAnnotationReader
 {
     /**

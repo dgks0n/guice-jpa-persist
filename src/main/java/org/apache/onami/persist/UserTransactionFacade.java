@@ -19,6 +19,8 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import com.google.inject.Singleton;
+
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -37,6 +39,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * Facade to the {@link javax.transaction.UserTransaction} which wraps all checked exception into runtime exceptions.
  * Adds some convenience methods.
  */
+@Singleton
 class UserTransactionFacade
 {
 

@@ -1,6 +1,7 @@
 package org.apache.onami.persist;
 
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
 
 import javax.transaction.UserTransaction;
 
@@ -9,6 +10,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 /**
  * Provider fro {@link UserTransaction} which retrieves the value from the JNDI context.
  */
+@Singleton
 public class UserTransactionProviderByJndiLookup
     implements Provider<UserTransaction>
 {

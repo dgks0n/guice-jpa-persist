@@ -81,7 +81,7 @@ public class TransactionalWorker
             final Method method = taskType.getMethod( DO_TRANSACTIONAL );
             final Transactional annotation = method.getAnnotation( Transactional.class );
             checkNotNull( annotation, "@Transactional annotation missing on %s.%s", taskType.getSimpleName(),
-                          DO_TRANSACTIONAL );
+                          method.getName() );
         }
         catch ( NoSuchMethodException e )
         {
@@ -126,7 +126,7 @@ public class TransactionalWorker
         checkState( !storedEntities.isEmpty(), "no entities to check" );
         for ( TransactionTestEntity storedEntity : storedEntities )
         {
-            assertNotNull( "At least one entity which should have been peristed was NOT found in the DB. " + tasks,
+            assertNotNull( "At least one entity which should have been persisted was NOT found in the DB. " + tasks,
                            emProvider.get().find( TransactionTestEntity.class, storedEntity.getId() ) );
         }
     }
@@ -140,7 +140,7 @@ public class TransactionalWorker
         checkState( !storedEntities.isEmpty(), "no entities to check" );
         for ( TransactionTestEntity storedEntity : storedEntities )
         {
-            assertNull( "At least one entity which should NOT have been peristed was found in the DB. " + tasks,
+            assertNull( "At least one entity which should NOT have been persisted was found in the DB. " + tasks,
                         emProvider.get().find( TransactionTestEntity.class, storedEntity.getId() ) );
         }
     }
