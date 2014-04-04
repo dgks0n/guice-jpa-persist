@@ -2,6 +2,7 @@ package org.apache.onami.persist;
 
 import com.google.inject.Key;
 import com.google.inject.PrivateModule;
+import com.google.inject.util.Providers;
 
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
@@ -69,7 +70,7 @@ class PersistenceUnitModule
     @Override
     protected void configure()
     {
-        bind( Class.class ).annotatedWith( PersistenceAnnotation.class ).toInstance( config.getAnnotation() );
+        bind( AnnotationHolder.class ).toInstance( config.getAnnotationHolder() );
 
         bindPersistenceServiceAndEntityManagerFactoryProviderAndProperties();
         bindTransactionFacadeFactory();
@@ -144,7 +145,10 @@ class PersistenceUnitModule
     {
         bind( PersistenceService.class ).to( ApplicationManagedEntityManagerFactoryProvider.class );
         bind( EntityManagerFactoryProvider.class ).to( ApplicationManagedEntityManagerFactoryProvider.class );
-        bind( Properties.class ).annotatedWith( ForApplicationManaged.class ).toInstance( config.getProperties() );
+        bind( Properties.class ).annotatedWith( ForContainerManaged.class ).toProvider(
+            Providers.<Properties>of( null ) );
+        bind( Properties.class ).annotatedWith( ForApplicationManaged.class ).toProvider(
+            Providers.of( config.getProperties() ) );
 
         // required in ApplicationManagedEntityManagerFactoryProvider
         bind( EntityManagerFactoryFactory.class );
@@ -156,7 +160,10 @@ class PersistenceUnitModule
     {
         bind( PersistenceService.class ).to( ContainerManagedEntityManagerFactoryProvider.class );
         bind( EntityManagerFactoryProvider.class ).to( ContainerManagedEntityManagerFactoryProvider.class );
-        bind( Properties.class ).annotatedWith( ForContainerManaged.class ).toInstance( config.getProperties() );
+        bind( Properties.class ).annotatedWith( ForContainerManaged.class ).toProvider(
+            Providers.of( config.getProperties() ) );
+        bind( Properties.class ).annotatedWith( ForApplicationManaged.class ).toProvider(
+            Providers.<Properties>of( null ) );
 
         // required in ContainerManagedEntityManagerFactoryProvider
         bindEntityManagerFactorySource();

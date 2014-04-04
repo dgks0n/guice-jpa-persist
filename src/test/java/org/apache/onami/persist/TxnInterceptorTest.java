@@ -57,7 +57,10 @@ public class TxnInterceptorTest
         tfProvider = mock( TransactionFacadeFactory.class );
         txnAnnotationHelper = mock( TransactionalAnnotationHelper.class );
 
-        sut = new TxnInterceptor( unitOfWork, tfProvider, txnAnnotationHelper );
+        sut = new TxnInterceptor();
+        sut.unitOfWork = unitOfWork;
+        sut.tfProvider = tfProvider;
+        sut.txnAnnotationHelper = txnAnnotationHelper;
 
         invocation = mock( MethodInvocation.class );
     }
@@ -353,23 +356,5 @@ public class TxnInterceptorTest
 
 
         }
-    }
-
-    @Test( expected = NullPointerException.class )
-    public void unitOfWorkIsMandatory()
-    {
-        new TxnInterceptor( null, tfProvider, txnAnnotationHelper );
-    }
-
-    @Test( expected = NullPointerException.class )
-    public void tfProviderIsMandatory()
-    {
-        new TxnInterceptor( unitOfWork, null, txnAnnotationHelper );
-    }
-
-    @Test( expected = NullPointerException.class )
-    public void txnAnnotationHelperIsMandatory()
-    {
-        new TxnInterceptor( unitOfWork, tfProvider, null );
     }
 }

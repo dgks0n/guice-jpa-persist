@@ -13,19 +13,30 @@ class PersistenceUnitModuleConfigurator
     implements UnannotatedPersistenceUnitBuilder, AnnotatedPersistenceUnitBuilder, UnconfiguredPersistenceUnitBuilder
 {
     private Class<? extends Annotation> annotation;
+
     private UserTransaction userTransaction;
+
     private String utJndiName;
+
     private Provider<UserTransaction> utProvider;
+
     private Key<? extends Provider<UserTransaction>> utProviderKey;
+
     private Properties properties;
+
     private String puName;
+
     private EntityManagerFactory emf;
+
     private String emfJndiName;
+
     private Provider<EntityManagerFactory> emfProvider;
+
     private Key<? extends Provider<EntityManagerFactory>> emfProviderKey;
 
-    PersistenceUnitModule getPuModule() {
-        return new PersistenceUnitModule(this);
+    PersistenceUnitModule getPuModule()
+    {
+        return new PersistenceUnitModule( this );
     }
 
     public AnnotatedPersistenceUnitBuilder annotatedWith( Class<? extends Annotation> annotation )
@@ -124,10 +135,6 @@ class PersistenceUnitModuleConfigurator
         return puName != null;
     }
 
-    Class<? extends Annotation> getAnnotation()
-    {
-        return annotation;
-    }
 
     UserTransaction getUserTransaction()
     {
@@ -228,5 +235,15 @@ class PersistenceUnitModuleConfigurator
     public boolean isAnnotated()
     {
         return annotation != null;
+    }
+
+    public AnnotationHolder getAnnotationHolder()
+    {
+        return new AnnotationHolder( annotation );
+    }
+
+    Class<? extends Annotation> getAnnotation()
+    {
+        return annotation;
     }
 }

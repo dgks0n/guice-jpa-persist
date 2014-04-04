@@ -34,19 +34,22 @@ class TxnInterceptor
      * Unit of work.
      */
     @Inject
-    private UnitOfWork unitOfWork;
+    @VisibleForTesting
+    UnitOfWork unitOfWork;
 
     /**
      * Factory for {@link TransactionFacade}.
      */
     @Inject
-    private TransactionFacadeFactory tfProvider;
+    @VisibleForTesting
+    TransactionFacadeFactory tfProvider;
 
     /**
      * Helper for working with the concrete transactional annotations on methods and classes.
      */
     @Inject
-    private TransactionalAnnotationHelper txnAnnotationHelper;
+    @VisibleForTesting
+    TransactionalAnnotationHelper txnAnnotationHelper;
 
     /**
      * {@inheritDoc}

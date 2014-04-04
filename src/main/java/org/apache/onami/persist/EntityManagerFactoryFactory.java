@@ -50,10 +50,11 @@ class EntityManagerFactoryFactory
      * @param properties the additional properties. Theses override the ones defined in the persistence.xml. Must not be {@code null}.
      */
     @Inject
-    EntityManagerFactoryFactory( @ForApplicationManaged String puName, @ForApplicationManaged Properties properties )
+    EntityManagerFactoryFactory( @ForApplicationManaged String puName,
+                                 @Nullable @ForApplicationManaged Properties properties )
     {
         this.puName = checkNotNull( puName, "puName is mandatory!" );
-        this.properties = checkNotNull( properties, "properties is mandatory!" );
+        this.properties = properties;
     }
 
     /**

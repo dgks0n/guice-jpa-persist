@@ -21,6 +21,7 @@ package org.apache.onami.persist;
 
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -31,6 +32,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 /**
  * Implementation of {@link EntityManagerProvider} and {@link UnitOfWork}.
  */
+@Singleton
 class EntityManagerProviderImpl
     implements EntityManagerProvider, UnitOfWork
 {

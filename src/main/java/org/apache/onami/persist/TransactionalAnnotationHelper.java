@@ -19,6 +19,7 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import com.google.inject.Inject;
 import org.aopalliance.intercept.MethodInvocation;
 
 import java.lang.annotation.Annotation;
@@ -45,13 +46,13 @@ class TransactionalAnnotationHelper
     /**
      * Constructor.
      *
-     * @param puAnntoation  Annotation of the persistence unit.
-     * @param txnAnnoReader reader for {@link Transactional @Transactional} annotations.
+     * @param annotationHolder Holder of teh annotation of the persistence unit.
+     * @param txnAnnoReader    reader for {@link Transactional @Transactional} annotations.
      */
-    TransactionalAnnotationHelper( @Nullable @PersistenceAnnotation Class<? extends Annotation> puAnntoation,
-                                   TransactionalAnnotationReader txnAnnoReader )
+    @Inject
+    TransactionalAnnotationHelper( AnnotationHolder annotationHolder, TransactionalAnnotationReader txnAnnoReader )
     {
-        this.puAnntoation = puAnntoation;
+        this.puAnntoation = annotationHolder.getAnnotation();
         this.txnAnnoReader = checkNotNull( txnAnnoReader, "txnAnnoReader is mandatory!" );
     }
 

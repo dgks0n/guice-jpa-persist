@@ -57,7 +57,7 @@ public class TransactionalAnnotationHelperTest
             puAnntoation = null;
 
             // subject under test
-            sut = new TransactionalAnnotationHelper( puAnntoation, txnAnnoReader );
+            sut = new TransactionalAnnotationHelper( new AnnotationHolder( puAnntoation ), txnAnnoReader );
         }
 
         @Test
@@ -103,7 +103,7 @@ public class TransactionalAnnotationHelperTest
             puAnntoation = TestPersistenceUnit.class;
 
             // subject under test
-            sut = new TransactionalAnnotationHelper( puAnntoation, txnAnnoReader );
+            sut = new TransactionalAnnotationHelper( new AnnotationHolder( puAnntoation ), txnAnnoReader );
         }
 
         @Test
@@ -149,7 +149,7 @@ public class TransactionalAnnotationHelperTest
             puAnntoation = null;
 
             // subject under test
-            sut = new TransactionalAnnotationHelper( puAnntoation, txnAnnoReader );
+            sut = new TransactionalAnnotationHelper( new AnnotationHolder( puAnntoation ), txnAnnoReader );
 
             doReturn( new Class[]{ IllegalArgumentException.class, IllegalStateException.class } )
                 .when( txnal ).rollbackOn();

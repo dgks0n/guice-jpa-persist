@@ -24,7 +24,6 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matcher;
-import com.google.inject.matcher.Matchers;
 
 import javax.persistence.EntityManagerFactory;
 import java.lang.reflect.AnnotatedElement;
@@ -32,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.inject.matcher.Matchers.annotatedWith;
+import static com.google.inject.matcher.Matchers.any;
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
@@ -53,6 +53,7 @@ public abstract class PersistenceModule
 
     private final PersistenceUnitContainer container = new PersistenceUnitContainer();
     private final Matcher<AnnotatedElement> transactionalMatcher = annotatedWith( Transactional.class );
+    private final Matcher<Object> anyMatcher = any();
 
     @Override
     protected final void configure()
@@ -81,7 +82,8 @@ public abstract class PersistenceModule
             pu.setPersistenceUnitContainer( container );
             pu.setTransactionInterceptor( txnInterceptor );
             install( pu );
-            bindInterceptor( transactionalMatcher, transactionalMatcher, txnInterceptor );
+            bindInterceptor( anyMatcher, transactionalMatcher, txnInterceptor );
+            bindInterceptor( transactionalMatcher, anyMatcher, txnInterceptor );
         }
     }
 
