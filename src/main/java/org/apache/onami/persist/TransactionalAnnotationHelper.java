@@ -48,7 +48,7 @@ class TransactionalAnnotationHelper
      * @param puAnntoation  Annotation of the persistence unit.
      * @param txnAnnoReader reader for {@link Transactional @Transactional} annotations.
      */
-    TransactionalAnnotationHelper( @Nullable Class<? extends Annotation> puAnntoation,
+    TransactionalAnnotationHelper( @Nullable @PersistenceAnnotation Class<? extends Annotation> puAnntoation,
                                    TransactionalAnnotationReader txnAnnoReader )
     {
         this.puAnntoation = puAnntoation;

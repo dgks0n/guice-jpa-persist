@@ -39,14 +39,9 @@ class ContainerManagedEntityManagerFactoryProvider
 {
 
     /**
-     * The JNDI name of the {@link EntityManagerFactory}.
+     * The source for retrieving the entity manager factory instance.
      */
-    private final String emfJndiName;
-
-    /**
-     * The factory for looking up the entity manager factory instance.
-     */
-    private final EntityManagerFactoryFactory emfFactory;
+    private final EntityManagerFactorySource emfSource;
 
     /**
      * Currently active entity manager factory.
@@ -57,14 +52,12 @@ class ContainerManagedEntityManagerFactoryProvider
     /**
      * Constructor.
      *
-     * @param emfJndiName the JNDI name of the {@link EntityManagerFactory}. Must not be {@code null}.
-     * @param emfFactory  the factory for the  {@link EntityManagerFactory}. Must not be {@code null}.
+     * @param emfSource the source for the  {@link EntityManagerFactory}. Must not be {@code null}.
      */
     @Inject
-    ContainerManagedEntityManagerFactoryProvider( String emfJndiName, EntityManagerFactoryFactory emfFactory )
+    ContainerManagedEntityManagerFactoryProvider( EntityManagerFactorySource emfSource )
     {
-        this.emfJndiName = checkNotNull( emfJndiName, "emfJndiName is mandatory!" );
-        this.emfFactory = checkNotNull( emfFactory, "emfFactory is mandatory!" );
+        this.emfSource = checkNotNull( emfSource, "emfSource is mandatory!" );
     }
 
     /**
@@ -92,7 +85,7 @@ class ContainerManagedEntityManagerFactoryProvider
             throw new IllegalStateException( "PersistenceService is already running." );
         }
 
-        emf = emfFactory.getEntityManagerFactoryByJndiLookup( emfJndiName );
+        emf = emfSource.getEntityManagerFactory();
     }
 
     /**

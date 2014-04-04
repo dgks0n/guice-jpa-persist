@@ -19,6 +19,7 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import java.util.HashSet;
@@ -51,6 +52,7 @@ class PersistenceUnitContainer
      * @param ps  the persistence service to add. Must not be {@code null}.
      * @param uow the unit of work to add. Must not be {@code null}.
      */
+    @Inject
     void add( PersistenceService ps, UnitOfWork uow )
     {
         checkNotNull( ps );

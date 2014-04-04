@@ -22,15 +22,11 @@ package org.apache.onami.persist;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.naming.Context;
-import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
 
 /**
  * Test for {@link EntityManagerFactoryFactory}.
@@ -46,8 +42,6 @@ public class EntityManagerFactoryFactoryTest
 
     private static final String PU_KEY = "hibernate.ejb.persistenceUnitName";
 
-    private static final String JNDI_NAME = "jndiName";
-
     private EntityManagerFactoryFactory sut;
 
     private Properties properties;
@@ -56,9 +50,8 @@ public class EntityManagerFactoryFactoryTest
     public void setUp()
         throws Exception
     {
-        sut = new EntityManagerFactoryFactory();
-
-        properties = new Properties();
+        properties = new Properties(  );
+        sut = new EntityManagerFactoryFactory( PU_NAME, properties );
     }
 
     @Test
@@ -67,48 +60,9 @@ public class EntityManagerFactoryFactoryTest
         // given
         properties.setProperty( TEST_KEY, TEST_VALUE );
         // when
-        final EntityManagerFactory result = sut.createApplicationManagedEntityManagerFactory( PU_NAME, properties );
+        final EntityManagerFactory result = sut.createApplicationManagedEntityManagerFactory();
         // then
         assertThat( result.getProperties().get( PU_KEY ), is( (Object) PU_NAME ) );
         assertThat( result.getProperties().get( TEST_KEY ), is( (Object) TEST_VALUE ) );
-    }
-
-    @Test
-    public void shouldLookupEmfByJndiName()
-        throws Exception
-    {
-        // given
-        final Context context = mock( Context.class );
-        final EntityManagerFactory emf = mock( EntityManagerFactory.class );
-        doReturn( emf ).when( context ).lookup( JNDI_NAME );
-        InitialContextFactoryStub.registerContext( context );
-        // when
-        final EntityManagerFactory result = sut.getEntityManagerFactoryByJndiLookup( JNDI_NAME );
-        // then
-        assertThat( result, sameInstance( emf ) );
-    }
-
-    @Test( expected = NullPointerException.class )
-    public void shouldThrowExceptionIfContextReturnsNull()
-        throws Exception
-    {
-        // given
-        final Context context = mock( Context.class );
-        doReturn( null ).when( context ).lookup( JNDI_NAME );
-        InitialContextFactoryStub.registerContext( context );
-        // when
-        final EntityManagerFactory result = sut.getEntityManagerFactoryByJndiLookup( JNDI_NAME );
-    }
-
-    @Test( expected = RuntimeException.class )
-    public void shouldWrapNamingException()
-        throws Exception
-    {
-        // given
-        final Context context = mock( Context.class );
-        doThrow( new NamingException() ).when( context ).lookup( JNDI_NAME );
-        InitialContextFactoryStub.registerContext( context );
-        // when
-        sut.getEntityManagerFactoryByJndiLookup( JNDI_NAME );
     }
 }

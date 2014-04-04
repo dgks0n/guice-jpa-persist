@@ -20,6 +20,8 @@ package org.apache.onami.persist;
  */
 
 
+import com.google.inject.Inject;
+
 import javax.persistence.EntityManager;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
@@ -48,6 +50,7 @@ class JtaTransactionFacadeFactory
      * @param utFacade   the user transaction facade.
      * @param emProvider the entity manager provider.
      */
+    @Inject
     public JtaTransactionFacadeFactory( UserTransactionFacade utFacade, EntityManagerProvider emProvider )
     {
         this.utFacade = checkNotNull( utFacade, "utFacade is mandatory!" );

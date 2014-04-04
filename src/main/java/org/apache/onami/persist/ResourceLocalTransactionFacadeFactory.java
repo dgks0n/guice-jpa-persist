@@ -20,6 +20,8 @@ package org.apache.onami.persist;
  */
 
 
+import com.google.inject.Inject;
+
 import javax.persistence.EntityTransaction;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
@@ -41,7 +43,8 @@ class ResourceLocalTransactionFacadeFactory
      *
      * @param emProvider the provider for the entity manager
      */
-    public ResourceLocalTransactionFacadeFactory( EntityManagerProvider emProvider )
+    @Inject
+    ResourceLocalTransactionFacadeFactory( EntityManagerProvider emProvider )
     {
         this.emProvider = checkNotNull( emProvider, "emProvider is mandatory!" );
     }

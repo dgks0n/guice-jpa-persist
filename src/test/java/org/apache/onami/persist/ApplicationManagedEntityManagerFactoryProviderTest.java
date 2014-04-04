@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import javax.persistence.EntityManagerFactory;
-import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -35,13 +34,9 @@ import static org.mockito.Mockito.*;
  */
 public class ApplicationManagedEntityManagerFactoryProviderTest
 {
-    private static final String PU_NAME = "puName";
-
     private ApplicationManagedEntityManagerFactoryProvider sut;
 
     private EntityManagerFactory emf;
-
-    private Properties properties;
 
     private EntityManagerFactoryFactory emfFactory;
 
@@ -49,15 +44,14 @@ public class ApplicationManagedEntityManagerFactoryProviderTest
     public void setup()
     {
         // input
-        properties = mock( Properties.class );
         emfFactory = mock( EntityManagerFactoryFactory.class );
 
         // subject under test
-        sut = new ApplicationManagedEntityManagerFactoryProvider( PU_NAME, properties, emfFactory );
+        sut = new ApplicationManagedEntityManagerFactoryProvider( emfFactory );
 
         // helpers
         emf = mock( EntityManagerFactory.class );
-        doReturn( emf ).when( emfFactory ).createApplicationManagedEntityManagerFactory( PU_NAME, properties );
+        doReturn( emf ).when( emfFactory ).createApplicationManagedEntityManagerFactory();
     }
 
     @Test
@@ -80,7 +74,7 @@ public class ApplicationManagedEntityManagerFactoryProviderTest
         sut.start();
 
         assertThat( sut.isRunning(), is( true ) );
-        verify( emfFactory ).createApplicationManagedEntityManagerFactory( PU_NAME, properties );
+        verify( emfFactory ).createApplicationManagedEntityManagerFactory();
     }
 
     @Test( expected = IllegalStateException.class )
@@ -108,7 +102,7 @@ public class ApplicationManagedEntityManagerFactoryProviderTest
         sut.start();
 
         assertThat( sut.isRunning(), is( true ) );
-        verify( emfFactory, times( 2 ) ).createApplicationManagedEntityManagerFactory( PU_NAME, properties );
+        verify( emfFactory, times( 2 ) ).createApplicationManagedEntityManagerFactory();
         verify( emf ).close();
     }
 
@@ -145,20 +139,8 @@ public class ApplicationManagedEntityManagerFactoryProviderTest
     }
 
     @Test( expected = NullPointerException.class )
-    public void puNameIsMandatory()
-    {
-        new ApplicationManagedEntityManagerFactoryProvider( null, properties, emfFactory );
-    }
-
-    @Test( expected = NullPointerException.class )
-    public void propertiesAreMandatory()
-    {
-        new ApplicationManagedEntityManagerFactoryProvider( PU_NAME, null, emfFactory );
-    }
-
-    @Test( expected = NullPointerException.class )
     public void emfFactoryIsMandatory()
     {
-        new ApplicationManagedEntityManagerFactoryProvider( PU_NAME, properties, null );
+        new ApplicationManagedEntityManagerFactoryProvider( null );
     }
 }

@@ -19,10 +19,9 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import com.google.inject.Inject;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
-import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Interceptor for methods and classes annotated with @{@link Transactional} annotation.
@@ -34,32 +33,20 @@ class TxnInterceptor
     /**
      * Unit of work.
      */
-    private final UnitOfWork unitOfWork;
+    @Inject
+    private UnitOfWork unitOfWork;
 
     /**
      * Factory for {@link TransactionFacade}.
      */
-    private final TransactionFacadeFactory tfProvider;
+    @Inject
+    private TransactionFacadeFactory tfProvider;
 
     /**
      * Helper for working with the concrete transactional annotations on methods and classes.
      */
-    private final TransactionalAnnotationHelper txnAnnotationHelper;
-
-    /**
-     * Constructor.
-     *
-     * @param unitOfWork          the unit of work. Must not be {@code null}.
-     * @param tfProvider          the provider for the {@link TransactionFacade}. Must not be {@code null}.
-     * @param txnAnnotationHelper the reader for the annotations of a method. Must not be {@code null}.
-     */
-    public TxnInterceptor( UnitOfWork unitOfWork, TransactionFacadeFactory tfProvider,
-                           TransactionalAnnotationHelper txnAnnotationHelper )
-    {
-        this.unitOfWork = checkNotNull( unitOfWork, "unitOfWork is mandatory!" );
-        this.tfProvider = checkNotNull( tfProvider, "tfProvider is mandatory!" );
-        this.txnAnnotationHelper = checkNotNull( txnAnnotationHelper, "txnAnnotationHelper is mandatory!" );
-    }
+    @Inject
+    private TransactionalAnnotationHelper txnAnnotationHelper;
 
     /**
      * {@inheritDoc}

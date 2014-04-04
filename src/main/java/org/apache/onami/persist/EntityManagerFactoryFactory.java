@@ -19,8 +19,8 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import com.google.inject.Inject;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Properties;
@@ -32,40 +32,36 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  */
 class EntityManagerFactoryFactory
 {
+
     /**
-     * Gets a {@link EntityManagerFactory} by looking it up in the JNDI context.
-     *
-     * @param jndiName jndi name of the entity manager factory. Must not be {@code null}.
-     * @return the found entity manager factory
-     * @throws RuntimeException when no entity manager factory was found.
+     * Name of the persistence unit as defined in the persistence.xml.
      */
-    EntityManagerFactory getEntityManagerFactoryByJndiLookup( String jndiName )
+    private final String puName;
+
+    /**
+     * Additional properties. Theses override the ones defined in the persistence.xml.
+     */
+    private final Properties properties;
+
+    /**
+     * Constructor.
+     *
+     * @param puName     the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
+     * @param properties the additional properties. Theses override the ones defined in the persistence.xml. Must not be {@code null}.
+     */
+    @Inject
+    EntityManagerFactoryFactory( @ForApplicationManaged String puName, @ForApplicationManaged Properties properties )
     {
-        try
-        {
-            final InitialContext ctx = new InitialContext();
-            final EntityManagerFactory emf = (EntityManagerFactory) ctx.lookup( jndiName );
-
-            checkNotNull( emf, "lookup for EntityManagerFactory with JNDI name '" + jndiName + "' returned null" );
-
-            return emf;
-        }
-        catch ( NamingException e )
-        {
-            throw new RuntimeException( "lookup for EntityManagerFactory with JNDI name '" + jndiName + "' failed", e );
-        }
+        this.puName = checkNotNull( puName, "puName is mandatory!" );
+        this.properties = checkNotNull( properties, "properties is mandatory!" );
     }
 
     /**
      * Creates a new {@link EntityManagerFactory}.
      *
-     * @param puName     the name of the persistence unit for which to create the entity manager factory.
-     *                   Must not be {@code null}.
-     * @param properties the properties to pass along when creating the entity manager factory.
-     *                   Must not be {@code null}.
      * @return the newly created entity manager factory.
      */
-    EntityManagerFactory createApplicationManagedEntityManagerFactory( String puName, Properties properties )
+    EntityManagerFactory createApplicationManagedEntityManagerFactory()
     {
         return Persistence.createEntityManagerFactory( puName, properties );
     }

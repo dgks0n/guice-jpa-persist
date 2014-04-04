@@ -34,26 +34,24 @@ import static org.mockito.Mockito.*;
  */
 public class ContainerManagedEntityManagerFactoryProviderTest
 {
-    private static final String JNDI_NAME = "jndiName";
-
     private ContainerManagedEntityManagerFactoryProvider sut;
 
     private EntityManagerFactory emf;
 
-    private EntityManagerFactoryFactory emfFactory;
+    private EntityManagerFactorySource emfSource;
 
     @Before
     public void setup()
     {
         // input
-        emfFactory = mock( EntityManagerFactoryFactory.class );
+        emfSource = mock( EntityManagerFactorySource.class );
 
         // subject under test
-        sut = new ContainerManagedEntityManagerFactoryProvider( JNDI_NAME, emfFactory );
+        sut = new ContainerManagedEntityManagerFactoryProvider( emfSource );
 
         // helpers
         emf = mock( EntityManagerFactory.class );
-        doReturn( emf ).when( emfFactory ).getEntityManagerFactoryByJndiLookup( JNDI_NAME );
+        doReturn( emf ).when( emfSource ).getEntityManagerFactory();
     }
 
     @Test
@@ -76,7 +74,7 @@ public class ContainerManagedEntityManagerFactoryProviderTest
         sut.start();
 
         assertThat( sut.isRunning(), is( true ) );
-        verify( emfFactory ).getEntityManagerFactoryByJndiLookup( JNDI_NAME );
+        verify( emfSource ).getEntityManagerFactory();
     }
 
     @Test( expected = IllegalStateException.class )
@@ -104,7 +102,7 @@ public class ContainerManagedEntityManagerFactoryProviderTest
         sut.start();
 
         assertThat( sut.isRunning(), is( true ) );
-        verify( emfFactory, times( 2 ) ).getEntityManagerFactoryByJndiLookup( JNDI_NAME );
+        verify( emfSource, times( 2 ) ).getEntityManagerFactory();
         verify( emf, never() ).close();
     }
 
@@ -123,14 +121,8 @@ public class ContainerManagedEntityManagerFactoryProviderTest
     }
 
     @Test( expected = NullPointerException.class )
-    public void jndiNameIsMandatory()
+    public void emfSourceIsMandatory()
     {
-        new ContainerManagedEntityManagerFactoryProvider( null, emfFactory );
-    }
-
-    @Test( expected = NullPointerException.class )
-    public void emfFactoryIsMandatory()
-    {
-        new ContainerManagedEntityManagerFactoryProvider( JNDI_NAME, null );
+        new ContainerManagedEntityManagerFactoryProvider( null );
     }
 }

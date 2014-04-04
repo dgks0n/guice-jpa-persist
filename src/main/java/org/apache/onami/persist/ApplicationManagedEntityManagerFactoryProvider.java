@@ -23,7 +23,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import javax.persistence.EntityManagerFactory;
-import java.util.Properties;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
@@ -40,16 +39,6 @@ class ApplicationManagedEntityManagerFactoryProvider
 {
 
     /**
-     * Name of the persistence unit as defined in the persistence.xml.
-     */
-    private final String puName;
-
-    /**
-     * Additional properties. Theses override the ones defined in the persistence.xml.
-     */
-    private final Properties properties;
-
-    /**
      * Factory for creating the {@link EntityManagerFactory}.
      */
     private final EntityManagerFactoryFactory emfFactory;
@@ -63,16 +52,11 @@ class ApplicationManagedEntityManagerFactoryProvider
     /**
      * Constructor.
      *
-     * @param puName     the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
-     * @param properties the additional properties. Theses override the ones defined in the persistence.xml. Must not be {@code null}.
      * @param emfFactory the factory for the  {@link EntityManagerFactory}. Must not be {@code null}.
      */
     @Inject
-    ApplicationManagedEntityManagerFactoryProvider( String puName, Properties properties,
-                                                    EntityManagerFactoryFactory emfFactory )
+    ApplicationManagedEntityManagerFactoryProvider( EntityManagerFactoryFactory emfFactory )
     {
-        this.puName = checkNotNull( puName, "puName is mandatory!" );
-        this.properties = checkNotNull( properties, "properties is mandatory!" );
         this.emfFactory = checkNotNull( emfFactory, "emfFactory is mandatory!" );
     }
 
@@ -100,7 +84,7 @@ class ApplicationManagedEntityManagerFactoryProvider
         {
             throw new IllegalStateException( "PersistenceService is already running." );
         }
-        emf = emfFactory.createApplicationManagedEntityManagerFactory( puName, properties );
+        emf = emfFactory.createApplicationManagedEntityManagerFactory();
     }
 
     /**
