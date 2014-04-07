@@ -19,19 +19,27 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import org.junit.Before;
+import org.junit.Test;
 
-import javax.persistence.EntityManagerFactory;
+import static org.junit.Assert.fail;
 
 /**
- * Source for {@link EntityManagerFactory}.
- *
- * A source indicates that the instance is not created within the instance (compared to factory)
+ * Test for {@link PersistenceUnitModuleConfigurator}.
  */
-public interface EntityManagerFactorySource
+public class PersistenceUnitModuleConfiguratorTest
 {
+    @Before
+    public void setUp()
+        throws Exception
+    {
 
-    /**
-     * @return a entity manager factory which is obtained from some source. The instance is not newly created.
-     */
-    EntityManagerFactory getEntityManagerFactory();
+    }
+
+    @Test
+    public void test()
+        throws Exception
+    {
+        fail( "implement");
+    }
 }
