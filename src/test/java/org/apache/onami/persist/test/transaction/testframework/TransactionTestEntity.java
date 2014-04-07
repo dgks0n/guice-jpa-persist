@@ -19,7 +19,6 @@ package org.apache.onami.persist.test.transaction.testframework;
  * under the License.
  */
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -38,26 +37,6 @@ public final class TransactionTestEntity
 
     private UUID id = UUID.randomUUID();
 
-    private String text;
-
-    /**
-     * Default constructor.
-     */
-    public TransactionTestEntity()
-    {
-        // nop
-    }
-
-    /**
-     * Convenience constructor for directly setting the text.
-     *
-     * @param text will be stored in the column {@code text}.
-     */
-    public TransactionTestEntity( String text )
-    {
-        this.text = text;
-    }
-
     @Id
     public UUID getId()
     {
@@ -70,16 +49,4 @@ public final class TransactionTestEntity
     {
         this.id = id;
     }
-
-    @Column(length = 200)
-    public String getText()
-    {
-        return text;
-    }
-
-    public void setText( String text )
-    {
-        this.text = text;
-    }
-
 }
