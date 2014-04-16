@@ -33,6 +33,8 @@ class PersistenceUnitModuleConfigurator
 {
     private Class<? extends Annotation> annotation;
 
+    private boolean isJta = false;
+
     private UserTransaction userTransaction;
 
     private String utJndiName;
@@ -53,7 +55,7 @@ class PersistenceUnitModuleConfigurator
 
     private Key<? extends Provider<EntityManagerFactory>> emfProviderKey;
 
-    PersistenceUnitModule getPuModule()
+    PersistenceUnitModule createPuModule()
     {
         return new PersistenceUnitModule( this );
     }
@@ -66,24 +68,27 @@ class PersistenceUnitModuleConfigurator
 
     public UnconfiguredPersistenceUnitBuilder useLocalTransaction()
     {
-        // does nothing
+        isJta = false;
         return this;
     }
 
     public UnconfiguredPersistenceUnitBuilder useGlobalTransaction( UserTransaction userTransaction )
     {
+        this.isJta = true;
         this.userTransaction = userTransaction;
         return this;
     }
 
     public UnconfiguredPersistenceUnitBuilder useGlobalTransactionWithJndiName( String utJndiName )
     {
+        this.isJta = true;
         this.utJndiName = utJndiName;
         return this;
     }
 
     public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy( Provider<UserTransaction> utProvider )
     {
+        this.isJta = true;
         this.utProvider = utProvider;
         return this;
     }
@@ -91,25 +96,24 @@ class PersistenceUnitModuleConfigurator
     public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
         Class<? extends Provider<UserTransaction>> utProviderClass )
     {
-        utProviderKey = Key.get( utProviderClass );
-        return this;
+        return useGlobalTransactionProvidedBy( Key.get( utProviderClass ) );
     }
 
     public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
         TypeLiteral<? extends Provider<UserTransaction>> utProviderType )
     {
-        utProviderKey = Key.get( utProviderType );
-        return this;
+        return useGlobalTransactionProvidedBy( Key.get( utProviderType ) );
     }
 
     public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
         Key<? extends Provider<UserTransaction>> utProviderKey )
     {
+        this.isJta = true;
         this.utProviderKey = utProviderKey;
         return this;
     }
 
-    public void addProperties( Properties properties )
+    public void setProperties( Properties properties )
     {
         this.properties = properties;
     }
@@ -227,7 +231,7 @@ class PersistenceUnitModuleConfigurator
 
     public boolean isJta()
     {
-        return utJndiName != null || userTransaction != null || utProvider != null || utProviderKey != null;
+        return isJta;
     }
 
     public boolean isUserTransactionProvidedByJndiLookup()
