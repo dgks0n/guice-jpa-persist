@@ -20,7 +20,7 @@ package org.apache.onami.persist.test;
  */
 
 import com.google.inject.Guice;
-import com.google.inject.Inject;
+import javax.inject.Inject;
 import com.google.inject.PrivateModule;
 import org.junit.Test;
 
@@ -82,7 +82,7 @@ public class UnderstandRequestInjectionTest
 
     private static class ObjectWithSetterInjection
     {
-        private Set<Integer> actuals = newHashSet();
+        private final Set<Integer> actuals = newHashSet();
 
         @Inject
         public void addFoo( Foo foo )

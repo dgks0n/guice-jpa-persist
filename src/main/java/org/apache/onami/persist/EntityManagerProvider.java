@@ -21,6 +21,7 @@ package org.apache.onami.persist;
 
 import com.google.inject.Provider;
 
+
 import javax.persistence.EntityManager;
 
 /**

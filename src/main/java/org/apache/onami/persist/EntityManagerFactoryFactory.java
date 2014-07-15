@@ -22,6 +22,7 @@ package org.apache.onami.persist;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Properties;
