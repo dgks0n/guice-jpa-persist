@@ -22,6 +22,8 @@ package org.apache.onami.persist;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import javax.inject.Provider;
+
+import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 
 import javax.persistence.EntityManagerFactory;
@@ -72,7 +74,7 @@ public abstract class PersistenceModule
     {
         configurePersistence();
 
-        bind( PersistenceFilter.class ).to( PersistenceFilterImpl.class );
+        bind( PersistenceFilter.class ).to( PersistenceFilterImpl.class ).in( Scopes.SINGLETON );
 
         final AllPersistenceUnits allPersistenceUnits = new AllPersistenceUnits();
         requestInjection( allPersistenceUnits );
