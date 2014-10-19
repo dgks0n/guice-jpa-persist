@@ -21,7 +21,6 @@ package org.apache.onami.persist;
 
 import javax.inject.Provider;
 import javax.inject.Singleton;
-
 import javax.transaction.UserTransaction;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;

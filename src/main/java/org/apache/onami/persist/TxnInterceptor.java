@@ -19,9 +19,10 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import javax.inject.Inject;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+
+import javax.inject.Inject;
 
 /**
  * Interceptor for methods and classes annotated with {@link Transactional @Transactional} annotation.

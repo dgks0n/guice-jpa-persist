@@ -21,11 +21,10 @@ package org.apache.onami.persist;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
-import javax.inject.Provider;
-
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 
+import javax.inject.Provider;
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.List;

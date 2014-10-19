@@ -20,17 +20,18 @@ package org.apache.onami.persist;
  */
 
 import com.google.inject.Key;
-import javax.inject.Provider;
 import com.google.inject.TypeLiteral;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.inject.Provider;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 import java.lang.annotation.Annotation;
 import java.util.Properties;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 

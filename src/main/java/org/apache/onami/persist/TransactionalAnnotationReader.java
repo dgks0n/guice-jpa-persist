@@ -19,9 +19,9 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import javax.inject.Singleton;
 import org.aopalliance.intercept.MethodInvocation;
 
+import javax.inject.Singleton;
 import java.lang.reflect.Method;
 
 /**

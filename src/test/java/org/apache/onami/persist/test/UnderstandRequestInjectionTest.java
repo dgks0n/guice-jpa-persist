@@ -20,10 +20,10 @@ package org.apache.onami.persist.test;
  */
 
 import com.google.inject.Guice;
-import javax.inject.Inject;
 import com.google.inject.PrivateModule;
 import org.junit.Test;
 
+import javax.inject.Inject;
 import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;

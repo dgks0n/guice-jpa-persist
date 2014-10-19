@@ -19,10 +19,10 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import org.aopalliance.intercept.MethodInvocation;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 
 import static java.util.Arrays.asList;

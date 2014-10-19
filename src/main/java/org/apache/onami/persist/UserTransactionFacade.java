@@ -20,7 +20,6 @@ package org.apache.onami.persist;
  */
 
 import javax.inject.Singleton;
-
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;

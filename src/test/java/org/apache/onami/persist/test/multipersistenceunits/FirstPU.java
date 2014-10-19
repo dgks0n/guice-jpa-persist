@@ -17,6 +17,8 @@ package org.apache.onami.persist.test.multipersistenceunits;
  * limitations under the License.
  */
 
+import com.google.inject.BindingAnnotation;
+
 import javax.inject.Qualifier;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,6 +31,7 @@ import static java.lang.annotation.ElementType.PARAMETER;
 @Retention( RetentionPolicy.RUNTIME )
 @Target( { FIELD, PARAMETER, METHOD } )
 @Qualifier
+@BindingAnnotation
 public @interface FirstPU
 {
 }

@@ -32,10 +32,23 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import static java.lang.System.currentTimeMillis;
-import static javax.transaction.Status.*;
+import static javax.transaction.Status.STATUS_ACTIVE;
+import static javax.transaction.Status.STATUS_COMMITTED;
+import static javax.transaction.Status.STATUS_COMMITTING;
+import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
+import static javax.transaction.Status.STATUS_NO_TRANSACTION;
+import static javax.transaction.Status.STATUS_PREPARED;
+import static javax.transaction.Status.STATUS_PREPARING;
+import static javax.transaction.Status.STATUS_ROLLEDBACK;
+import static javax.transaction.Status.STATUS_ROLLING_BACK;
+import static javax.transaction.Status.STATUS_UNKNOWN;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test for {@link UserTransactionFacade}.

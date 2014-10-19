@@ -19,10 +19,10 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import javax.inject.Provider;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.inject.Provider;
 import javax.persistence.EntityManagerFactory;
 
 import static org.hamcrest.CoreMatchers.sameInstance;

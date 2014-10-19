@@ -21,8 +21,8 @@ package org.apache.onami.persist;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import javax.inject.Provider;
 
+import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

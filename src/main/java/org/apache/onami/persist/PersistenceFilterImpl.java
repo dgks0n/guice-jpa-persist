@@ -19,8 +19,7 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import com.google.inject.Inject;
-
+import javax.inject.Inject;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -39,20 +38,26 @@ class PersistenceFilterImpl
 {
 
     /**
-     * Container of all known persistence unit and units of work.
+     * Container of all known persistence services.
      */
-    private final AllPersistenceUnits persistenceUnitsContainer;
+    private final AllPersistenceServices allPersistenceServices;
+
+    /**
+     * Container of all known units of work.
+     */
+    private final AllUnitsOfWork allUnitsOfWork;
 
     /**
      * Constructor.
      *
-     * @param persistenceUnitsContainer container of all known persistence unit and units of work.
+     * @param allPersistenceServices container of all known persistence services.
+     * @param allUnitsOfWork container of all known units of work.
      */
     @Inject
-    PersistenceFilterImpl( AllPersistenceUnits persistenceUnitsContainer )
+    PersistenceFilterImpl( AllPersistenceServices allPersistenceServices, AllUnitsOfWork allUnitsOfWork  )
     {
-        checkNotNull( persistenceUnitsContainer );
-        this.persistenceUnitsContainer = persistenceUnitsContainer;
+        this.allPersistenceServices = checkNotNull( allPersistenceServices, "allPersistenceServices is mandatory!" );
+        this.allUnitsOfWork = checkNotNull( allUnitsOfWork, "allUnitsOfWork is mandatory!" );
     }
 
     /**
@@ -64,12 +69,12 @@ class PersistenceFilterImpl
     {
         try
         {
-            persistenceUnitsContainer.beginAllInactiveUnitsOfWork();
+            allUnitsOfWork.beginAllInactiveUnitsOfWork();
             chain.doFilter( request, response );
         }
         finally
         {
-            persistenceUnitsContainer.endAllUnitsOfWork();
+            allUnitsOfWork.endAllUnitsOfWork();
         }
     }
 
@@ -80,7 +85,7 @@ class PersistenceFilterImpl
     public void init( FilterConfig filterConfig )
         throws ServletException
     {
-        persistenceUnitsContainer.startAllStoppedPersistenceServices();
+        allPersistenceServices.startAllStoppedPersistenceServices();
     }
 
     /**
@@ -89,7 +94,7 @@ class PersistenceFilterImpl
     // @Override
     public void destroy()
     {
-        persistenceUnitsContainer.stopAllPersistenceServices();
+        allPersistenceServices.stopAllPersistenceServices();
     }
 
 }

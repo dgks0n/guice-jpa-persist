@@ -28,7 +28,10 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test for {@link PersistenceFilterImpl}.
@@ -38,14 +41,16 @@ public class PersistenceFilterImplTest
 
     private PersistenceFilterImpl sut;
 
-    private AllPersistenceUnits persistenceUnitsContainer;
+    private AllPersistenceServices allPersistenceServices;
+    private AllUnitsOfWork allUnitsOfWork;
 
     @Before
     public void setUp()
         throws Exception
     {
-        persistenceUnitsContainer = mock( AllPersistenceUnits.class );
-        sut = new PersistenceFilterImpl( persistenceUnitsContainer );
+        allPersistenceServices = mock( AllPersistenceServices.class );
+        allUnitsOfWork = mock( AllUnitsOfWork.class );
+        sut = new PersistenceFilterImpl( allPersistenceServices, allUnitsOfWork );
     }
 
     @Test
@@ -53,14 +58,14 @@ public class PersistenceFilterImplTest
         throws Exception
     {
         sut.init( mock( FilterConfig.class ) );
-        verify( persistenceUnitsContainer ).startAllStoppedPersistenceServices();
+        verify( allPersistenceServices ).startAllStoppedPersistenceServices();
     }
 
     @Test
     public void destroyShouldStopService()
     {
         sut.destroy();
-        verify( persistenceUnitsContainer ).stopAllPersistenceServices();
+        verify( allPersistenceServices ).stopAllPersistenceServices();
     }
 
     @Test
@@ -69,7 +74,7 @@ public class PersistenceFilterImplTest
     {
         // given
         final FilterChain chain = mock( FilterChain.class );
-        final InOrder inOrder = inOrder( persistenceUnitsContainer, chain );
+        final InOrder inOrder = inOrder( allUnitsOfWork, chain );
 
         final ServletRequest request = mock( ServletRequest.class );
         final ServletResponse response = mock( ServletResponse.class );
@@ -78,9 +83,9 @@ public class PersistenceFilterImplTest
         sut.doFilter( request, response, chain );
 
         // then
-        inOrder.verify( persistenceUnitsContainer ).beginAllInactiveUnitsOfWork();
+        inOrder.verify( allUnitsOfWork ).beginAllInactiveUnitsOfWork();
         inOrder.verify( chain ).doFilter( request, response );
-        inOrder.verify( persistenceUnitsContainer ).endAllUnitsOfWork();
+        inOrder.verify( allUnitsOfWork ).endAllUnitsOfWork();
     }
 
     @Test(expected = RuntimeException.class)
@@ -89,7 +94,7 @@ public class PersistenceFilterImplTest
     {
         // given
         final FilterChain chain = mock( FilterChain.class );
-        final InOrder inOrder = inOrder( persistenceUnitsContainer, chain );
+        final InOrder inOrder = inOrder( allUnitsOfWork, chain );
 
         final ServletRequest request = mock( ServletRequest.class );
         final ServletResponse response = mock( ServletResponse.class );
@@ -104,9 +109,9 @@ public class PersistenceFilterImplTest
         // then
         finally
         {
-            inOrder.verify( persistenceUnitsContainer ).beginAllInactiveUnitsOfWork();
+            inOrder.verify( allUnitsOfWork ).beginAllInactiveUnitsOfWork();
             inOrder.verify( chain ).doFilter( request, response );
-            inOrder.verify( persistenceUnitsContainer ).endAllUnitsOfWork();
+            inOrder.verify( allUnitsOfWork ).endAllUnitsOfWork();
         }
     }
 
