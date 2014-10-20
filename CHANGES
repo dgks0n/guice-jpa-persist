@@ -27,6 +27,11 @@
 Bug
 [ONAMI-115] - PersistenceFilter should be bound in Singleton scope
 
+
+Improvement
+[ONAMI-116] - Prefer javax.inject.* over com.google.inject.*
+
+
 ===========================================================================================
 
     1.0.0 - 2014-07-15 (yyyy-MM-dd)
