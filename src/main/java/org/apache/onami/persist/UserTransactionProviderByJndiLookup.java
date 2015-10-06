@@ -19,6 +19,7 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.transaction.UserTransaction;
@@ -42,6 +43,7 @@ class UserTransactionProviderByJndiLookup
      *
      * @param jndiName jndi name of the entity manager factory. Must not be {@code null}.
      */
+    @Inject
     UserTransactionProviderByJndiLookup( @UserTransactionJndiName String jndiName, JndiLookupHelper jndiLookupHelper )
     {
         this.jndiName = checkNotNull( jndiName, "jndiName is mandatory!" );
