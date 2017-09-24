@@ -1,5 +1,25 @@
+Guicy - guice-jpa-persist
+Copyright (C) 2017
+
+---
+
+Forked from:
+https://svn.apache.org/repos/asf/onami/trunk/persist (revision: 1707068)
+
 Apache Onami-Persist
 Copyright 2013 The Apache Software Foundation
 
 This product includes software developed by
 The Apache Software Foundation (http://www.apache.org/).
+
+---
+
+Based on:
+https://github.com/sclassen/guice-jpa
+Copyright (C) 2012 Stephan Classen
+
+---
+
+Based on:
+https://github.com/google/guice/tree/master/extensions/persist
+Copyright (C) 2010 Google, Inc.
