@@ -19,9 +19,6 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import com.google.inject.Injector;
-import com.google.inject.Key;
-
 import javax.inject.Provider;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -29,6 +26,9 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.google.inject.Injector;
+import com.google.inject.Key;
 
 /**
  * Marks a method or class to be executed within a transaction.
@@ -51,17 +51,16 @@ import java.lang.annotation.Target;
  * </li>
  * </ul>
  */
-@Target( { ElementType.METHOD, ElementType.TYPE } )
-@Retention( RetentionPolicy.RUNTIME )
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface Transactional
-{
+public @interface Transactional {
 
     /**
      * A List of annotations for persistence units on which to start a transaction.
      * Default is on all persistence units.
      */
-    Class<? extends Annotation>[] onUnits() default { };
+    Class<? extends Annotation>[] onUnits() default {};
 
     /**
      * A list of exceptions to rollback on. Default is {@link RuntimeException}.
@@ -72,6 +71,5 @@ public @interface Transactional
      * A list of exceptions to <b>not<b> rollback on. Use this to exclude one ore more subclasses of
      * the exceptions defined in rollbackOn(). Default is none.
      */
-    Class<? extends Exception>[] ignore() default { };
-
+    Class<? extends Exception>[] ignore() default {};
 }

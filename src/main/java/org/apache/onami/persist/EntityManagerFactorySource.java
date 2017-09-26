@@ -26,12 +26,10 @@ import javax.persistence.EntityManagerFactory;
  * <p/>
  * A source indicates that the instance is not created within the instance (compared to factory)
  */
-interface EntityManagerFactorySource
-{
+interface EntityManagerFactorySource {
 
     /**
      * @return a entity manager factory which is obtained from some source. The instance is not newly created.
      */
     EntityManagerFactory getEntityManagerFactory();
-
 }

@@ -17,6 +17,8 @@ package org.apache.onami.persist.test.multipersistenceunits;
  * limitations under the License.
  */
 
+import java.lang.annotation.Annotation;
+
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -27,10 +29,7 @@ import org.apache.onami.persist.UnitOfWork;
 import org.junit.After;
 import org.junit.Before;
 
-import java.lang.annotation.Annotation;
-
-public abstract class BaseMultiplePuTest
-{
+public abstract class BaseMultiplePuTest {
     protected EntityManagerProvider firstEmp;
 
     protected EntityManagerProvider secondEmp;
@@ -38,60 +37,50 @@ public abstract class BaseMultiplePuTest
     private Injector injector;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         final PersistenceModule pm = createPersistenceModuleForTest();
-        injector = Guice.createInjector( pm );
+        injector = Guice.createInjector(pm);
 
         //startup persistence
-        injector.getInstance( Key.get( PersistenceService.class, FirstPU.class ) ).start();
-        injector.getInstance( Key.get( PersistenceService.class, SecondPU.class ) ).start();
+        injector.getInstance(Key.get(PersistenceService.class, FirstPU.class)).start();
+        injector.getInstance(Key.get(PersistenceService.class, SecondPU.class)).start();
 
-        firstEmp = injector.getInstance( Key.get( EntityManagerProvider.class, FirstPU.class ) );
-        secondEmp = injector.getInstance( Key.get( EntityManagerProvider.class, SecondPU.class ) );
+        firstEmp = injector.getInstance(Key.get(EntityManagerProvider.class, FirstPU.class));
+        secondEmp = injector.getInstance(Key.get(EntityManagerProvider.class, SecondPU.class));
     }
 
-    private PersistenceModule createPersistenceModuleForTest()
-    {
-        return new PersistenceModule()
-        {
+    private PersistenceModule createPersistenceModuleForTest() {
+        return new PersistenceModule() {
 
             @Override
-            protected void configurePersistence()
-            {
-                bindApplicationManagedPersistenceUnit( "firstUnit" ).annotatedWith( FirstPU.class );
-                bindApplicationManagedPersistenceUnit( "secondUnit" ).annotatedWith( SecondPU.class );
+            protected void configurePersistence() {
+                bindApplicationManagedPersistenceUnit("firstUnit").annotatedWith(FirstPU.class);
+                bindApplicationManagedPersistenceUnit("secondUnit").annotatedWith(SecondPU.class);
             }
         };
     }
 
     @After
-    public void tearDown()
-        throws Exception
-    {
-        injector.getInstance( Key.get( PersistenceService.class, FirstPU.class ) ).stop();
-        injector.getInstance( Key.get( PersistenceService.class, SecondPU.class ) ).stop();
+    public void tearDown() throws Exception {
+        injector.getInstance(Key.get(PersistenceService.class, FirstPU.class)).stop();
+        injector.getInstance(Key.get(PersistenceService.class, SecondPU.class)).stop();
     }
 
-    protected void beginUnitOfWork()
-    {
-        getInstance( UnitOfWork.class, FirstPU.class ).begin();
-        getInstance( UnitOfWork.class, SecondPU.class ).begin();
+    protected void beginUnitOfWork() {
+        getInstance(UnitOfWork.class, FirstPU.class).begin();
+        getInstance(UnitOfWork.class, SecondPU.class).begin();
     }
 
-    protected void endUnitOfWork()
-    {
-        getInstance( UnitOfWork.class, FirstPU.class ).end();
-        getInstance( UnitOfWork.class, SecondPU.class ).end();
+    protected void endUnitOfWork() {
+        getInstance(UnitOfWork.class, FirstPU.class).end();
+        getInstance(UnitOfWork.class, SecondPU.class).end();
     }
 
-    protected <T> T getInstance(Class<T> type)
-    {
-        return injector.getInstance( type );
+    protected <T> T getInstance(Class<T> type) {
+        return injector.getInstance(type);
     }
 
-    protected <T> T getInstance(Class<T> type, Class<? extends Annotation> anno)
-    {
-        return injector.getInstance( Key.get( type, anno ) );
+    protected <T> T getInstance(Class<T> type, Class<? extends Annotation> anno) {
+        return injector.getInstance(Key.get(type, anno));
     }
 }

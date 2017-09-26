@@ -24,8 +24,7 @@ package org.apache.onami.persist;
  * of either {@link UnitOfWork}, {@link EntityManagerProvider}, or any method annotated with
  * {@link Transactional @Transactional} the persistence service must be started.
  */
-public interface PersistenceService
-{
+public interface PersistenceService {
 
     /**
      * Starts the underlying persistence engine and makes onami-persist ready for use.
@@ -39,7 +38,7 @@ public interface PersistenceService
 
     /**
      * @return {@code true} if the underlying persistence engine is running.
-     *         {@code false} otherwise.
+     * {@code false} otherwise.
      */
     boolean isRunning();
 
@@ -51,5 +50,4 @@ public interface PersistenceService
      * </ul>
      */
     void stop();
-
 }

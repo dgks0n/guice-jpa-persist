@@ -27,27 +27,21 @@ import java.util.Hashtable;
 /**
  * JNDI Context Factory for test.
  */
-public class InitialContextFactoryStub
-    implements InitialContextFactory
-{
+public class InitialContextFactoryStub implements InitialContextFactory {
 
     private static final ThreadLocal<Context> THREAD_LOCAL_CONTEXT = new ThreadLocal<Context>();
 
-    static
-    {
-        System.setProperty( Context.INITIAL_CONTEXT_FACTORY, InitialContextFactoryStub.class.getName() );
+    static {
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, InitialContextFactoryStub.class.getName());
     }
 
     /**
      * {@inheritDoc}
      */
-    public Context getInitialContext( Hashtable<?, ?> environment )
-        throws NamingException
-    {
+    public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException {
         final Context context = THREAD_LOCAL_CONTEXT.get();
-        if ( context == null )
-        {
-            throw new NamingException( "No context registered" );
+        if (context == null) {
+            throw new NamingException("No context registered");
         }
         return context;
     }
@@ -57,9 +51,7 @@ public class InitialContextFactoryStub
      *
      * @param context the context to return for lookups made by the same thread.
      */
-    public static void registerContext( Context context )
-    {
-        THREAD_LOCAL_CONTEXT.set( context );
+    public static void registerContext(Context context) {
+        THREAD_LOCAL_CONTEXT.set(context);
     }
-
 }

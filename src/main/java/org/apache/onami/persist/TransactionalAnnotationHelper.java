@@ -19,11 +19,11 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import org.aopalliance.intercept.MethodInvocation;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
+
+import org.aopalliance.intercept.MethodInvocation;
 
 import static java.util.Arrays.asList;
 import static org.apache.onami.persist.Preconditions.checkNotNull;
@@ -32,8 +32,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * Helper class for working with {@link Transactional @Transactional} annotations.
  */
 @Singleton
-class TransactionalAnnotationHelper
-{
+class TransactionalAnnotationHelper {
 
     /**
      * Annotation of the persistence unit.
@@ -49,13 +48,12 @@ class TransactionalAnnotationHelper
      * Constructor.
      *
      * @param annotationHolder Holder of teh annotation of the persistence unit.
-     * @param txnAnnoReader    reader for {@link Transactional @Transactional} annotations.
+     * @param txnAnnoReader reader for {@link Transactional @Transactional} annotations.
      */
     @Inject
-    TransactionalAnnotationHelper( AnnotationHolder annotationHolder, TransactionalAnnotationReader txnAnnoReader )
-    {
+    TransactionalAnnotationHelper(AnnotationHolder annotationHolder, TransactionalAnnotationReader txnAnnoReader) {
         this.puAnnotation = annotationHolder.getAnnotation();
-        this.txnAnnoReader = checkNotNull( txnAnnoReader, "txnAnnoReader is mandatory!" );
+        this.txnAnnoReader = checkNotNull(txnAnnoReader, "txnAnnoReader is mandatory!");
     }
 
     /**
@@ -66,9 +64,8 @@ class TransactionalAnnotationHelper
      * @param methodInvocation the method invocation which may be wrapped in a transaction.
      * @return {@code true} if the current persistence unit participates in a transaction for the given method.
      */
-    boolean persistenceUnitParticipatesInTransactionFor( MethodInvocation methodInvocation )
-    {
-        return puAnnotation == null || participates( methodInvocation );
+    boolean persistenceUnitParticipatesInTransactionFor(MethodInvocation methodInvocation) {
+        return puAnnotation == null || participates(methodInvocation);
     }
 
     /**
@@ -78,11 +75,10 @@ class TransactionalAnnotationHelper
      * @param methodInvocation the method invocation which may be wrapped in a transaction.
      * @return {@code true} if the current persistence unit participates in a transaction for the given method.
      */
-    private boolean participates( MethodInvocation methodInvocation )
-    {
-        final Transactional transactional = txnAnnoReader.readAnnotationFrom( methodInvocation );
+    private boolean participates(MethodInvocation methodInvocation) {
+        final Transactional transactional = txnAnnoReader.readAnnotationFrom(methodInvocation);
         final Class<? extends Annotation>[] onUnits = transactional.onUnits();
-        return isEmpty( onUnits ) || contains( onUnits, puAnnotation );
+        return isEmpty(onUnits) || contains(onUnits, puAnnotation);
     }
 
     /**
@@ -91,8 +87,7 @@ class TransactionalAnnotationHelper
      * @param array the array to test for emptiness.
      * @return {@code true} if the the given array has is {@code null} or has length 0.
      */
-    private boolean isEmpty( Object[] array )
-    {
+    private boolean isEmpty(Object[] array) {
         return array == null || array.length == 0;
     }
 
@@ -100,56 +95,49 @@ class TransactionalAnnotationHelper
      * Returns {@code true} if the given array contains the specified element.
      *
      * @param array the array in which to search for the specified element.
-     * @param key   the element to look for.
+     * @param key the element to look for.
      * @return {@code true} if the given array contains the specified element.
      */
-    private boolean contains( Object[] array, Object key )
-    {
-        return asList( array ).contains( key );
+    private boolean contains(Object[] array, Object key) {
+        return asList(array).contains(key);
     }
 
     /**
      * Decides if a rollback is necessary for the given method invocation and a thrown exception.
      *
      * @param methodInvocation the method invocation during which an exception was thrown.
-     * @param exc              the exception which was thrown
+     * @param exc the exception which was thrown
      * @return {@code true} if the transaction needs to be rolled back.
      */
-    boolean isRollbackNecessaryFor( MethodInvocation methodInvocation, Throwable exc )
-    {
-        final Transactional transactional = txnAnnoReader.readAnnotationFrom( methodInvocation );
-        return isRollbackNecessaryFor( transactional, exc );
+    boolean isRollbackNecessaryFor(MethodInvocation methodInvocation, Throwable exc) {
+        final Transactional transactional = txnAnnoReader.readAnnotationFrom(methodInvocation);
+        return isRollbackNecessaryFor(transactional, exc);
     }
 
     /**
      * Decides if a rollback is necessary for the given transactional annotation and a thrown exception.
      *
      * @param transactional the transactional annotation of the method during which an exception was thrown.
-     * @param exc           the exception which was thrown
+     * @param exc the exception which was thrown
      * @return {@code true} if the transaction needs to be rolled back.
      */
-    private boolean isRollbackNecessaryFor( Transactional transactional, Throwable exc )
-    {
-        return containsSuper( transactional.rollbackOn(), exc ) && !containsSuper( transactional.ignore(), exc );
+    private boolean isRollbackNecessaryFor(Transactional transactional, Throwable exc) {
+        return containsSuper(transactional.rollbackOn(), exc) && !containsSuper(transactional.ignore(), exc);
     }
 
     /**
      * Decides if the array of classes contains a super class of exc.
      *
      * @param classes the classes in which to look fore
-     * @param exc     the class to search for
+     * @param exc the class to search for
      * @return {@code true} when the array contains a super class of exc.
      */
-    private boolean containsSuper( Class<? extends Exception>[] classes, Throwable exc )
-    {
-        for ( Class<? extends Exception> c : classes )
-        {
-            if ( c.isInstance( exc ) )
-            {
+    private boolean containsSuper(Class<? extends Exception>[] classes, Throwable exc) {
+        for (Class<? extends Exception> c : classes) {
+            if (c.isInstance(exc)) {
                 return true;
             }
         }
         return false;
     }
-
 }

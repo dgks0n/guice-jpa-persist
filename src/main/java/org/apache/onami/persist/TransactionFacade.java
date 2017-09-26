@@ -23,8 +23,7 @@ package org.apache.onami.persist;
  * Interface which hides away the details of inner (nested) and outer transactions as well as the details between
  * {@link javax.persistence.EntityTransaction} and {@link javax.transaction.UserTransaction}.
  */
-interface TransactionFacade
-{
+interface TransactionFacade {
 
     /**
      * Starts a transaction.
@@ -47,5 +46,4 @@ interface TransactionFacade
      * flag on the outer transaction. Setting this flag wil cause an outer transaction to be rolled back in any case.
      */
     void rollback();
-
 }

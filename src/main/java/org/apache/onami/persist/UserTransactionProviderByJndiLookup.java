@@ -30,9 +30,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * Provider fro {@link UserTransaction} which retrieves the value from the JNDI context.
  */
 @Singleton
-class UserTransactionProviderByJndiLookup
-    implements Provider<UserTransaction>
-{
+class UserTransactionProviderByJndiLookup implements Provider<UserTransaction> {
 
     private final String jndiName;
 
@@ -44,10 +42,9 @@ class UserTransactionProviderByJndiLookup
      * @param jndiName jndi name of the entity manager factory. Must not be {@code null}.
      */
     @Inject
-    UserTransactionProviderByJndiLookup( @UserTransactionJndiName String jndiName, JndiLookupHelper jndiLookupHelper )
-    {
-        this.jndiName = checkNotNull( jndiName, "jndiName is mandatory!" );
-        this.jndiLookupHelper = checkNotNull( jndiLookupHelper, "jndiLookupHelper is mandatory!" );
+    UserTransactionProviderByJndiLookup(@UserTransactionJndiName String jndiName, JndiLookupHelper jndiLookupHelper) {
+        this.jndiName = checkNotNull(jndiName, "jndiName is mandatory!");
+        this.jndiLookupHelper = checkNotNull(jndiLookupHelper, "jndiLookupHelper is mandatory!");
     }
 
     /**
@@ -56,10 +53,8 @@ class UserTransactionProviderByJndiLookup
      * @return the found entity user transaction
      * @throws RuntimeException when no user transaction was found.
      */
-    //@Override
-    public UserTransaction get()
-    {
-        return jndiLookupHelper.doJndiLookup( UserTransaction.class, jndiName );
+    @Override
+    public UserTransaction get() {
+        return jndiLookupHelper.doJndiLookup(UserTransaction.class, jndiName);
     }
-
 }

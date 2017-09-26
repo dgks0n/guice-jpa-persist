@@ -19,16 +19,16 @@ package org.apache.onami.persist.test.transaction.testframework;
  * under the License.
  */
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.onami.persist.EntityManagerProvider;
 import org.apache.onami.persist.test.TestEntity;
 import org.apache.onami.persist.test.transaction.testframework.exceptions.RuntimeTestException;
 import org.apache.onami.persist.test.transaction.testframework.exceptions.TestException;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A {@link TransactionalTask} is a task which is executed during a transaction
@@ -39,8 +39,7 @@ import java.util.List;
  * call {@link #doOtherTasks()} to allow the {@link TransactionalWorker} to call the other scheduled
  * tasks.
  */
-public abstract class TransactionalTask
-{
+public abstract class TransactionalTask {
 
     @Inject
     private EntityManagerProvider emProvider;
@@ -53,21 +52,18 @@ public abstract class TransactionalTask
      * Should 'try to' create entities in the persistent storage (i.e. DB).
      * Use {@link #storeEntity(org.apache.onami.persist.test.TestEntity)} to persist entities.
      *
-     * @throws TestException        may be thrown to test rollback.
+     * @throws TestException may be thrown to test rollback.
      * @throws RuntimeTestException may be thrown to test rollback.
      */
-    public abstract void doTransactional()
-        throws TestException, RuntimeTestException;
+    public abstract void doTransactional() throws TestException, RuntimeTestException;
 
     /**
      * Does other tasks.
      *
-     * @throws TestException        may be thrown to test rollback.
+     * @throws TestException may be thrown to test rollback.
      * @throws RuntimeTestException may be thrown to test rollback.
      */
-    protected final void doOtherTasks()
-        throws TestException, RuntimeTestException
-    {
+    protected final void doOtherTasks() throws TestException, RuntimeTestException {
         worker.doNextTask();
     }
 
@@ -76,24 +72,20 @@ public abstract class TransactionalTask
      *
      * @param entity the entity to store.
      */
-    protected final void storeEntity( TestEntity entity )
-    {
+    protected final void storeEntity(TestEntity entity) {
         final EntityManager entityManager = emProvider.get();
-        entityManager.persist( entity );
+        entityManager.persist(entity);
         entityManager.flush();
-        persistedEntities.add( entity );
+        persistedEntities.add(entity);
     }
 
     @VisibleForTesting
-    void setWorker( TransactionalWorker transactionalWorker )
-    {
+    void setWorker(TransactionalWorker transactionalWorker) {
         worker = transactionalWorker;
     }
 
     @VisibleForTesting
-    List<TestEntity> getPersistedEntities()
-    {
+    List<TestEntity> getPersistedEntities() {
         return persistedEntities;
     }
-
 }

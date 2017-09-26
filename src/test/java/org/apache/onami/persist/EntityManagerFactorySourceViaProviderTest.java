@@ -19,11 +19,11 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import org.junit.Before;
-import org.junit.Test;
-
 import javax.inject.Provider;
 import javax.persistence.EntityManagerFactory;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
@@ -33,31 +33,29 @@ import static org.mockito.Mockito.mock;
 /**
  * Test for {@link EntityManagerFactorySourceViaProvider}.
  */
-public class EntityManagerFactorySourceViaProviderTest
-{
+public class EntityManagerFactorySourceViaProviderTest {
 
     private EntityManagerFactorySourceViaProvider sut;
 
     private Provider<EntityManagerFactory> emfProvider;
 
     @Before
-    @SuppressWarnings( "unchecked" )
-    public void setUp()
-        throws Exception
-    {
+    @SuppressWarnings("unchecked")
+    public void setUp() throws Exception {
         emfProvider = mock(Provider.class);
-        sut = new EntityManagerFactorySourceViaProvider( emfProvider );
+        sut = new EntityManagerFactorySourceViaProvider(emfProvider);
     }
 
     @Test
     public void shouldReturnValueFromProvider() {
         // given
         EntityManagerFactory emfDummy = mock(EntityManagerFactory.class);
-        doReturn( emfDummy ).when( emfProvider ).get();
+        doReturn(emfDummy).when(emfProvider).get();
+
         // when
         final EntityManagerFactory result = sut.getEntityManagerFactory();
+
         // then
         assertThat(result, sameInstance(emfDummy));
     }
-
 }

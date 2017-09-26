@@ -19,20 +19,18 @@ package org.apache.onami.persist.test.multipersistenceunits;
  * under the License.
  */
 
+import javax.inject.Inject;
+
 import org.apache.onami.persist.EntityManagerProvider;
 import org.apache.onami.persist.Transactional;
 import org.apache.onami.persist.test.TestEntity;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.inject.Inject;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class TransactionalMultiplePuTest
-    extends BaseMultiplePuTest
-{
+public class TransactionalMultiplePuTest extends BaseMultiplePuTest {
 
     private TestEntity firstEntity;
 
@@ -40,8 +38,7 @@ public class TransactionalMultiplePuTest
 
     @Override
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         super.setUp();
 
         firstEntity = new TestEntity();
@@ -49,217 +46,183 @@ public class TransactionalMultiplePuTest
     }
 
     @Test
-    public void storeUnitsInTwoPersistenceUnits()
-        throws Exception
-    {
+    public void storeUnitsInTwoPersistenceUnits() throws Exception {
         // when
-        runServices( FirstServiceNotRollingBack.class, SecondServiceNotRollingBack.class );
+        runServices(FirstServiceNotRollingBack.class, SecondServiceNotRollingBack.class);
 
         // then
         beginUnitOfWork();
-        assertNotNull( firstEmp.get().find( TestEntity.class, firstEntity.getId() ) );
-        assertNotNull( secondEmp.get().find( TestEntity.class, secondEntity.getId() ) );
-        assertNull( firstEmp.get().find( TestEntity.class, secondEntity.getId() ) );
-        assertNull( secondEmp.get().find( TestEntity.class, firstEntity.getId() ) );
+        assertNotNull(firstEmp.get().find(TestEntity.class, firstEntity.getId()));
+        assertNotNull(secondEmp.get().find(TestEntity.class, secondEntity.getId()));
+        assertNull(firstEmp.get().find(TestEntity.class, secondEntity.getId()));
+        assertNull(secondEmp.get().find(TestEntity.class, firstEntity.getId()));
         endUnitOfWork();
     }
 
     @Test
-    public void storeUnitsInTwoPersistenceUnitsAndRollBackBoth()
-        throws Exception
-    {
+    public void storeUnitsInTwoPersistenceUnitsAndRollBackBoth() throws Exception {
         // when
-        runServices( FirstServiceRollingBack.class, SecondServiceRollingBack.class );
+        runServices(FirstServiceRollingBack.class, SecondServiceRollingBack.class);
 
         // then
         beginUnitOfWork();
-        assertNull( firstEmp.get().find( TestEntity.class, firstEntity.getId() ) );
-        assertNull( secondEmp.get().find( TestEntity.class, secondEntity.getId() ) );
-        assertNull( firstEmp.get().find( TestEntity.class, secondEntity.getId() ) );
-        assertNull( secondEmp.get().find( TestEntity.class, firstEntity.getId() ) );
+        assertNull(firstEmp.get().find(TestEntity.class, firstEntity.getId()));
+        assertNull(secondEmp.get().find(TestEntity.class, secondEntity.getId()));
+        assertNull(firstEmp.get().find(TestEntity.class, secondEntity.getId()));
+        assertNull(secondEmp.get().find(TestEntity.class, firstEntity.getId()));
         endUnitOfWork();
     }
 
     @Test
-    public void storeUnitsInTwoPersistenceUnitsAndRollBackOnlyFirst()
-        throws Exception
-    {
+    public void storeUnitsInTwoPersistenceUnitsAndRollBackOnlyFirst() throws Exception {
         // when
-        runServices( FirstServiceRollingBack.class, SecondServiceNotRollingBack.class );
+        runServices(FirstServiceRollingBack.class, SecondServiceNotRollingBack.class);
 
         // then
         beginUnitOfWork();
-        assertNull( firstEmp.get().find( TestEntity.class, firstEntity.getId() ) );
-        assertNotNull( secondEmp.get().find( TestEntity.class, secondEntity.getId() ) );
-        assertNull( firstEmp.get().find( TestEntity.class, secondEntity.getId() ) );
-        assertNull( secondEmp.get().find( TestEntity.class, firstEntity.getId() ) );
+        assertNull(firstEmp.get().find(TestEntity.class, firstEntity.getId()));
+        assertNotNull(secondEmp.get().find(TestEntity.class, secondEntity.getId()));
+        assertNull(firstEmp.get().find(TestEntity.class, secondEntity.getId()));
+        assertNull(secondEmp.get().find(TestEntity.class, firstEntity.getId()));
         endUnitOfWork();
     }
 
     @Test
-    public void storeUnitsInTwoPersistenceUnitsAndRollBackOnlySecond()
-        throws Exception
-    {
+    public void storeUnitsInTwoPersistenceUnitsAndRollBackOnlySecond() throws Exception {
         // when
-        runServices( FirstServiceNotRollingBack.class, SecondServiceRollingBack.class );
+        runServices(FirstServiceNotRollingBack.class, SecondServiceRollingBack.class);
 
         // then
         beginUnitOfWork();
-        assertNotNull( firstEmp.get().find( TestEntity.class, firstEntity.getId() ) );
-        assertNull( secondEmp.get().find( TestEntity.class, secondEntity.getId() ) );
-        assertNull( firstEmp.get().find( TestEntity.class, secondEntity.getId() ) );
-        assertNull( secondEmp.get().find( TestEntity.class, firstEntity.getId() ) );
+        assertNotNull(firstEmp.get().find(TestEntity.class, firstEntity.getId()));
+        assertNull(secondEmp.get().find(TestEntity.class, secondEntity.getId()));
+        assertNull(firstEmp.get().find(TestEntity.class, secondEntity.getId()));
+        assertNull(secondEmp.get().find(TestEntity.class, firstEntity.getId()));
         endUnitOfWork();
     }
 
-    private void runServices( Class<? extends FirstService> firstServiceClass,
-                              Class<? extends SecondService> secondServiceClass )
-    {
-        final FirstService fistService = getInstance( firstServiceClass );
-        final SecondService secondService = getInstance( secondServiceClass );
+    private void runServices(Class<? extends FirstService> firstServiceClass, Class<? extends SecondService> secondServiceClass) {
+        final FirstService fistService = getInstance(firstServiceClass);
+        final SecondService secondService = getInstance(secondServiceClass);
 
         try {
-            fistService.setSecondService( secondService );
-            secondService.setException( new RuntimeException() );
-            fistService.run( firstEntity, secondEntity );
-        }
-        catch ( RuntimeException e ) {
+            fistService.setSecondService(secondService);
+            secondService.setException(new RuntimeException());
+            fistService.run(firstEntity, secondEntity);
+        } catch (RuntimeException e) {
             // ignore
         }
     }
 
-    interface FirstService
-    {
+    interface FirstService {
         void setSecondService(SecondService secondService);
 
         void run(TestEntity firstEntity, TestEntity secondEntity);
     }
 
-    static class FirstServiceRollingBack
-        implements FirstService
-    {
+    static class FirstServiceRollingBack implements FirstService {
 
         private final EntityManagerProvider emp;
 
         private SecondService secondService;
 
         @Inject
-        public FirstServiceRollingBack( @FirstPU EntityManagerProvider emp )
-        {
+        public FirstServiceRollingBack(@FirstPU EntityManagerProvider emp) {
             this.emp = emp;
         }
 
-        // @Override
-        public void setSecondService( SecondService secondService )
-        {
+        @Override
+        public void setSecondService(SecondService secondService) {
             this.secondService = secondService;
         }
 
-        // @Override
-        @Transactional( onUnits = FirstPU.class )
-        public void run(TestEntity firstEntity, TestEntity secondEntity)
-        {
-            emp.get().persist( firstEntity );
+        @Override
+        @Transactional(onUnits = FirstPU.class)
+        public void run(TestEntity firstEntity, TestEntity secondEntity) {
+            emp.get().persist(firstEntity);
             secondService.run(secondEntity);
         }
     }
 
-    static class FirstServiceNotRollingBack
-        implements FirstService
-    {
+    static class FirstServiceNotRollingBack implements FirstService {
 
         private final EntityManagerProvider emp;
 
         private SecondService secondService;
 
         @Inject
-        public FirstServiceNotRollingBack( @FirstPU EntityManagerProvider emp )
-        {
+        public FirstServiceNotRollingBack(@FirstPU EntityManagerProvider emp) {
             this.emp = emp;
         }
 
-        // @Override
-        public void setSecondService( SecondService secondService )
-        {
+        @Override
+        public void setSecondService(SecondService secondService) {
             this.secondService = secondService;
         }
 
-        // @Override
-        @Transactional( onUnits = FirstPU.class, ignore = RuntimeException.class)
-        public void run(TestEntity firstEntity, TestEntity secondEntity)
-        {
-            emp.get().persist( firstEntity );
+        @Override
+        @Transactional(onUnits = FirstPU.class, ignore = RuntimeException.class)
+        public void run(TestEntity firstEntity, TestEntity secondEntity) {
+            emp.get().persist(firstEntity);
             secondService.run(secondEntity);
         }
     }
 
-    interface SecondService
-    {
+    interface SecondService {
         void setException(RuntimeException exception);
 
         void run(TestEntity secondEntity);
     }
 
-    static class SecondServiceRollingBack
-        implements SecondService
-    {
+    static class SecondServiceRollingBack implements SecondService {
 
         private final EntityManagerProvider emp;
 
         private RuntimeException ex;
 
         @Inject
-        public SecondServiceRollingBack( @SecondPU EntityManagerProvider emp )
-        {
+        public SecondServiceRollingBack(@SecondPU EntityManagerProvider emp) {
             this.emp = emp;
         }
 
-        // @Override
-        public void setException(RuntimeException ex)
-        {
+        @Override
+        public void setException(RuntimeException ex) {
             this.ex = ex;
         }
 
-        // @Override
-        @Transactional( onUnits = SecondPU.class )
-        public void run( TestEntity secondEntity )
-        {
-            emp.get().persist( secondEntity );
+        @Override
+        @Transactional(onUnits = SecondPU.class)
+        public void run(TestEntity secondEntity) {
+            emp.get().persist(secondEntity);
             if (ex != null) {
                 throw ex;
             }
         }
     }
 
-    static class SecondServiceNotRollingBack
-        implements SecondService
-    {
+    static class SecondServiceNotRollingBack implements SecondService {
 
         private final EntityManagerProvider emp;
 
         private RuntimeException ex;
 
         @Inject
-        public SecondServiceNotRollingBack( @SecondPU EntityManagerProvider emp )
-        {
+        public SecondServiceNotRollingBack(@SecondPU EntityManagerProvider emp) {
             this.emp = emp;
         }
 
-        // @Override
-        public void setException(RuntimeException ex)
-        {
+        @Override
+        public void setException(RuntimeException ex) {
             this.ex = ex;
         }
 
-        // @Override
-        @Transactional( onUnits = SecondPU.class, ignore = RuntimeException.class )
-        public void run( TestEntity secondEntity )
-        {
-            emp.get().persist( secondEntity );
+        @Override
+        @Transactional(onUnits = SecondPU.class, ignore = RuntimeException.class)
+        public void run(TestEntity secondEntity) {
+            emp.get().persist(secondEntity);
             if (ex != null) {
                 throw ex;
             }
         }
     }
-
 }

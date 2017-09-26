@@ -21,7 +21,6 @@ package org.apache.onami.persist;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.Properties;
@@ -32,8 +31,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * Factory for {@link EntityManagerFactory}.
  */
 @Singleton
-class EntityManagerFactoryFactory
-{
+class EntityManagerFactoryFactory {
 
     /**
      * Name of the persistence unit as defined in the persistence.xml.
@@ -48,15 +46,13 @@ class EntityManagerFactoryFactory
     /**
      * Constructor.
      *
-     * @param puName     the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
+     * @param puName the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
      * @param properties the additional properties. Theses override the ones defined in the persistence.xml.
-     *                   Must not be {@code null}.
+     * Must not be {@code null}.
      */
     @Inject
-    EntityManagerFactoryFactory( @ForApplicationManaged String puName,
-                                 @Nullable @ForApplicationManaged Properties properties )
-    {
-        this.puName = checkNotNull( puName, "puName is mandatory!" );
+    EntityManagerFactoryFactory(@ForApplicationManaged String puName, @Nullable @ForApplicationManaged Properties properties) {
+        this.puName = checkNotNull(puName, "puName is mandatory!");
         this.properties = properties;
     }
 
@@ -65,9 +61,7 @@ class EntityManagerFactoryFactory
      *
      * @return the newly created entity manager factory.
      */
-    EntityManagerFactory createApplicationManagedEntityManagerFactory()
-    {
-        return Persistence.createEntityManagerFactory( puName, properties );
+    EntityManagerFactory createApplicationManagedEntityManagerFactory() {
+        return Persistence.createEntityManagerFactory(puName, properties);
     }
-
 }

@@ -19,19 +19,17 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
-
 import javax.inject.Provider;
 import javax.transaction.UserTransaction;
+
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 
 /**
  * 3rd step of the persistence unit builder process.
  * Define the transaction type.
  */
-public interface AnnotatedPersistenceUnitBuilder
-    extends UnconfiguredPersistenceUnitBuilder
-{
+public interface AnnotatedPersistenceUnitBuilder extends UnconfiguredPersistenceUnitBuilder {
 
     /**
      * Mark the persistence unit to use resource local transactions.
@@ -46,7 +44,7 @@ public interface AnnotatedPersistenceUnitBuilder
      * @param userTransaction the instance of the UserTransaction object to use.
      * @return the next builder step.
      */
-    UnconfiguredPersistenceUnitBuilder useGlobalTransaction( UserTransaction userTransaction );
+    UnconfiguredPersistenceUnitBuilder useGlobalTransaction(UserTransaction userTransaction);
 
     /**
      * Mark the persistence unit to use JTA transactions.
@@ -54,7 +52,7 @@ public interface AnnotatedPersistenceUnitBuilder
      * @param utJndiName the JNDI name to use for looking up the user transaction instance.
      * @return the next builder step.
      */
-    UnconfiguredPersistenceUnitBuilder useGlobalTransactionWithJndiName( String utJndiName );
+    UnconfiguredPersistenceUnitBuilder useGlobalTransactionWithJndiName(String utJndiName);
 
     /**
      * Mark the persistence unit to use JTA transactions.
@@ -62,7 +60,7 @@ public interface AnnotatedPersistenceUnitBuilder
      * @param utProvider a provider to retrieve the user transaction instance.
      * @return the next builder step.
      */
-    UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy( Provider<UserTransaction> utProvider );
+    UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(Provider<UserTransaction> utProvider);
 
     /**
      * Mark the persistence unit to use JTA transactions.
@@ -70,8 +68,7 @@ public interface AnnotatedPersistenceUnitBuilder
      * @param utProviderClass a provider to retrieve the user transaction instance.
      * @return the next builder step.
      */
-    UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
-        Class<? extends Provider<UserTransaction>> utProviderClass );
+    UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(Class<? extends Provider<UserTransaction>> utProviderClass);
 
     /**
      * Mark the persistence unit to use JTA transactions.
@@ -79,8 +76,7 @@ public interface AnnotatedPersistenceUnitBuilder
      * @param utProviderType a provider to retrieve the user transaction instance.
      * @return the next builder step.
      */
-    UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
-        TypeLiteral<? extends Provider<UserTransaction>> utProviderType );
+    UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(TypeLiteral<? extends Provider<UserTransaction>> utProviderType);
 
     /**
      * Mark the persistence unit to use JTA transactions.
@@ -88,7 +84,5 @@ public interface AnnotatedPersistenceUnitBuilder
      * @param utProviderKey a provider to retrieve the user transaction instance.
      * @return the next builder step.
      */
-    UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
-        Key<? extends Provider<UserTransaction>> utProviderKey );
-
+    UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(Key<? extends Provider<UserTransaction>> utProviderKey);
 }

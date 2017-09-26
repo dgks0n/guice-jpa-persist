@@ -30,65 +30,50 @@ import static org.junit.Assert.fail;
 /**
  * Test for {@link AggregatedException}.
  */
-public class AggregatedExceptionTest
-{
+public class AggregatedExceptionTest {
     private AggregatedException.Builder sut;
 
     @Before
-    public void setUp()
-        throws Exception
-    {
+    public void setUp() throws Exception {
         sut = new AggregatedException.Builder();
     }
 
     @Test
-    public void shouldNotThrowAnythingWhenEmpty()
-    {
-        sut.throwRuntimeExceptionIfHasCauses( "test msg" );
+    public void shouldNotThrowAnythingWhenEmpty() {
+        sut.throwRuntimeExceptionIfHasCauses("test msg");
     }
 
     @Test
-    public void shouldThrowAggregatedExceptionWithAllCollectedExceptions()
-    {
+    public void shouldThrowAggregatedExceptionWithAllCollectedExceptions() {
         final Exception e0 = new Exception();
         final Exception e1 = new Exception();
 
-        try
-        {
-            sut.add( e0 );
-            sut.add( e1 );
-            sut.throwRuntimeExceptionIfHasCauses( "test msg" );
-        }
-
-        catch ( AggregatedException e )
-        {
-            assertThat( e.getNumCauses(), is( 2 ) );
-            assertThat( e.getCauses()[0], sameInstance( (Throwable) e0 ) );
-            assertThat( e.getCauses()[1], sameInstance( (Throwable) e1 ) );
+        try {
+            sut.add(e0);
+            sut.add(e1);
+            sut.throwRuntimeExceptionIfHasCauses("test msg");
+        } catch (AggregatedException e) {
+            assertThat(e.getNumCauses(), is(2));
+            assertThat(e.getCauses()[0], sameInstance((Throwable) e0));
+            assertThat(e.getCauses()[1], sameInstance((Throwable) e1));
             return;
         }
 
-        fail( "must throw AggregatedException" );
+        fail("must throw AggregatedException");
     }
 
     @Test
-    public void shouldThrowOriginalExceptionWhenOnlyOne()
-    {
-        Exception e0 = new RuntimeException(  );
+    public void shouldThrowOriginalExceptionWhenOnlyOne() {
+        Exception e0 = new RuntimeException();
 
-        try
-        {
-            sut.add( e0 );
-            sut.throwRuntimeExceptionIfHasCauses( "test msg" );
-        }
-
-        catch ( RuntimeException e )
-        {
-            assertThat( e, sameInstance( (Throwable) e0 ) );
+        try {
+            sut.add(e0);
+            sut.throwRuntimeExceptionIfHasCauses("test msg");
+        } catch (RuntimeException e) {
+            assertThat(e, sameInstance((Throwable) e0));
             return;
         }
 
-        fail( "must throw RuntimeException" );
+        fail("must throw RuntimeException");
     }
-
 }

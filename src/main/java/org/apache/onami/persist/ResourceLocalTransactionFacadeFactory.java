@@ -21,7 +21,6 @@ package org.apache.onami.persist;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import javax.persistence.EntityTransaction;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
@@ -30,9 +29,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * Factory for transaction facades in case of resource local transactions.
  */
 @Singleton
-class ResourceLocalTransactionFacadeFactory
-    implements TransactionFacadeFactory
-{
+class ResourceLocalTransactionFacadeFactory implements TransactionFacadeFactory {
 
     /**
      * The provider for the entity manager.
@@ -45,25 +42,20 @@ class ResourceLocalTransactionFacadeFactory
      * @param emProvider the provider for the entity manager
      */
     @Inject
-    ResourceLocalTransactionFacadeFactory( EntityManagerProvider emProvider )
-    {
-        this.emProvider = checkNotNull( emProvider, "emProvider is mandatory!" );
+    ResourceLocalTransactionFacadeFactory(EntityManagerProvider emProvider) {
+        this.emProvider = checkNotNull(emProvider, "emProvider is mandatory!");
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public TransactionFacade createTransactionFacade()
-    {
+    @Override
+    public TransactionFacade createTransactionFacade() {
         final EntityTransaction txn = emProvider.get().getTransaction();
-        if ( txn.isActive() )
-        {
-            return new Inner( txn );
-        }
-        else
-        {
-            return new Outer( txn );
+        if (txn.isActive()) {
+            return new Inner(txn);
+        } else {
+            return new Outer(txn);
         }
     }
 
@@ -72,40 +64,34 @@ class ResourceLocalTransactionFacadeFactory
      * Starting and committing a transaction has no effect.
      * This facade will set the rollbackOnly flag in case of a roll back.
      */
-    private static class Inner
-        implements TransactionFacade
-    {
+    private static class Inner implements TransactionFacade {
         private final EntityTransaction txn;
 
-        Inner( EntityTransaction txn )
-        {
-            this.txn = checkNotNull( txn, "txn is mandatory!" );
+        Inner(EntityTransaction txn) {
+            this.txn = checkNotNull(txn, "txn is mandatory!");
         }
 
         /**
          * {@inheritDoc}
          */
-        // @Override
-        public void begin()
-        {
+        @Override
+        public void begin() {
             // Do nothing
         }
 
         /**
          * {@inheritDoc}
          */
-        // @Override
-        public void commit()
-        {
+        @Override
+        public void commit() {
             // Do nothing
         }
 
         /**
          * {@inheritDoc}
          */
-        // @Override
-        public void rollback()
-        {
+        @Override
+        public void rollback() {
             txn.setRollbackOnly();
         }
     }
@@ -115,40 +101,32 @@ class ResourceLocalTransactionFacadeFactory
      * This facade starts and ends the transaction.
      * If an inner transaction has set the rollbackOnly flag the transaction will be rolled back in any case.
      */
-    private static class Outer
-        implements TransactionFacade
-    {
+    private static class Outer implements TransactionFacade {
         private final EntityTransaction txn;
 
         /**
          * {@inheritDoc}
          */
-        Outer( EntityTransaction txn )
-        {
-            this.txn = checkNotNull( txn, "txn is mandatory!" );
+        Outer(EntityTransaction txn) {
+            this.txn = checkNotNull(txn, "txn is mandatory!");
         }
 
         /**
          * {@inheritDoc}
          */
-        // @Override
-        public void begin()
-        {
+        @Override
+        public void begin() {
             txn.begin();
         }
 
         /**
          * {@inheritDoc}
          */
-        // @Override
-        public void commit()
-        {
-            if ( txn.getRollbackOnly() )
-            {
+        @Override
+        public void commit() {
+            if (txn.getRollbackOnly()) {
                 txn.rollback();
-            }
-            else
-            {
+            } else {
                 txn.commit();
             }
         }
@@ -156,11 +134,9 @@ class ResourceLocalTransactionFacadeFactory
         /**
          * {@inheritDoc}
          */
-        // @Override
-        public void rollback()
-        {
+        @Override
+        public void rollback() {
             txn.rollback();
         }
     }
-
 }

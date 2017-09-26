@@ -19,12 +19,12 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import javax.persistence.EntityManager;
+
 import de.bechte.junit.runners.context.HierarchicalContextRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.persistence.EntityManager;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -34,9 +34,8 @@ import static org.mockito.Mockito.verify;
 /**
  * Test for {@link JtaTransactionFacadeFactory}.
  */
-@RunWith( HierarchicalContextRunner.class )
-public class JtaTransactionFacadeProviderTest
-{
+@RunWith(HierarchicalContextRunner.class)
+public class JtaTransactionFacadeProviderTest {
 
     private JtaTransactionFacadeFactory sut;
 
@@ -47,104 +46,91 @@ public class JtaTransactionFacadeProviderTest
     private EntityManager em;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         // input
-        utFacade = mock( UserTransactionFacade.class );
-        emProvider = mock( EntityManagerProvider.class );
+        utFacade = mock(UserTransactionFacade.class);
+        emProvider = mock(EntityManagerProvider.class);
 
         // subject under test
-        sut = new JtaTransactionFacadeFactory( utFacade, emProvider );
+        sut = new JtaTransactionFacadeFactory(utFacade, emProvider);
 
         // environment
-        em = mock( EntityManager.class );
-        doReturn( em ).when( emProvider ).get();
+        em = mock(EntityManager.class);
+        doReturn(em).when(emProvider).get();
     }
 
-    public class InnerTransactionTest
-    {
+    public class InnerTransactionTest {
 
         private TransactionFacade sut;
 
         @Before
-        public void setUp()
-        {
-            doReturn( true ).when( utFacade ).isActive();
+        public void setUp() {
+            doReturn(true).when(utFacade).isActive();
             sut = JtaTransactionFacadeProviderTest.this.sut.createTransactionFacade();
         }
 
         @Test
-        public void beginShouldDoNothing()
-        {
+        public void beginShouldDoNothing() {
             sut.begin();
 
-            verify( utFacade, never() ).begin();
-            verify( em ).joinTransaction();
+            verify(utFacade, never()).begin();
+            verify(em).joinTransaction();
         }
 
         @Test
-        public void commitShouldDoNothing()
-        {
+        public void commitShouldDoNothing() {
             sut.commit();
 
-            verify( utFacade, never() ).commit();
+            verify(utFacade, never()).commit();
         }
 
         @Test
-        public void rollbackShouldSetRollbackOnlyFlag()
-        {
+        public void rollbackShouldSetRollbackOnlyFlag() {
             sut.rollback();
 
-            verify( utFacade ).setRollbackOnly();
+            verify(utFacade).setRollbackOnly();
         }
     }
 
-    public class OuterTransactionTest
-    {
+    public class OuterTransactionTest {
 
         private TransactionFacade sut;
 
         @Before
-        public void setUp()
-        {
-            doReturn( false ).when( utFacade ).isActive();
+        public void setUp() {
+            doReturn(false).when(utFacade).isActive();
             sut = JtaTransactionFacadeProviderTest.this.sut.createTransactionFacade();
         }
 
         @Test
-        public void beginShouldBeginTransaction()
-        {
+        public void beginShouldBeginTransaction() {
             sut.begin();
 
-            verify( utFacade ).begin();
-            verify( em ).joinTransaction();
+            verify(utFacade).begin();
+            verify(em).joinTransaction();
         }
 
         @Test
-        public void commitShouldCommitTransaction()
-        {
+        public void commitShouldCommitTransaction() {
             sut.commit();
 
-            verify( utFacade ).commit();
+            verify(utFacade).commit();
         }
 
         @Test
-        public void commitShouldRollbackTransactionIfMarkedAsRollbackOnly()
-        {
-            doReturn( true ).when( utFacade ).getRollbackOnly();
+        public void commitShouldRollbackTransactionIfMarkedAsRollbackOnly() {
+            doReturn(true).when(utFacade).getRollbackOnly();
 
             sut.commit();
 
-            verify( utFacade ).rollback();
+            verify(utFacade).rollback();
         }
 
         @Test
-        public void rollbackShouldRollbackTransaction()
-        {
+        public void rollbackShouldRollbackTransaction() {
             sut.rollback();
 
-            verify( utFacade ).rollback();
+            verify(utFacade).rollback();
         }
     }
-
 }

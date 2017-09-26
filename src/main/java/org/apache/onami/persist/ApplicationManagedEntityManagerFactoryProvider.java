@@ -21,7 +21,6 @@ package org.apache.onami.persist;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import javax.persistence.EntityManagerFactory;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
@@ -31,9 +30,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * application managed persistence units.
  */
 @Singleton
-class ApplicationManagedEntityManagerFactoryProvider
-    implements EntityManagerFactoryProvider, PersistenceService
-{
+class ApplicationManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider, PersistenceService {
 
     /**
      * Factory for creating the {@link EntityManagerFactory}.
@@ -52,34 +49,29 @@ class ApplicationManagedEntityManagerFactoryProvider
      * @param emfFactory the factory for the  {@link EntityManagerFactory}. Must not be {@code null}.
      */
     @Inject
-    ApplicationManagedEntityManagerFactoryProvider( EntityManagerFactoryFactory emfFactory )
-    {
-        this.emfFactory = checkNotNull( emfFactory, "emfFactory is mandatory!" );
+    ApplicationManagedEntityManagerFactoryProvider(EntityManagerFactoryFactory emfFactory) {
+        this.emfFactory = checkNotNull(emfFactory, "emfFactory is mandatory!");
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public EntityManagerFactory get()
-    {
-        if ( isRunning() )
-        {
+    @Override
+    public EntityManagerFactory get() {
+        if (isRunning()) {
             return emf;
         }
 
-        throw new IllegalStateException( "PersistenceService is not running." );
+        throw new IllegalStateException("PersistenceService is not running.");
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public void start()
-    {
-        if ( isRunning() )
-        {
-            throw new IllegalStateException( "PersistenceService is already running." );
+    @Override
+    public void start() {
+        if (isRunning()) {
+            throw new IllegalStateException("PersistenceService is already running.");
         }
         emf = emfFactory.createApplicationManagedEntityManagerFactory();
     }
@@ -87,29 +79,22 @@ class ApplicationManagedEntityManagerFactoryProvider
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public boolean isRunning()
-    {
+    @Override
+    public boolean isRunning() {
         return null != emf;
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public void stop()
-    {
-        if ( isRunning() )
-        {
-            try
-            {
+    @Override
+    public void stop() {
+        if (isRunning()) {
+            try {
                 emf.close();
-            }
-            finally
-            {
+            } finally {
                 emf = null;
             }
         }
     }
-
 }

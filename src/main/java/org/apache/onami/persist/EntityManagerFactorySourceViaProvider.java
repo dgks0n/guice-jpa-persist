@@ -22,7 +22,6 @@ package org.apache.onami.persist;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-
 import javax.persistence.EntityManagerFactory;
 
 /**
@@ -30,9 +29,7 @@ import javax.persistence.EntityManagerFactory;
  * The sourced instance is provided by guice.
  */
 @Singleton
-class EntityManagerFactorySourceViaProvider
-    implements EntityManagerFactorySource
-{
+class EntityManagerFactorySourceViaProvider implements EntityManagerFactorySource {
 
     private final Provider<EntityManagerFactory> emfProvider;
 
@@ -42,18 +39,15 @@ class EntityManagerFactorySourceViaProvider
      * @param emfProvider the provider which gives access to the instance coming from the container.
      */
     @Inject
-    public EntityManagerFactorySourceViaProvider( @ForContainerManaged Provider<EntityManagerFactory> emfProvider )
-    {
+    public EntityManagerFactorySourceViaProvider(@ForContainerManaged Provider<EntityManagerFactory> emfProvider) {
         this.emfProvider = emfProvider;
     }
 
     /**
      * {@inheritDoc}
      */
-    //@Override
-    public EntityManagerFactory getEntityManagerFactory()
-    {
+    @Override
+    public EntityManagerFactory getEntityManagerFactory() {
         return emfProvider.get();
     }
-
 }

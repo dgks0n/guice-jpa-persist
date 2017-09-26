@@ -44,49 +44,42 @@ import org.junit.Test;
  * Tests running a single non nested transaction.
  * The test make us of the testframework. For every test a new Injector is created.
  */
-public class SingleTransactionTest
-{
+public class SingleTransactionTest {
 
     private Injector injector;
 
     private TransactionalWorker worker;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         final PersistenceModule pm = createPersistenceModuleForTest();
-        injector = Guice.createInjector( pm );
+        injector = Guice.createInjector(pm);
 
         //startup persistence
-        injector.getInstance( PersistenceService.class ).start();
-        worker = injector.getInstance( TransactionalWorker.class );
+        injector.getInstance(PersistenceService.class).start();
+        worker = injector.getInstance(TransactionalWorker.class);
     }
 
-    private PersistenceModule createPersistenceModuleForTest()
-    {
-        return new PersistenceModule()
-        {
+    private PersistenceModule createPersistenceModuleForTest() {
+        return new PersistenceModule() {
 
             @Override
-            protected void configurePersistence()
-            {
-                bindApplicationManagedPersistenceUnit( "testUnit" );
+            protected void configurePersistence() {
+                bindApplicationManagedPersistenceUnit("testUnit");
             }
         };
     }
 
     @After
-    public void tearDown()
-    {
-        injector.getInstance( PersistenceService.class ).stop();
+    public void tearDown() {
+        injector.getInstance(PersistenceService.class).stop();
         injector = null;
     }
 
     @Test
-    public void testTaskRollingBackOnAnyThrowingNone()
-    {
+    public void testTaskRollingBackOnAnyThrowingNone() {
         // given
-        worker.scheduleTask( TaskRollingBackOnAnyThrowingNone.class );
+        worker.scheduleTask(TaskRollingBackOnAnyThrowingNone.class);
 
         // when
         worker.doTasks();
@@ -96,10 +89,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnAnyThrowingRuntimeTestException()
-    {
+    public void testTaskRollingBackOnAnyThrowingRuntimeTestException() {
         // given
-        worker.scheduleTask( TaskRollingBackOnAnyThrowingRuntimeTestException.class );
+        worker.scheduleTask(TaskRollingBackOnAnyThrowingRuntimeTestException.class);
 
         // when
         worker.doTasks();
@@ -109,10 +101,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnAnyThrowingTestException()
-    {
+    public void testTaskRollingBackOnAnyThrowingTestException() {
         // given
-        worker.scheduleTask( TaskRollingBackOnAnyThrowingTestException.class );
+        worker.scheduleTask(TaskRollingBackOnAnyThrowingTestException.class);
 
         // when
         worker.doTasks();
@@ -122,10 +113,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnNoneThrowingNone()
-    {
+    public void testTaskRollingBackOnNoneThrowingNone() {
         // given
-        worker.scheduleTask( TaskRollingBackOnNoneThrowingNone.class );
+        worker.scheduleTask(TaskRollingBackOnNoneThrowingNone.class);
 
         // when
         worker.doTasks();
@@ -135,10 +125,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnNoneThrowingRuntimeTestException()
-    {
+    public void testTaskRollingBackOnNoneThrowingRuntimeTestException() {
         // given
-        worker.scheduleTask( TaskRollingBackOnNoneThrowingRuntimeTestException.class );
+        worker.scheduleTask(TaskRollingBackOnNoneThrowingRuntimeTestException.class);
 
         // when
         worker.doTasks();
@@ -148,10 +137,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnNoneThrowingTestException()
-    {
+    public void testTaskRollingBackOnNoneThrowingTestException() {
         // given
-        worker.scheduleTask( TaskRollingBackOnNoneThrowingTestException.class );
+        worker.scheduleTask(TaskRollingBackOnNoneThrowingTestException.class);
 
         // when
         worker.doTasks();
@@ -161,10 +149,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnRuntimeTestExceptionThrowingNone()
-    {
+    public void testTaskRollingBackOnRuntimeTestExceptionThrowingNone() {
         // given
-        worker.scheduleTask( TaskRollingBackOnRuntimeTestExceptionThrowingNone.class );
+        worker.scheduleTask(TaskRollingBackOnRuntimeTestExceptionThrowingNone.class);
 
         // when
         worker.doTasks();
@@ -174,10 +161,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnRuntimeTestExceptionThrowingRuntimeTestException()
-    {
+    public void testTaskRollingBackOnRuntimeTestExceptionThrowingRuntimeTestException() {
         // given
-        worker.scheduleTask( TaskRollingBackOnRuntimeTestExceptionThrowingRuntimeTestException.class );
+        worker.scheduleTask(TaskRollingBackOnRuntimeTestExceptionThrowingRuntimeTestException.class);
 
         // when
         worker.doTasks();
@@ -187,10 +173,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnRuntimeTestExceptionThrowingTestException()
-    {
+    public void testTaskRollingBackOnRuntimeTestExceptionThrowingTestException() {
         // given
-        worker.scheduleTask( TaskRollingBackOnRuntimeTestExceptionThrowingTestException.class );
+        worker.scheduleTask(TaskRollingBackOnRuntimeTestExceptionThrowingTestException.class);
 
         // when
         worker.doTasks();
@@ -200,10 +185,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnTestExceptionThrowingNone()
-    {
+    public void testTaskRollingBackOnTestExceptionThrowingNone() {
         // given
-        worker.scheduleTask( TaskRollingBackOnTestExceptionThrowingNone.class );
+        worker.scheduleTask(TaskRollingBackOnTestExceptionThrowingNone.class);
 
         // when
         worker.doTasks();
@@ -213,10 +197,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnTestExceptionThrowingRuntimeTestException()
-    {
+    public void testTaskRollingBackOnTestExceptionThrowingRuntimeTestException() {
         // given
-        worker.scheduleTask( TaskRollingBackOnTestExceptionThrowingRuntimeTestException.class );
+        worker.scheduleTask(TaskRollingBackOnTestExceptionThrowingRuntimeTestException.class);
 
         // when
         worker.doTasks();
@@ -226,10 +209,9 @@ public class SingleTransactionTest
     }
 
     @Test
-    public void testTaskRollingBackOnTestExceptionThrowingTestException()
-    {
+    public void testTaskRollingBackOnTestExceptionThrowingTestException() {
         // given
-        worker.scheduleTask( TaskRollingBackOnTestExceptionThrowingTestException.class );
+        worker.scheduleTask(TaskRollingBackOnTestExceptionThrowingTestException.class);
 
         // when
         worker.doTasks();
@@ -237,5 +219,4 @@ public class SingleTransactionTest
         // then
         worker.assertNoEntityHasBeenPersisted();
     }
-
 }

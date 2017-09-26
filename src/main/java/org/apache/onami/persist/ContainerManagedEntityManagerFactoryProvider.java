@@ -21,7 +21,6 @@ package org.apache.onami.persist;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import javax.persistence.EntityManagerFactory;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
@@ -31,9 +30,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * container managed persistence units.
  */
 @Singleton
-class ContainerManagedEntityManagerFactoryProvider
-    implements EntityManagerFactoryProvider, PersistenceService
-{
+class ContainerManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider, PersistenceService {
 
     /**
      * The source for retrieving the entity manager factory instance.
@@ -52,34 +49,29 @@ class ContainerManagedEntityManagerFactoryProvider
      * @param emfSource the source for the  {@link EntityManagerFactory}. Must not be {@code null}.
      */
     @Inject
-    ContainerManagedEntityManagerFactoryProvider( EntityManagerFactorySource emfSource )
-    {
-        this.emfSource = checkNotNull( emfSource, "emfSource is mandatory!" );
+    ContainerManagedEntityManagerFactoryProvider(EntityManagerFactorySource emfSource) {
+        this.emfSource = checkNotNull(emfSource, "emfSource is mandatory!");
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public EntityManagerFactory get()
-    {
-        if ( isRunning() )
-        {
+    @Override
+    public EntityManagerFactory get() {
+        if (isRunning()) {
             return emf;
         }
 
-        throw new IllegalStateException( "PersistenceService is not running." );
+        throw new IllegalStateException("PersistenceService is not running.");
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public void start()
-    {
-        if ( isRunning() )
-        {
-            throw new IllegalStateException( "PersistenceService is already running." );
+    @Override
+    public void start() {
+        if (isRunning()) {
+            throw new IllegalStateException("PersistenceService is already running.");
         }
 
         emf = emfSource.getEntityManagerFactory();
@@ -88,22 +80,19 @@ class ContainerManagedEntityManagerFactoryProvider
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public boolean isRunning()
-    {
+    @Override
+    public boolean isRunning() {
         return null != emf;
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public void stop()
-    {
+    @Override
+    public void stop() {
         emf = null;
         // the entity manager factory must NOT be closed:
         // - it was created by the container and it is therefore the responsibility of the container to close it
         // - we cannot know if another part of the application has obtained the same instance
     }
-
 }

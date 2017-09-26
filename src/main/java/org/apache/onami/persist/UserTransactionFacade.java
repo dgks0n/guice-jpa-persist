@@ -39,14 +39,13 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * Adds some convenience methods.
  */
 @Singleton
-class UserTransactionFacade
-{
+class UserTransactionFacade {
 
     /**
      * Transaction states in which only a rollback is possible
      */
     private static final Set<Integer> ROLLBACK_ONLY_STATES = new HashSet<Integer>(
-        Arrays.asList( Status.STATUS_MARKED_ROLLBACK, Status.STATUS_ROLLING_BACK, Status.STATUS_ROLLEDBACK ) );
+            Arrays.asList(Status.STATUS_MARKED_ROLLBACK, Status.STATUS_ROLLING_BACK, Status.STATUS_ROLLEDBACK));
 
     /**
      * The wrapped user transaction.
@@ -59,120 +58,83 @@ class UserTransactionFacade
      * @param txn the actual user transaction to wrap. Must not be {@code null}.
      */
     @Inject
-    UserTransactionFacade( UserTransaction txn )
-    {
-        this.txn = checkNotNull( txn, "txn is mandatory!" );
+    UserTransactionFacade(UserTransaction txn) {
+        this.txn = checkNotNull(txn, "txn is mandatory!");
     }
 
     /**
      * @see {@link javax.transaction.UserTransaction#begin()}.
      */
-    void begin()
-    {
-        try
-        {
+    void begin() {
+        try {
             txn.begin();
-        }
-        catch ( NotSupportedException e )
-        {
-            throw new RuntimeException( "nested transactions are not supported by the user transaction " + txn, e );
-        }
-        catch ( SystemException e )
-        {
-            throw new RuntimeException( "unexpected error occurred", e );
+        } catch (NotSupportedException e) {
+            throw new RuntimeException("nested transactions are not supported by the user transaction " + txn, e);
+        } catch (SystemException e) {
+            throw new RuntimeException("unexpected error occurred", e);
         }
     }
 
     /**
      * @see {@link javax.transaction.UserTransaction#commit()}.
      */
-    void commit()
-    {
-        try
-        {
+    void commit() {
+        try {
             txn.commit();
-        }
-        catch ( SecurityException e )
-        {
-            throw new RuntimeException( "not allowed to commit the transaction", e );
-        }
-        catch ( IllegalStateException e )
-        {
-            throw new RuntimeException( "no transaction associated with userTransaction", e );
-        }
-        catch ( RollbackException e )
-        {
-            throw new RuntimeException( "rollback during commit", e );
-        }
-        catch ( HeuristicMixedException e )
-        {
-            throw new RuntimeException( "heuristic partial rollback during commit", e );
-        }
-        catch ( HeuristicRollbackException e )
-        {
-            throw new RuntimeException( "heuristic rollback during commit", e );
-        }
-        catch ( SystemException e )
-        {
-            throw new RuntimeException( "unexpected error occurred", e );
+        } catch (SecurityException e) {
+            throw new RuntimeException("not allowed to commit the transaction", e);
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("no transaction associated with userTransaction", e);
+        } catch (RollbackException e) {
+            throw new RuntimeException("rollback during commit", e);
+        } catch (HeuristicMixedException e) {
+            throw new RuntimeException("heuristic partial rollback during commit", e);
+        } catch (HeuristicRollbackException e) {
+            throw new RuntimeException("heuristic rollback during commit", e);
+        } catch (SystemException e) {
+            throw new RuntimeException("unexpected error occurred", e);
         }
     }
 
     /**
      * @see {@link javax.transaction.UserTransaction#rollback()}.
      */
-    void rollback()
-    {
-        try
-        {
+    void rollback() {
+        try {
             txn.rollback();
-        }
-        catch ( IllegalStateException e )
-        {
-            throw new RuntimeException( "no transaction associated with userTransaction", e );
-        }
-        catch ( SecurityException e )
-        {
-            throw new RuntimeException( "not allowed to rollback the transaction", e );
-        }
-        catch ( SystemException e )
-        {
-            throw new RuntimeException( "unexpected error occurred", e );
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("no transaction associated with userTransaction", e);
+        } catch (SecurityException e) {
+            throw new RuntimeException("not allowed to rollback the transaction", e);
+        } catch (SystemException e) {
+            throw new RuntimeException("unexpected error occurred", e);
         }
     }
 
     /**
      * @see {@link javax.transaction.UserTransaction#setRollbackOnly()}.
      */
-    void setRollbackOnly()
-    {
-        try
-        {
+    void setRollbackOnly() {
+        try {
             txn.setRollbackOnly();
-        }
-        catch ( IllegalStateException e )
-        {
-            throw new RuntimeException( "no transaction associated with userTransaction", e );
-        }
-        catch ( SystemException e )
-        {
-            throw new RuntimeException( "unexpected error occurred", e );
+        } catch (IllegalStateException e) {
+            throw new RuntimeException("no transaction associated with userTransaction", e);
+        } catch (SystemException e) {
+            throw new RuntimeException("unexpected error occurred", e);
         }
     }
 
     /**
      * @return {@code true} if this transaction may onl roll back. {@code false} otherwise.
      */
-    boolean getRollbackOnly()
-    {
-        return ROLLBACK_ONLY_STATES.contains( getStatus() );
+    boolean getRollbackOnly() {
+        return ROLLBACK_ONLY_STATES.contains(getStatus());
     }
 
     /**
      * @return {@code true} if there is already a transaction active. {@code false} otherwise.
      */
-    boolean isActive()
-    {
+    boolean isActive() {
         return getStatus() != Status.STATUS_NO_TRANSACTION;
     }
 
@@ -182,29 +144,20 @@ class UserTransactionFacade
      *
      * @see {@link javax.transaction.UserTransaction#getStatus()}.
      */
-    private int getStatus()
-    {
-        try
-        {
+    private int getStatus() {
+        try {
             int status = txn.getStatus();
-            for ( int i = 0; status == Status.STATUS_UNKNOWN && i < 8; i++ )
-            {
-                try
-                {
-                    Thread.sleep( ( 30L * i ) + 30L );
-                }
-                catch ( InterruptedException e )
-                {
+            for (int i = 0; status == Status.STATUS_UNKNOWN && i < 8; i++) {
+                try {
+                    Thread.sleep((30L * i) + 30L);
+                } catch (InterruptedException e) {
                     // do nothing
                 }
                 status = txn.getStatus();
             }
             return status;
-        }
-        catch ( SystemException e )
-        {
-            throw new RuntimeException( "unexpected error occurred", e );
+        } catch (SystemException e) {
+            throw new RuntimeException("unexpected error occurred", e);
         }
     }
-
 }

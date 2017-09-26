@@ -19,11 +19,11 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import org.junit.Before;
-import org.junit.Test;
-
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -31,8 +31,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Test for {@link EntityManagerFactoryFactory}.
  */
-public class EntityManagerFactoryFactoryTest
-{
+public class EntityManagerFactoryFactoryTest {
 
     private static final String TEST_KEY = "testKey";
 
@@ -47,23 +46,21 @@ public class EntityManagerFactoryFactoryTest
     private Properties properties;
 
     @Before
-    public void setUp()
-        throws Exception
-    {
-        properties = new Properties(  );
-        sut = new EntityManagerFactoryFactory( PU_NAME, properties );
+    public void setUp() throws Exception {
+        properties = new Properties();
+        sut = new EntityManagerFactoryFactory(PU_NAME, properties);
     }
 
     @Test
-    public void shouldCreateAnInstanceWithThePassedValues()
-    {
+    public void shouldCreateAnInstanceWithThePassedValues() {
         // given
-        properties.setProperty( TEST_KEY, TEST_VALUE );
+        properties.setProperty(TEST_KEY, TEST_VALUE);
+
         // when
         final EntityManagerFactory result = sut.createApplicationManagedEntityManagerFactory();
-        // then
-        assertThat( result.getProperties().get( PU_KEY ), is( (Object) PU_NAME ) );
-        assertThat( result.getProperties().get( TEST_KEY ), is( (Object) TEST_VALUE ) );
-    }
 
+        // then
+        assertThat(result.getProperties().get(PU_KEY), is((Object) PU_NAME));
+        assertThat(result.getProperties().get(TEST_KEY), is((Object) TEST_VALUE));
+    }
 }

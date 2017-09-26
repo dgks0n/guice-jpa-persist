@@ -28,8 +28,7 @@ import java.lang.annotation.Target;
  * Annotation to mark injection points which are optional.
  * Guice may inject {@code null} if there is no suitable binding.
  */
-@Retention( RetentionPolicy.RUNTIME )
-@Target( ElementType.PARAMETER )
-@interface Nullable
-{
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.PARAMETER)
+@interface Nullable {
 }

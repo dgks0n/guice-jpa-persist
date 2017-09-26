@@ -21,7 +21,6 @@ package org.apache.onami.persist;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import javax.persistence.EntityManagerFactory;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
@@ -31,9 +30,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * The sourced instance is looked up via a JNDI call.
  */
 @Singleton
-class EntityManagerFactorySourceByJndiLookup
-    implements EntityManagerFactorySource
-{
+class EntityManagerFactorySourceByJndiLookup implements EntityManagerFactorySource {
 
     /**
      * The JNDI name of the persistence unit.
@@ -48,14 +45,13 @@ class EntityManagerFactorySourceByJndiLookup
     /**
      * Constructor.
      *
-     * @param jndiName         jndi name of the entity manager factory. Must not be {@code null}.
+     * @param jndiName jndi name of the entity manager factory. Must not be {@code null}.
      * @param jndiLookupHelper the lookup helper. Must not be {@code null}.
      */
     @Inject
-    EntityManagerFactorySourceByJndiLookup( @ForContainerManaged String jndiName, JndiLookupHelper jndiLookupHelper )
-    {
-        this.jndiName = checkNotNull( jndiName, "jndiName is mandatory!" );
-        this.jndiLookupHelper = checkNotNull( jndiLookupHelper, "jndiLookupHelper is mandatory!" );
+    EntityManagerFactorySourceByJndiLookup(@ForContainerManaged String jndiName, JndiLookupHelper jndiLookupHelper) {
+        this.jndiName = checkNotNull(jndiName, "jndiName is mandatory!");
+        this.jndiLookupHelper = checkNotNull(jndiLookupHelper, "jndiLookupHelper is mandatory!");
     }
 
     /**
@@ -64,10 +60,8 @@ class EntityManagerFactorySourceByJndiLookup
      * @return the found entity manager factory
      * @throws RuntimeException when no entity manager factory was found.
      */
-    //@Override
-    public EntityManagerFactory getEntityManagerFactory()
-    {
-        return jndiLookupHelper.doJndiLookup( EntityManagerFactory.class, jndiName );
+    @Override
+    public EntityManagerFactory getEntityManagerFactory() {
+        return jndiLookupHelper.doJndiLookup(EntityManagerFactory.class, jndiName);
     }
-
 }

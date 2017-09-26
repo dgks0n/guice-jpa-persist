@@ -29,17 +29,14 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 /**
  * Exception holding an aggregation of multiple exceptions which were collected.
  */
-class AggregatedException
-    extends RuntimeException
-{
+class AggregatedException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Builder for AggregatedException
      */
-    static class Builder
-    {
+    static class Builder {
 
         /**
          * list of causes for the aggregated exception.
@@ -51,9 +48,8 @@ class AggregatedException
          *
          * @param cause the exception to add
          */
-        void add( Throwable cause )
-        {
-            causes.add( checkNotNull( cause, "cause is mandatory!" ) );
+        void add(Throwable cause) {
+            causes.add(checkNotNull(cause, "cause is mandatory!"));
         }
 
         /**
@@ -61,17 +57,12 @@ class AggregatedException
          *
          * @param msg the message of the aggregated exception.
          */
-        void throwRuntimeExceptionIfHasCauses( String msg )
-        {
-            try
-            {
-                if ( !causes.isEmpty() )
-                {
-                    throw getRuntimeException( msg );
+        void throwRuntimeExceptionIfHasCauses(String msg) {
+            try {
+                if (!causes.isEmpty()) {
+                    throw getRuntimeException(msg);
                 }
-            }
-            finally
-            {
+            } finally {
                 causes = null;
             }
         }
@@ -82,17 +73,14 @@ class AggregatedException
          * @param msg the message of the aggregated exception.
          * @return the exception to throw
          */
-        private RuntimeException getRuntimeException( String msg )
-        {
-            if ( causes.size() == 1 )
-            {
-                final Throwable cause = causes.get( 0 );
-                if ( cause instanceof RuntimeException )
-                {
+        private RuntimeException getRuntimeException(String msg) {
+            if (causes.size() == 1) {
+                final Throwable cause = causes.get(0);
+                if (cause instanceof RuntimeException) {
                     return (RuntimeException) cause;
                 }
             }
-            return new AggregatedException( msg, causes.toArray( new Throwable[causes.size()] ) );
+            return new AggregatedException(msg, causes.toArray(new Throwable[causes.size()]));
         }
     }
 
@@ -110,11 +98,10 @@ class AggregatedException
      * Constructor.
      *
      * @param message the message
-     * @param causes  all the causes
+     * @param causes all the causes
      */
-    private AggregatedException( String message, Throwable[] causes )
-    {
-        super( message );
+    private AggregatedException(String message, Throwable[] causes) {
+        super(message);
         this.causes = causes;
         this.numCauses = this.causes.length;
     }
@@ -122,16 +109,14 @@ class AggregatedException
     /**
      * @return the causes which lead to this exception
      */
-    public Throwable[] getCauses()
-    {
+    public Throwable[] getCauses() {
         return causes.clone();
     }
 
     /**
      * @return the number of causes collected into this exception
      */
-    public int getNumCauses()
-    {
+    public int getNumCauses() {
         return numCauses;
     }
 
@@ -139,22 +124,18 @@ class AggregatedException
      * {@inheritDoc}
      */
     @Override
-    public void printStackTrace( PrintStream s )
-    {
-        synchronized ( s )
-        {
+    public void printStackTrace(PrintStream s) {
+        synchronized (s) {
 
-            s.println( this );
+            s.println(this);
             StackTraceElement[] trace = getStackTrace();
-            for ( final StackTraceElement aTrace : trace )
-            {
-                s.println( "\tat " + aTrace );
+            for (final StackTraceElement aTrace : trace) {
+                s.println("\tat " + aTrace);
             }
 
-            for ( int i = 0; i < numCauses; i++ )
-            {
-                s.println( "Cause " + ( i + 1 ) + ":" );
-                causes[i].printStackTrace( s );
+            for (int i = 0; i < numCauses; i++) {
+                s.println("Cause " + (i + 1) + ":");
+                causes[i].printStackTrace(s);
             }
         }
     }
@@ -163,22 +144,18 @@ class AggregatedException
      * {@inheritDoc}
      */
     @Override
-    public void printStackTrace( PrintWriter s )
-    {
-        synchronized ( s )
-        {
+    public void printStackTrace(PrintWriter s) {
+        synchronized (s) {
 
-            s.println( this );
+            s.println(this);
             StackTraceElement[] trace = getStackTrace();
-            for ( final StackTraceElement aTrace : trace )
-            {
-                s.println( "\tat " + aTrace );
+            for (final StackTraceElement aTrace : trace) {
+                s.println("\tat " + aTrace);
             }
 
-            for ( int i = 0; i < numCauses; i++ )
-            {
-                s.println( "Cause " + ( i + 1 ) + ":" );
-                causes[i].printStackTrace( s );
+            for (int i = 0; i < numCauses; i++) {
+                s.println("Cause " + (i + 1) + ":");
+                causes[i].printStackTrace(s);
             }
         }
     }
@@ -187,9 +164,7 @@ class AggregatedException
      * {@inheritDoc}
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return super.toString() + " (caused by " + numCauses + " causes)";
     }
-
 }

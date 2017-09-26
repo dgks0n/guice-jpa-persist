@@ -19,12 +19,12 @@ package org.apache.onami.persist.test;
  * under the License.
  */
 
+import javax.inject.Inject;
+import java.util.Set;
+
 import com.google.inject.Guice;
 import com.google.inject.PrivateModule;
 import org.junit.Test;
-
-import javax.inject.Inject;
-import java.util.Set;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static org.hamcrest.CoreMatchers.is;
@@ -33,89 +33,68 @@ import static org.junit.Assert.assertThat;
 /**
  * Test for understanding how guice handles the requestInjection() method.
  */
-public class UnderstandRequestInjectionTest
-{
+public class UnderstandRequestInjectionTest {
     @Test
-    public void requestInjectionInOnePrivateModule()
-        throws Exception
-    {
+    public void requestInjectionInOnePrivateModule() throws Exception {
         final ObjectWithSetterInjection obj = new ObjectWithSetterInjection();
-        Guice.createInjector( new PrivateModule()
-        {
+        Guice.createInjector(new PrivateModule() {
             @Override
-            protected void configure()
-            {
-                bind( Foo.class ).to( Foo1.class );
-                requestInjection( obj );
+            protected void configure() {
+                bind(Foo.class).to(Foo1.class);
+                requestInjection(obj);
             }
-        } );
+        });
 
-        obj.assertAddedTypes( 1 );
+        obj.assertAddedTypes(1);
     }
 
     @Test
-    public void requestInjectionInTwoPrivateModule()
-        throws Exception
-    {
+    public void requestInjectionInTwoPrivateModule() throws Exception {
         final ObjectWithSetterInjection obj = new ObjectWithSetterInjection();
-        Guice.createInjector( new PrivateModule()
-                              {
-                                  @Override
-                                  protected void configure()
-                                  {
-                                      bind( Foo.class ).to( Foo1.class );
-                                      requestInjection( obj );
-                                  }
-                              }, //                                                                 //
-                              new PrivateModule()
-                              {
-                                  @Override
-                                  protected void configure()
-                                  {
-                                      bind( Foo.class ).to( Foo2.class );
-                                  }
-                              }
+        Guice.createInjector(new PrivateModule() {
+                                 @Override
+                                 protected void configure() {
+                                     bind(Foo.class).to(Foo1.class);
+                                     requestInjection(obj);
+                                 }
+                             },
+                new PrivateModule() {
+                    @Override
+                    protected void configure() {
+                        bind(Foo.class).to(Foo2.class);
+                    }
+                }
         );
 
-        obj.assertAddedTypes( 1 );
+        obj.assertAddedTypes(1);
     }
 
-    private static class ObjectWithSetterInjection
-    {
+    private static class ObjectWithSetterInjection {
         private final Set<Integer> actuals = newHashSet();
 
         @Inject
-        public void addFoo( Foo foo )
-        {
-            actuals.add( foo.type() );
+        public void addFoo(Foo foo) {
+            actuals.add(foo.type());
         }
 
-        void assertAddedTypes( Integer... types )
-        {
-            Set<Integer> expected = newHashSet( types );
-            assertThat( actuals, is( expected ) );
+        void assertAddedTypes(Integer... types) {
+            Set<Integer> expected = newHashSet(types);
+            assertThat(actuals, is(expected));
         }
     }
 
-    private interface Foo
-    {
+    private interface Foo {
         int type();
     }
 
-    private static class Foo1
-        implements Foo
-    {
-        public int type()
-        {
+    private static class Foo1 implements Foo {
+        public int type() {
             return 1;
         }
     }
 
-    private static class Foo2
-        implements Foo
-    {
-        public int type()
-        {
+    private static class Foo2 implements Foo {
+        public int type() {
             return 2;
         }
     }

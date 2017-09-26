@@ -22,8 +22,7 @@ package org.apache.onami.persist;
 /**
  * Interface for aggregation of multiple {@link PersistenceService PersistenceServices}.
  */
-public interface AllPersistenceServices
-{
+public interface AllPersistenceServices {
 
     /**
      * Calls {@link PersistenceService#start()} on all persistence services which are not running.
@@ -34,5 +33,4 @@ public interface AllPersistenceServices
      * Calls {@link PersistenceService#stop()} on all persistence services.
      */
     void stopAllPersistenceServices();
-
 }

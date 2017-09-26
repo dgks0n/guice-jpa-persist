@@ -21,7 +21,6 @@ package org.apache.onami.persist;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
@@ -32,9 +31,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
  * Implementation of {@link EntityManagerProvider} and {@link UnitOfWork}.
  */
 @Singleton
-class EntityManagerProviderImpl
-    implements EntityManagerProvider, UnitOfWork
-{
+class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWork {
 
     /**
      * Provider for {@link javax.persistence.EntityManagerFactory}.
@@ -55,86 +52,68 @@ class EntityManagerProviderImpl
      * Constructor.
      *
      * @param emfProvider the provider for {@link EntityManagerFactory}. Must not be {@code null}.
-     * @param properties  additional properties to be set on every {@link EntityManager} which is created.
+     * @param properties additional properties to be set on every {@link EntityManager} which is created.
      */
     @Inject
-    public EntityManagerProviderImpl( EntityManagerFactoryProvider emfProvider,
-                                      @Nullable @ForContainerManaged Properties properties )
-    {
-        this.emfProvider = checkNotNull( emfProvider, "emfProvider is mandatory!" );
+    public EntityManagerProviderImpl(EntityManagerFactoryProvider emfProvider, @Nullable @ForContainerManaged Properties properties) {
+        this.emfProvider = checkNotNull(emfProvider, "emfProvider is mandatory!");
         this.properties = properties;
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public EntityManager get()
-        throws IllegalStateException
-    {
+    @Override
+    public EntityManager get() throws IllegalStateException {
         final EntityManager entityManager = entityManagers.get();
-        if ( entityManager != null )
-        {
+        if (entityManager != null) {
             return entityManager;
-        }
-        else
-        {
-            throw new IllegalStateException( "UnitOfWork is not running." );
+        } else {
+            throw new IllegalStateException("UnitOfWork is not running.");
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public void begin()
-    {
-        if ( isActive() )
-        {
-            throw new IllegalStateException( "Unit of work has already been started." );
-        }
-        else
-        {
+    @Override
+    public void begin() {
+        if (isActive()) {
+            throw new IllegalStateException("Unit of work has already been started.");
+        } else {
             final EntityManager em = createEntityManager();
-            entityManagers.set( em );
+            entityManagers.set(em);
         }
     }
 
     /**
      * @return a new entity manager instance.
      */
-    private EntityManager createEntityManager()
-    {
+    private EntityManager createEntityManager() {
         final EntityManagerFactory emf = emfProvider.get();
-        if ( null == properties )
-        {
+        if (null == properties) {
             return emf.createEntityManager();
-        }
-        else
-        {
-            return emf.createEntityManager( properties );
+        } else {
+            return emf.createEntityManager(properties);
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public boolean isActive()
-    {
+    @Override
+    public boolean isActive() {
         return entityManagers.get() != null;
     }
 
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public void end()
-    {
+    @Override
+    public void end() {
         final EntityManager em = entityManagers.get();
-        if ( em != null )
-        {
-            closeAndRemoveEntityManager( em );
+        if (em != null) {
+            closeAndRemoveEntityManager(em);
         }
     }
 
@@ -143,16 +122,11 @@ class EntityManagerProviderImpl
      *
      * @param em the entity manager to close
      */
-    private void closeAndRemoveEntityManager( EntityManager em )
-    {
-        try
-        {
+    private void closeAndRemoveEntityManager(EntityManager em) {
+        try {
             em.close();
-        }
-        finally
-        {
+        } finally {
             entityManagers.remove();
         }
     }
-
 }

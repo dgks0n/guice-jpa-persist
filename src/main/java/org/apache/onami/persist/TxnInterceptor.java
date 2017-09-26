@@ -19,17 +19,15 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import javax.inject.Inject;
+
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-
-import javax.inject.Inject;
 
 /**
  * Interceptor for methods and classes annotated with {@link Transactional @Transactional} annotation.
  */
-class TxnInterceptor
-    implements MethodInterceptor
-{
+class TxnInterceptor implements MethodInterceptor {
 
     /**
      * Unit of work.
@@ -48,9 +46,7 @@ class TxnInterceptor
 
     @Inject
     @VisibleForTesting
-    void init( UnitOfWork unitOfWork, TransactionFacadeFactory tfProvider,
-               TransactionalAnnotationHelper txnAnnotationHelper )
-    {
+    void init(UnitOfWork unitOfWork, TransactionFacadeFactory tfProvider, TransactionalAnnotationHelper txnAnnotationHelper) {
         this.unitOfWork = unitOfWork;
         this.tfProvider = tfProvider;
         this.txnAnnotationHelper = txnAnnotationHelper;
@@ -59,19 +55,13 @@ class TxnInterceptor
     /**
      * {@inheritDoc}
      */
-    // @Override
-    public final Object invoke( MethodInvocation methodInvocation )
-        throws Throwable
-    {
-        if ( persistenceUnitParticipatesInTransactionFor( methodInvocation ) )
-        {
-            return invokeInTransactionAndUnitOfWork( methodInvocation );
-        }
-        else
-        {
+    @Override
+    public final Object invoke(MethodInvocation methodInvocation) throws Throwable {
+        if (persistenceUnitParticipatesInTransactionFor(methodInvocation)) {
+            return invokeInTransactionAndUnitOfWork(methodInvocation);
+        } else {
             return methodInvocation.proceed();
         }
-
     }
 
     /**
@@ -82,9 +72,8 @@ class TxnInterceptor
      * @param methodInvocation the method invocation which may be wrapped in a transaction.
      * @return {@code true} if the current persistence unit participates in a transaction for the given method.
      */
-    private boolean persistenceUnitParticipatesInTransactionFor( MethodInvocation methodInvocation )
-    {
-        return txnAnnotationHelper.persistenceUnitParticipatesInTransactionFor( methodInvocation );
+    private boolean persistenceUnitParticipatesInTransactionFor(MethodInvocation methodInvocation) {
+        return txnAnnotationHelper.persistenceUnitParticipatesInTransactionFor(methodInvocation);
     }
 
     /**
@@ -94,30 +83,21 @@ class TxnInterceptor
      * @return the result of the invocation of the original method.
      * @throws Throwable if an exception occurs during the call to the original method.
      */
-    private Object invokeInTransactionAndUnitOfWork( MethodInvocation methodInvocation )
-        throws Throwable
-    {
+    private Object invokeInTransactionAndUnitOfWork(MethodInvocation methodInvocation) throws Throwable {
         final boolean weStartedTheUnitOfWork = !unitOfWork.isActive();
-        if ( weStartedTheUnitOfWork )
-        {
+        if (weStartedTheUnitOfWork) {
             unitOfWork.begin();
         }
 
         Throwable originalException = null;
-        try
-        {
-            return invokeInTransaction( methodInvocation );
-        }
-        catch ( Throwable exc )
-        {
+        try {
+            return invokeInTransaction(methodInvocation);
+        } catch (Throwable exc) {
             originalException = exc;
             throw exc;
-        }
-        finally
-        {
-            if ( weStartedTheUnitOfWork )
-            {
-                endUnitOfWork( originalException );
+        } finally {
+            if (weStartedTheUnitOfWork) {
+                endUnitOfWork(originalException);
             }
         }
     }
@@ -127,24 +107,16 @@ class TxnInterceptor
      * original exception.
      *
      * @param originalException the original exception. will be thrown in preference to an exception occurring during
-     *                          execution of this method.
+     * execution of this method.
      * @throws Throwable if an exception happened while ending the unit of work.
      */
-    private void endUnitOfWork( Throwable originalException )
-        throws Throwable
-    {
-        try
-        {
+    private void endUnitOfWork(Throwable originalException) throws Throwable {
+        try {
             unitOfWork.end();
-        }
-        catch ( Throwable exc )
-        {
-            if ( originalException != null )
-            {
+        } catch (Throwable exc) {
+            if (originalException != null) {
                 throw originalException;
-            }
-            else
-            {
+            } else {
                 throw exc;
             }
         }
@@ -157,12 +129,10 @@ class TxnInterceptor
      * @return the result of the invocation of the original method.
      * @throws Throwable if an exception occurs during the call to the original method.
      */
-    private Object invokeInTransaction( MethodInvocation methodInvocation )
-        throws Throwable
-    {
+    private Object invokeInTransaction(MethodInvocation methodInvocation) throws Throwable {
         final TransactionFacade transactionFacade = tfProvider.createTransactionFacade();
         transactionFacade.begin();
-        final Object result = invokeAndHandleException( methodInvocation, transactionFacade );
+        final Object result = invokeAndHandleException(methodInvocation, transactionFacade);
         transactionFacade.commit();
 
         return result;
@@ -172,21 +142,16 @@ class TxnInterceptor
      * Invoke the original method assuming a transaction has already been started.
      * This method is responsible of calling rollback if necessary.
      *
-     * @param methodInvocation  the original method invocation.
+     * @param methodInvocation the original method invocation.
      * @param transactionFacade the facade to the underlying resource local or jta transaction.
      * @return the result of the invocation of the original method.
      * @throws Throwable if an exception occurs during the call to the original method.
      */
-    private Object invokeAndHandleException( MethodInvocation methodInvocation, TransactionFacade transactionFacade )
-        throws Throwable
-    {
-        try
-        {
+    private Object invokeAndHandleException(MethodInvocation methodInvocation, TransactionFacade transactionFacade) throws Throwable {
+        try {
             return methodInvocation.proceed();
-        }
-        catch ( Throwable exc )
-        {
-            handleException( methodInvocation, transactionFacade, exc );
+        } catch (Throwable exc) {
+            handleException(methodInvocation, transactionFacade, exc);
             throw exc;
         }
     }
@@ -194,27 +159,18 @@ class TxnInterceptor
     /**
      * Handles the case that an exception was thrown by the original method.
      *
-     * @param methodInvocation  the original method invocation.
+     * @param methodInvocation the original method invocation.
      * @param transactionFacade the facade to the underlying resource local or jta transaction.
-     * @param exc               the exception thrown by the original method.
+     * @param exc the exception thrown by the original method.
      */
-    private void handleException( MethodInvocation methodInvocation, TransactionFacade transactionFacade,
-                                  Throwable exc )
-        throws Throwable
-    {
-        try
-        {
-            if ( isRollbackNecessaryFor( methodInvocation, exc ) )
-            {
+    private void handleException(MethodInvocation methodInvocation, TransactionFacade transactionFacade, Throwable exc) throws Throwable {
+        try {
+            if (isRollbackNecessaryFor(methodInvocation, exc)) {
                 transactionFacade.rollback();
-            }
-            else
-            {
+            } else {
                 transactionFacade.commit();
             }
-        }
-        catch ( Exception swallowedException )
-        {
+        } catch (Exception swallowedException) {
             // swallow exception from transaction facade in favor of th exception thrown by the original method.
             throw exc;
         }
@@ -224,12 +180,10 @@ class TxnInterceptor
      * Decides if a rollback is necessary for the given method invocation and a thrown exception.
      *
      * @param methodInvocation the method invocation during which an exception was thrown.
-     * @param exc              the exception which was thrown
+     * @param exc the exception which was thrown
      * @return {@code true} if the transaction needs to be rolled back.
      */
-    private boolean isRollbackNecessaryFor( MethodInvocation methodInvocation, Throwable exc )
-    {
-        return txnAnnotationHelper.isRollbackNecessaryFor( methodInvocation, exc );
+    private boolean isRollbackNecessaryFor(MethodInvocation methodInvocation, Throwable exc) {
+        return txnAnnotationHelper.isRollbackNecessaryFor(methodInvocation, exc);
     }
-
 }

@@ -22,9 +22,7 @@ package org.apache.onami.persist.test.transaction.testframework.exceptions;
 /**
  * Exception which can be thrown by a {@link org.apache.onami.persist.test.transaction.testframework.TransactionalTask}.
  */
-public class RuntimeTestException
-    extends RuntimeException
-{
+public class RuntimeTestException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
@@ -33,8 +31,7 @@ public class RuntimeTestException
     /**
      * Constructor.
      */
-    public RuntimeTestException()
-    {
+    public RuntimeTestException() {
         this.message = RuntimeTestException.class.getSimpleName();
     }
 
@@ -43,14 +40,12 @@ public class RuntimeTestException
      *
      * @param message the message of the exception.
      */
-    public RuntimeTestException( String message )
-    {
+    public RuntimeTestException(String message) {
         this.message = message;
     }
 
     @Override
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 }

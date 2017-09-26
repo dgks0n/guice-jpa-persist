@@ -19,12 +19,12 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import org.junit.Before;
-import org.junit.Test;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.Properties;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -39,8 +39,7 @@ import static org.mockito.Mockito.verify;
 /**
  * Test for {@link EntityManagerProviderImpl}.
  */
-public class EntityManagerProviderImplTest
-{
+public class EntityManagerProviderImplTest {
 
     private EntityManagerProviderImpl sut;
 
@@ -53,133 +52,115 @@ public class EntityManagerProviderImplTest
     private EntityManagerFactory emf;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         // input
-        emfProvider = mock( EntityManagerFactoryProvider.class );
+        emfProvider = mock(EntityManagerFactoryProvider.class);
         properties = new Properties();
 
         // subject under test
-        sut = new EntityManagerProviderImpl( emfProvider, properties );
+        sut = new EntityManagerProviderImpl(emfProvider, properties);
 
         // helpers
-        emf = mock( EntityManagerFactory.class );
-        doReturn( emf ).when( emfProvider ).get();
+        emf = mock(EntityManagerFactory.class);
+        doReturn(emf).when(emfProvider).get();
 
-        em = mock( EntityManager.class );
-        doReturn( em ).when( emf ).createEntityManager( properties );
+        em = mock(EntityManager.class);
+        doReturn(em).when(emf).createEntityManager(properties);
     }
 
     @Test
-    public void newInstanceShouldNotBeActive()
-    {
-        assertThat( sut.isActive(), is( false ) );
+    public void newInstanceShouldNotBeActive() {
+        assertThat(sut.isActive(), is(false));
     }
 
     @Test
-    public void stoppingShouldDoNothingIfNotActive()
-    {
+    public void stoppingShouldDoNothingIfNotActive() {
         sut.end();
 
-        assertThat( sut.isActive(), is( false ) );
+        assertThat(sut.isActive(), is(false));
     }
 
     @Test
-    public void shouldBeActiveAfterStarting()
-    {
+    public void shouldBeActiveAfterStarting() {
         sut.begin();
 
-        verify( emf ).createEntityManager( properties );
-        assertThat( sut.isActive(), is( true ) );
+        verify(emf).createEntityManager(properties);
+        assertThat(sut.isActive(), is(true));
     }
 
     @Test
-    public void shouldNotBeActiveAfterStartingAndStopping()
-    {
+    public void shouldNotBeActiveAfterStartingAndStopping() {
         sut.begin();
         sut.end();
 
-        verify( emf ).createEntityManager( properties );
-        verify( em ).close();
-        assertThat( sut.isActive(), is( false ) );
+        verify(emf).createEntityManager(properties);
+        verify(em).close();
+        assertThat(sut.isActive(), is(false));
     }
 
     @Test
-    public void shouldNotBeActiveAfterStartingAndStoppingEvenWhenExceptionThrown()
-    {
-        doThrow( new RuntimeException() ).when( em ).close();
+    public void shouldNotBeActiveAfterStartingAndStoppingEvenWhenExceptionThrown() {
+        doThrow(new RuntimeException()).when(em).close();
 
-        try
-        {
+        try {
             sut.begin();
             sut.end();
-        }
-
-        catch ( RuntimeException e )
-        {
-            verify( emf ).createEntityManager( properties );
-            verify( em ).close();
-            assertThat( sut.isActive(), is( false ) );
+        } catch (RuntimeException e) {
+            verify(emf).createEntityManager(properties);
+            verify(em).close();
+            assertThat(sut.isActive(), is(false));
             return;
         }
-        fail( "expected RuntimeException to be thrown" );
+        fail("expected RuntimeException to be thrown");
     }
 
     @Test
-    public void restartingShouldWork()
-    {
+    public void restartingShouldWork() {
         sut.begin();
         sut.end();
         sut.begin();
 
-        verify( emf, times( 2 ) ).createEntityManager( properties );
-        verify( em ).close();
-        assertThat( sut.isActive(), is( true ) );
+        verify(emf, times(2)).createEntityManager(properties);
+        verify(em).close();
+        assertThat(sut.isActive(), is(true));
     }
 
-    @Test( expected = IllegalStateException.class )
-    public void startingWhenActiveShouldThrowException()
-    {
+    @Test(expected = IllegalStateException.class)
+    public void startingWhenActiveShouldThrowException() {
         sut.begin();
         sut.begin();
     }
 
     @Test
-    public void shouldReturnTheEntityManager()
-    {
+    public void shouldReturnTheEntityManager() {
         sut.begin();
         final EntityManager result = sut.get();
 
-        assertThat( result, sameInstance( em ) );
+        assertThat(result, sameInstance(em));
     }
 
-    @Test( expected = IllegalStateException.class )
-    public void shouldThrowExceptionWhenGettingEntityManagerAndUnitOfWorkIsNotActive()
-    {
+    @Test(expected = IllegalStateException.class)
+    public void shouldThrowExceptionWhenGettingEntityManagerAndUnitOfWorkIsNotActive() {
         sut.get();
     }
 
-    @Test( expected = NullPointerException.class )
-    public void entityManagerFactoryProviderIsMandatory()
-    {
-        new EntityManagerProviderImpl( null, properties );
+    @Test(expected = NullPointerException.class)
+    public void entityManagerFactoryProviderIsMandatory() {
+        new EntityManagerProviderImpl(null, properties);
     }
 
     @Test
-    public void propertiesAreOptional()
-    {
-        new EntityManagerProviderImpl( emfProvider, null );
+    public void propertiesAreOptional() {
+        new EntityManagerProviderImpl(emfProvider, null);
     }
 
     @Test
-    public void shouldCreateEntityManagerWithoutPropertiesIfNull()
-    {
-        doReturn( em ).when( emf ).createEntityManager();
-        sut = new EntityManagerProviderImpl( emfProvider, null );
+    public void shouldCreateEntityManagerWithoutPropertiesIfNull() {
+        doReturn(em).when(emf).createEntityManager();
+        sut = new EntityManagerProviderImpl(emfProvider, null);
 
         sut.begin();
 
-        verify( emf ).createEntityManager();
+        verify(emf).createEntityManager();
     }
-
 }

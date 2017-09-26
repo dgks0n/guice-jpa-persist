@@ -27,8 +27,7 @@ import java.lang.annotation.Target;
 /**
  * Annotation to mark the intention of increasing the visibility of a method or field so it can be used in a test.
  */
-@Target( { ElementType.METHOD, ElementType.FIELD } )
-@Retention( RetentionPolicy.SOURCE )
-@interface VisibleForTesting
-{
+@Target({ElementType.METHOD, ElementType.FIELD})
+@Retention(RetentionPolicy.SOURCE)
+@interface VisibleForTesting {
 }

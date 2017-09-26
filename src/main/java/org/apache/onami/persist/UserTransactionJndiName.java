@@ -19,21 +19,20 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import com.google.inject.BindingAnnotation;
-
 import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.google.inject.BindingAnnotation;
+
 /**
  * Annotation to mark bindings which are specific for container managed persistence units.
  */
-@Target( { ElementType.PARAMETER } )
-@Retention( RetentionPolicy.RUNTIME )
+@Target({ElementType.PARAMETER})
+@Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 @BindingAnnotation
-@interface UserTransactionJndiName
-{
+@interface UserTransactionJndiName {
 }

@@ -19,15 +19,15 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Key;
-import com.google.inject.Scopes;
-import com.google.inject.TypeLiteral;
-
 import javax.inject.Provider;
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.Key;
+import com.google.inject.Scopes;
+import com.google.inject.TypeLiteral;
 
 import static com.google.inject.matcher.Matchers.annotatedWith;
 import static com.google.inject.matcher.Matchers.any;
@@ -36,9 +36,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 /**
  * Main module of the onami persist guice extension.
  */
-public abstract class PersistenceModule
-    extends AbstractModule
-{
+public abstract class PersistenceModule extends AbstractModule {
 
     /**
      * List of configurations. Each configurator can be used to build a {@link PersistenceUnitModule}.
@@ -49,19 +47,14 @@ public abstract class PersistenceModule
      * {@inheritDoc}
      */
     @Override
-    protected final void configure()
-    {
-        if ( configurations != null )
-        {
-            throw new RuntimeException( "cannot reenter the configure method" );
+    protected final void configure() {
+        if (configurations != null) {
+            throw new RuntimeException("cannot reenter the configure method");
         }
-        try
-        {
+        try {
             configurations = new ArrayList<PersistenceUnitModuleConfiguration>();
             configurePersistenceUnits();
-        }
-        finally
-        {
+        } finally {
             configurations = null;
         }
     }
@@ -69,25 +62,23 @@ public abstract class PersistenceModule
     /**
      * Configures the persistence units.
      */
-    private void configurePersistenceUnits()
-    {
+    private void configurePersistenceUnits() {
         configurePersistence();
 
-        bind( PersistenceFilter.class ).to( PersistenceFilterImpl.class ).in( Scopes.SINGLETON );
+        bind(PersistenceFilter.class).to(PersistenceFilterImpl.class).in(Scopes.SINGLETON);
 
         final AllPersistenceUnits allPersistenceUnits = new AllPersistenceUnits();
-        requestInjection( allPersistenceUnits );
-        bind( AllPersistenceServices.class ).toInstance( allPersistenceUnits );
-        bind( AllUnitsOfWork.class ).toInstance( allPersistenceUnits );
+        requestInjection(allPersistenceUnits);
+        bind(AllPersistenceServices.class).toInstance(allPersistenceUnits);
+        bind(AllUnitsOfWork.class).toInstance(allPersistenceUnits);
 
-        for ( PersistenceUnitModuleConfiguration config : configurations )
-        {
+        for (PersistenceUnitModuleConfiguration config : configurations) {
             final TxnInterceptor txnInterceptor = new TxnInterceptor();
 
-            install( new PersistenceUnitModule( config, txnInterceptor, allPersistenceUnits ) );
+            install(new PersistenceUnitModule(config, txnInterceptor, allPersistenceUnits));
 
-            bindInterceptor( any(), annotatedWith( Transactional.class ), txnInterceptor );
-            bindInterceptor( annotatedWith( Transactional.class ), any(), txnInterceptor );
+            bindInterceptor(any(), annotatedWith(Transactional.class), txnInterceptor);
+            bindInterceptor(annotatedWith(Transactional.class), any(), txnInterceptor);
         }
     }
 
@@ -102,12 +93,10 @@ public abstract class PersistenceModule
      * @param puName the name of the persistence unit as defined in the persistence.xml.
      * @return the next builder step.
      */
-    protected UnannotatedPersistenceUnitBuilder bindApplicationManagedPersistenceUnit( String puName )
-    {
-        checkNotNull( configurations,
-                      "calling bindApplicationManagedPersistenceUnit outside of configurePersistence is not supported" );
+    protected UnannotatedPersistenceUnitBuilder bindApplicationManagedPersistenceUnit(String puName) {
+        checkNotNull(configurations, "calling bindApplicationManagedPersistenceUnit outside of configurePersistence is not supported");
         final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
-        configurator.setPuName( puName );
+        configurator.setPuName(puName);
         return configurator;
     }
 
@@ -117,12 +106,10 @@ public abstract class PersistenceModule
      * @param emf the entity manager factory to use when creating new entity managers.
      * @return the next builder step.
      */
-    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnit( EntityManagerFactory emf )
-    {
-        checkNotNull( configurations,
-                      "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported" );
+    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnit(EntityManagerFactory emf) {
+        checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
         final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
-        configurator.setEmf( emf );
+        configurator.setEmf(emf);
         return configurator;
     }
 
@@ -132,12 +119,10 @@ public abstract class PersistenceModule
      * @param jndiName the JNDI name of the entity manager factory.
      * @return the next builder step.
      */
-    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitWithJndiName( String jndiName )
-    {
-        checkNotNull( configurations,
-                      "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported" );
+    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitWithJndiName(String jndiName) {
+        checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
         final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
-        configurator.setEmfJndiName( jndiName );
+        configurator.setEmfJndiName(jndiName);
         return configurator;
     }
 
@@ -147,13 +132,10 @@ public abstract class PersistenceModule
      * @param emfProvider the provider for the entity manager factory.
      * @return the next builder step.
      */
-    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(
-        Provider<EntityManagerFactory> emfProvider )
-    {
-        checkNotNull( configurations,
-                      "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported" );
+    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(Provider<EntityManagerFactory> emfProvider) {
+        checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
         final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
-        configurator.setEmfProvider( emfProvider );
+        configurator.setEmfProvider(emfProvider);
         return configurator;
     }
 
@@ -163,13 +145,10 @@ public abstract class PersistenceModule
      * @param emfProviderClass the provider for the entity manager factory.
      * @return the next builder step.
      */
-    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(
-        Class<? extends Provider<EntityManagerFactory>> emfProviderClass )
-    {
-        checkNotNull( configurations,
-                      "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported" );
+    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(Class<? extends Provider<EntityManagerFactory>> emfProviderClass) {
+        checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
         final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
-        configurator.setEmfProviderClass( emfProviderClass );
+        configurator.setEmfProviderClass(emfProviderClass);
         return configurator;
     }
 
@@ -179,13 +158,10 @@ public abstract class PersistenceModule
      * @param emfProviderType the provider for the entity manager factory.
      * @return the next builder step.
      */
-    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(
-        TypeLiteral<? extends Provider<EntityManagerFactory>> emfProviderType )
-    {
-        checkNotNull( configurations,
-                      "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported" );
+    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(TypeLiteral<? extends Provider<EntityManagerFactory>> emfProviderType) {
+        checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
         final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
-        configurator.setEmfProviderType( emfProviderType );
+        configurator.setEmfProviderType(emfProviderType);
         return configurator;
     }
 
@@ -195,21 +171,16 @@ public abstract class PersistenceModule
      * @param emfProviderKey the provider for the entity manager factory.
      * @return the next builder step.
      */
-    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(
-        Key<? extends Provider<EntityManagerFactory>> emfProviderKey )
-    {
-        checkNotNull( configurations,
-                      "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported" );
+    protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(Key<? extends Provider<EntityManagerFactory>> emfProviderKey) {
+        checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
         final PersistenceUnitModuleConfiguration configuration = createAndAddConfiguration();
-        configuration.setEmfProviderKey( emfProviderKey );
+        configuration.setEmfProviderKey(emfProviderKey);
         return configuration;
     }
 
-    private PersistenceUnitModuleConfiguration createAndAddConfiguration()
-    {
+    private PersistenceUnitModuleConfiguration createAndAddConfiguration() {
         final PersistenceUnitModuleConfiguration configurator = new PersistenceUnitModuleConfiguration();
-        configurations.add( configurator );
+        configurations.add(configurator);
         return configurator;
     }
-
 }

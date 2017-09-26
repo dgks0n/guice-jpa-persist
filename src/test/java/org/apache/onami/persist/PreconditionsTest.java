@@ -30,63 +30,48 @@ import static org.junit.Assert.fail;
 /**
  * Test for {@link Preconditions}.
  */
-public class PreconditionsTest
-{
+public class PreconditionsTest {
 
     private static final String MESSAGE = "test message";
 
     @Test
-    public void throwing()
-        throws Exception
-    {
-        try
-        {
-            Preconditions.checkNotNull( null );
-        }
-        catch ( NullPointerException e )
-        {
-            assertThat( e.getMessage(), is( nullValue() ) );
+    public void throwing() throws Exception {
+        try {
+            Preconditions.checkNotNull(null);
+        } catch (NullPointerException e) {
+            assertThat(e.getMessage(), is(nullValue()));
             return;
         }
-        fail( "expected NullPointerException to be thrown" );
+        fail("expected NullPointerException to be thrown");
     }
 
     @Test
-    public void notThrowing()
-    {
+    public void notThrowing() {
         final Object input = new Object();
-        final Object result = Preconditions.checkNotNull( input );
-        assertThat( result, sameInstance( input ) );
+        final Object result = Preconditions.checkNotNull(input);
+        assertThat(result, sameInstance(input));
     }
 
     @Test
-    public void throwingWithMessage()
-        throws Exception
-    {
-        try
-        {
-            Preconditions.checkNotNull( null, MESSAGE );
-        }
-        catch ( NullPointerException e )
-        {
-            assertThat( e.getMessage(), is( MESSAGE ) );
+    public void throwingWithMessage() throws Exception {
+        try {
+            Preconditions.checkNotNull(null, MESSAGE);
+        } catch (NullPointerException e) {
+            assertThat(e.getMessage(), is(MESSAGE));
             return;
         }
-        fail( "expected NullPointerException to be thrown" );
+        fail("expected NullPointerException to be thrown");
     }
 
     @Test
-    public void notThrowingWithMessage()
-    {
+    public void notThrowingWithMessage() {
         final Object input = new Object();
-        final Object result = Preconditions.checkNotNull( input, MESSAGE );
-        assertThat( result, sameInstance( input ) );
+        final Object result = Preconditions.checkNotNull(input, MESSAGE);
+        assertThat(result, sameInstance(input));
     }
 
     @Test
-    public void canBeCreated()
-    {
+    public void canBeCreated() {
         new Preconditions();
     }
-
 }

@@ -22,8 +22,7 @@ package org.apache.onami.persist;
 /**
  * Interface for aggregation of multiple {@link UnitOfWork UnitsOfWork}.
  */
-public interface AllUnitsOfWork
-{
+public interface AllUnitsOfWork {
 
     /**
      * Calls {@link UnitOfWork#begin()} on all units of work which are not active.
@@ -34,5 +33,4 @@ public interface AllUnitsOfWork
      * Calls {@link UnitOfWork#end()} on all units of work.
      */
     void endAllUnitsOfWork();
-
 }

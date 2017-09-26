@@ -19,10 +19,10 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import javax.persistence.EntityManagerFactory;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.persistence.EntityManagerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
@@ -36,8 +36,7 @@ import static org.mockito.Mockito.verify;
 /**
  * Test for {@link ApplicationManagedEntityManagerFactoryProviderTest}.
  */
-public class ApplicationManagedEntityManagerFactoryProviderTest
-{
+public class ApplicationManagedEntityManagerFactoryProviderTest {
 
     private ApplicationManagedEntityManagerFactoryProvider sut;
 
@@ -46,107 +45,93 @@ public class ApplicationManagedEntityManagerFactoryProviderTest
     private EntityManagerFactoryFactory emfFactory;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         // input
-        emfFactory = mock( EntityManagerFactoryFactory.class );
+        emfFactory = mock(EntityManagerFactoryFactory.class);
 
         // subject under test
-        sut = new ApplicationManagedEntityManagerFactoryProvider( emfFactory );
+        sut = new ApplicationManagedEntityManagerFactoryProvider(emfFactory);
 
         // helpers
-        emf = mock( EntityManagerFactory.class );
-        doReturn( emf ).when( emfFactory ).createApplicationManagedEntityManagerFactory();
+        emf = mock(EntityManagerFactory.class);
+        doReturn(emf).when(emfFactory).createApplicationManagedEntityManagerFactory();
     }
 
     @Test
-    public void isRunningShouldReturnFalseBeforeStarting()
-    {
-        assertThat( sut.isRunning(), is( false ) );
+    public void isRunningShouldReturnFalseBeforeStarting() {
+        assertThat(sut.isRunning(), is(false));
     }
 
     @Test
-    public void stoppingWhenNotRunningShouldDoNothing()
-    {
+    public void stoppingWhenNotRunningShouldDoNothing() {
         sut.stop();
 
-        assertThat( sut.isRunning(), is( false ) );
+        assertThat(sut.isRunning(), is(false));
     }
 
     @Test
-    public void isRunningShouldReturnTrueAfterStarting()
-    {
+    public void isRunningShouldReturnTrueAfterStarting() {
         sut.start();
 
-        assertThat( sut.isRunning(), is( true ) );
-        verify( emfFactory ).createApplicationManagedEntityManagerFactory();
+        assertThat(sut.isRunning(), is(true));
+        verify(emfFactory).createApplicationManagedEntityManagerFactory();
     }
 
-    @Test( expected = IllegalStateException.class )
-    public void startingAfterAlreadyStartedShouldThrowException()
-    {
+    @Test(expected = IllegalStateException.class)
+    public void startingAfterAlreadyStartedShouldThrowException() {
         sut.start();
         sut.start();
     }
 
     @Test
-    public void isRunningShouldReturnFalseAfterStartingAndStopping()
-    {
+    public void isRunningShouldReturnFalseAfterStartingAndStopping() {
         sut.start();
         sut.stop();
 
-        assertThat( sut.isRunning(), is( false ) );
-        verify( emf ).close();
+        assertThat(sut.isRunning(), is(false));
+        verify(emf).close();
     }
 
     @Test
-    public void restartingShouldWork()
-    {
+    public void restartingShouldWork() {
         sut.start();
         sut.stop();
         sut.start();
 
-        assertThat( sut.isRunning(), is( true ) );
-        verify( emfFactory, times( 2 ) ).createApplicationManagedEntityManagerFactory();
-        verify( emf ).close();
+        assertThat(sut.isRunning(), is(true));
+        verify(emfFactory, times(2)).createApplicationManagedEntityManagerFactory();
+        verify(emf).close();
     }
 
     @Test(expected = RuntimeException.class)
-    public void stopShouldWorkEvenInCaseOfException()
-    {
-        doThrow( new RuntimeException() ).when( emf ).close();
+    public void stopShouldWorkEvenInCaseOfException() {
+        doThrow(new RuntimeException()).when(emf).close();
 
         sut.start();
-        try
-        {
+        try {
             sut.stop();
         }
-        finally
-        {
 
-            assertThat( sut.isRunning(), is( false ) );
-            verify( emf ).close();
+        finally {
+            assertThat(sut.isRunning(), is(false));
+            verify(emf).close();
         }
     }
 
-    @Test( expected = IllegalStateException.class )
-    public void getShouldThrowExceptionWhenNotStarted()
-    {
+    @Test(expected = IllegalStateException.class)
+    public void getShouldThrowExceptionWhenNotStarted() {
         sut.get();
     }
 
     @Test
-    public void getShouldReturnEmf()
-    {
+    public void getShouldReturnEmf() {
         sut.start();
 
-        assertThat( sut.get(), sameInstance( emf ) );
+        assertThat(sut.get(), sameInstance(emf));
     }
 
-    @Test( expected = NullPointerException.class )
-    public void emfFactoryIsMandatory()
-    {
-        new ApplicationManagedEntityManagerFactoryProvider( null );
+    @Test(expected = NullPointerException.class)
+    public void emfFactoryIsMandatory() {
+        new ApplicationManagedEntityManagerFactoryProvider(null);
     }
-
 }

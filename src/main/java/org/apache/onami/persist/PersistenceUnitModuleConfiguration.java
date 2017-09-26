@@ -19,21 +19,19 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import com.google.inject.Key;
-import com.google.inject.TypeLiteral;
-
 import javax.inject.Provider;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 import java.lang.annotation.Annotation;
 import java.util.Properties;
 
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
+
 /**
  * Class holding the configuration for a single persistence unit.
  */
-class PersistenceUnitModuleConfiguration
-    implements UnannotatedPersistenceUnitBuilder, AnnotatedPersistenceUnitBuilder, UnconfiguredPersistenceUnitBuilder
-{
+class PersistenceUnitModuleConfiguration implements UnannotatedPersistenceUnitBuilder, AnnotatedPersistenceUnitBuilder, UnconfiguredPersistenceUnitBuilder {
 
     private Class<? extends Annotation> annotation;
 
@@ -62,8 +60,7 @@ class PersistenceUnitModuleConfiguration
     /**
      * {@inheritDoc}
      */
-    public AnnotatedPersistenceUnitBuilder annotatedWith( Class<? extends Annotation> annotation )
-    {
+    public AnnotatedPersistenceUnitBuilder annotatedWith(Class<? extends Annotation> annotation) {
         this.annotation = annotation;
         return this;
     }
@@ -71,8 +68,7 @@ class PersistenceUnitModuleConfiguration
     /**
      * {@inheritDoc}
      */
-    public UnconfiguredPersistenceUnitBuilder useLocalTransaction()
-    {
+    public UnconfiguredPersistenceUnitBuilder useLocalTransaction() {
         isJta = false;
         return this;
     }
@@ -80,8 +76,7 @@ class PersistenceUnitModuleConfiguration
     /**
      * {@inheritDoc}
      */
-    public UnconfiguredPersistenceUnitBuilder useGlobalTransaction( UserTransaction userTransaction )
-    {
+    public UnconfiguredPersistenceUnitBuilder useGlobalTransaction(UserTransaction userTransaction) {
         this.isJta = true;
         this.userTransaction = userTransaction;
         return this;
@@ -90,8 +85,7 @@ class PersistenceUnitModuleConfiguration
     /**
      * {@inheritDoc}
      */
-    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionWithJndiName( String utJndiName )
-    {
+    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionWithJndiName(String utJndiName) {
         this.isJta = true;
         this.utJndiName = utJndiName;
         return this;
@@ -100,8 +94,7 @@ class PersistenceUnitModuleConfiguration
     /**
      * {@inheritDoc}
      */
-    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy( Provider<UserTransaction> utProvider )
-    {
+    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(Provider<UserTransaction> utProvider) {
         this.isJta = true;
         this.utProvider = utProvider;
         return this;
@@ -110,27 +103,21 @@ class PersistenceUnitModuleConfiguration
     /**
      * {@inheritDoc}
      */
-    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
-        Class<? extends Provider<UserTransaction>> utProviderClass )
-    {
-        return useGlobalTransactionProvidedBy( Key.get( utProviderClass ) );
+    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(Class<? extends Provider<UserTransaction>> utProviderClass) {
+        return useGlobalTransactionProvidedBy(Key.get(utProviderClass));
     }
 
     /**
      * {@inheritDoc}
      */
-    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
-        TypeLiteral<? extends Provider<UserTransaction>> utProviderType )
-    {
-        return useGlobalTransactionProvidedBy( Key.get( utProviderType ) );
+    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(TypeLiteral<? extends Provider<UserTransaction>> utProviderType) {
+        return useGlobalTransactionProvidedBy(Key.get(utProviderType));
     }
 
     /**
      * {@inheritDoc}
      */
-    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
-        Key<? extends Provider<UserTransaction>> utProviderKey )
-    {
+    public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(Key<? extends Provider<UserTransaction>> utProviderKey) {
         this.isJta = true;
         this.utProviderKey = utProviderKey;
         return this;
@@ -139,161 +126,129 @@ class PersistenceUnitModuleConfiguration
     /**
      * {@inheritDoc}
      */
-    public void setProperties( Properties properties )
-    {
+    public void setProperties(Properties properties) {
         this.properties = properties;
     }
 
-    void setPuName( String puName )
-    {
+    void setPuName(String puName) {
         this.puName = puName;
     }
 
-    void setEmf( EntityManagerFactory emf )
-    {
+    void setEmf(EntityManagerFactory emf) {
         this.emf = emf;
     }
 
-    void setEmfJndiName( String emfJndiName )
-    {
+    void setEmfJndiName(String emfJndiName) {
         this.emfJndiName = emfJndiName;
     }
 
-    void setEmfProvider( Provider<EntityManagerFactory> emfProvider )
-    {
+    void setEmfProvider(Provider<EntityManagerFactory> emfProvider) {
         this.emfProvider = emfProvider;
     }
 
-    void setEmfProviderClass( Class<? extends Provider<EntityManagerFactory>> emfProviderClass )
-    {
-        this.emfProviderKey = Key.get( emfProviderClass );
+    void setEmfProviderClass(Class<? extends Provider<EntityManagerFactory>> emfProviderClass) {
+        this.emfProviderKey = Key.get(emfProviderClass);
     }
 
-    void setEmfProviderType( TypeLiteral<? extends Provider<EntityManagerFactory>> emfProviderType )
-    {
-        this.emfProviderKey = Key.get( emfProviderType );
+    void setEmfProviderType(TypeLiteral<? extends Provider<EntityManagerFactory>> emfProviderType) {
+        this.emfProviderKey = Key.get(emfProviderType);
     }
 
-    void setEmfProviderKey( Key<? extends Provider<EntityManagerFactory>> emfProviderKey )
-    {
+    void setEmfProviderKey(Key<? extends Provider<EntityManagerFactory>> emfProviderKey) {
         this.emfProviderKey = emfProviderKey;
     }
 
-    boolean isApplicationManagedPersistenceUnit()
-    {
+    boolean isApplicationManagedPersistenceUnit() {
         return puName != null;
     }
 
 
-    UserTransaction getUserTransaction()
-    {
+    UserTransaction getUserTransaction() {
         return userTransaction;
     }
 
-    String getUtJndiName()
-    {
+    String getUtJndiName() {
         return utJndiName;
     }
 
-    Provider<UserTransaction> getUtProvider()
-    {
+    Provider<UserTransaction> getUtProvider() {
         return utProvider;
     }
 
-    Key<? extends Provider<UserTransaction>> getUtProviderKey()
-    {
+    Key<? extends Provider<UserTransaction>> getUtProviderKey() {
         return utProviderKey;
     }
 
-    Properties getProperties()
-    {
+    Properties getProperties() {
         return properties;
     }
 
-    String getPuName()
-    {
+    String getPuName() {
         return puName;
     }
 
-    EntityManagerFactory getEmf()
-    {
+    EntityManagerFactory getEmf() {
         return emf;
     }
 
-    String getEmfJndiName()
-    {
+    String getEmfJndiName() {
         return emfJndiName;
     }
 
-    Provider<EntityManagerFactory> getEmfProvider()
-    {
+    Provider<EntityManagerFactory> getEmfProvider() {
         return emfProvider;
     }
 
-    Key<? extends Provider<EntityManagerFactory>> getEmfProviderKey()
-    {
+    Key<? extends Provider<EntityManagerFactory>> getEmfProviderKey() {
         return emfProviderKey;
     }
 
-    boolean isEmfProvidedByJndiLookup()
-    {
+    boolean isEmfProvidedByJndiLookup() {
         return emfJndiName != null;
     }
 
-    boolean isEmfProvidedByInstance()
-    {
+    boolean isEmfProvidedByInstance() {
         return emf != null;
     }
 
-    boolean isEmfProvidedByProvider()
-    {
+    boolean isEmfProvidedByProvider() {
         return emfProvider != null;
     }
 
-    boolean isEmfProvidedByProviderKey()
-    {
+    boolean isEmfProvidedByProviderKey() {
         return emfProviderKey != null;
     }
 
-    boolean isJta()
-    {
+    boolean isJta() {
         return isJta;
     }
 
-    boolean isUserTransactionProvidedByJndiLookup()
-    {
+    boolean isUserTransactionProvidedByJndiLookup() {
         return utJndiName != null;
     }
 
 
-    boolean isUserTransactionProvidedByInstance()
-    {
+    boolean isUserTransactionProvidedByInstance() {
         return userTransaction != null;
     }
 
-    boolean isUserTransactionProvidedByProvider()
-    {
+    boolean isUserTransactionProvidedByProvider() {
         return utProvider != null;
     }
 
-    boolean isUserTransactionProvidedByProviderKey()
-    {
+    boolean isUserTransactionProvidedByProviderKey() {
         return utProviderKey != null;
     }
 
-    boolean isAnnotated()
-    {
+    boolean isAnnotated() {
         return annotation != null;
     }
 
-    AnnotationHolder getAnnotationHolder()
-    {
-        return new AnnotationHolder( annotation );
+    AnnotationHolder getAnnotationHolder() {
+        return new AnnotationHolder(annotation);
     }
 
-    Class<? extends Annotation> getAnnotation()
-    {
+    Class<? extends Annotation> getAnnotation() {
         return annotation;
     }
-
 }

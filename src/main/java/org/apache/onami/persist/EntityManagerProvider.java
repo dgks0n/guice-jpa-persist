@@ -20,7 +20,6 @@ package org.apache.onami.persist;
  */
 
 import javax.inject.Provider;
-
 import javax.persistence.EntityManager;
 
 /**
@@ -41,14 +40,11 @@ import javax.persistence.EntityManager;
  * <p/>
  * The {@link EntityManagerProvider} is thread save.
  */
-public interface EntityManagerProvider extends Provider<EntityManager>
-{
+public interface EntityManagerProvider extends Provider<EntityManager> {
 
     /**
      * @return the {@link EntityManager}.
      * @throws IllegalStateException if {@link UnitOfWork#isActive()} returns false.
      */
-    EntityManager get()
-        throws IllegalStateException;
-
+    EntityManager get() throws IllegalStateException;
 }

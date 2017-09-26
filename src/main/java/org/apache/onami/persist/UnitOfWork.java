@@ -56,8 +56,7 @@ import javax.persistence.EntityManager;
  * }
  * </pre>
  */
-public interface UnitOfWork
-{
+public interface UnitOfWork {
 
     /**
      * Begins the unit of work.
@@ -69,7 +68,7 @@ public interface UnitOfWork
 
     /**
      * @return {@code true} if the unit of work is active for the current thread
-     *         {@code false} otherwise.
+     * {@code false} otherwise.
      */
     boolean isActive();
 
@@ -78,5 +77,4 @@ public interface UnitOfWork
      * When the unit of work is not active this method will do nothing.
      */
     void end();
-
 }
