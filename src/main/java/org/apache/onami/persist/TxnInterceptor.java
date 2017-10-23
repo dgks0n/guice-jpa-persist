@@ -1,19 +1,24 @@
-/*
- *
- *  * Copyright (c) 2016. David Sowerby
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- *  * the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- *  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- *  * specific language governing permissions and limitations under the License.
- *
- */
-
 package org.apache.onami.persist;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import javax.inject.Inject;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -24,17 +29,19 @@ import org.aopalliance.intercept.MethodInvocation;
 class TxnInterceptor implements MethodInterceptor {
 
   /**
+   * Unit of work.
+   */
+  private UnitOfWork unitOfWork;
+
+  /**
    * Factory for {@link TransactionFacade}.
    */
   private TransactionFacadeFactory tfProvider;
+
   /**
    * Helper for working with the concrete transactional annotations on methods and classes.
    */
   private TransactionalAnnotationHelper txnAnnotationHelper;
-  /**
-   * Unit of work.
-   */
-  private UnitOfWork unitOfWork;
 
   @Inject
   @VisibleForTesting
@@ -47,14 +54,13 @@ class TxnInterceptor implements MethodInterceptor {
   /**
    * {@inheritDoc}
    */
-  // @Override
+  @Override
   public final Object invoke(MethodInvocation methodInvocation) throws Throwable {
     if (persistenceUnitParticipatesInTransactionFor(methodInvocation)) {
       return invokeInTransactionAndUnitOfWork(methodInvocation);
     } else {
       return methodInvocation.proceed();
     }
-
   }
 
   /**
@@ -103,7 +109,6 @@ class TxnInterceptor implements MethodInterceptor {
    * execution of this method.
    * @throws Throwable if an exception happened while ending the unit of work.
    */
-  @SuppressFBWarnings("LEST_LOST_EXCEPTION_STACK_TRACE")
   private void endUnitOfWork(Throwable originalException) throws Throwable {
     try {
       unitOfWork.end();
@@ -157,7 +162,6 @@ class TxnInterceptor implements MethodInterceptor {
    * @param transactionFacade the facade to the underlying resource local or jta transaction.
    * @param exc the exception thrown by the original method.
    */
-  @SuppressFBWarnings("LEST_LOST_EXCEPTION_STACK_TRACE")
   private void handleException(MethodInvocation methodInvocation, TransactionFacade transactionFacade, Throwable exc) throws Throwable {
     try {
       if (isRollbackNecessaryFor(methodInvocation, exc)) {
@@ -181,5 +185,4 @@ class TxnInterceptor implements MethodInterceptor {
   private boolean isRollbackNecessaryFor(MethodInvocation methodInvocation, Throwable exc) {
     return txnAnnotationHelper.isRollbackNecessaryFor(methodInvocation, exc);
   }
-
 }

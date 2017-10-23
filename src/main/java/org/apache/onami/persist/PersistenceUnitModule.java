@@ -1,17 +1,23 @@
-/*
- *
- *  * Copyright (c) 2016. David Sowerby
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- *  * the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- *  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- *  * specific language governing permissions and limitations under the License.
- *
- */
-
 package org.apache.onami.persist;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
@@ -25,8 +31,6 @@ import java.lang.annotation.Annotation;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import uk.q3c.krail.core.option.jpa.DefaultJpaContainerProvider;
 import uk.q3c.krail.core.option.jpa.DefaultJpaOptionContainerProvider;
 import uk.q3c.krail.core.option.jpa.JpaContainerProvider;
@@ -41,10 +45,7 @@ import uk.q3c.krail.persist.VaadinContainerProvider;
  *
  * @see PersistenceModule
  */
-@SuppressFBWarnings("FCBL_FIELD_COULD_BE_LOCAL")
 public class PersistenceUnitModule extends PrivateModule {
-
-  private static Logger log = LoggerFactory.getLogger(PersistenceUnitModule.class);
 
   /**
    * The configuration for the persistence unit.
@@ -70,8 +71,11 @@ public class PersistenceUnitModule extends PrivateModule {
    * @param transactionInterceptor interceptor for the transactional annotation.
    * @param allPersistenceUnits container holding all persistence units.
    */
-  PersistenceUnitModule(PersistenceUnitModuleConfiguration configurator, TxnInterceptor transactionInterceptor,
-      AllPersistenceUnits allPersistenceUnits) {
+  PersistenceUnitModule(
+      PersistenceUnitModuleConfiguration configurator,
+      TxnInterceptor transactionInterceptor,
+      AllPersistenceUnits allPersistenceUnits
+  ) {
     this.config = checkNotNull(configurator, "config is mandatory!");
     this.transactionInterceptor = checkNotNull(transactionInterceptor, "transactionInterceptor is mandatory!");
     this.allPersistenceUnits = checkNotNull(allPersistenceUnits, "allPersistenceUnits is mandatory!");
@@ -82,7 +86,6 @@ public class PersistenceUnitModule extends PrivateModule {
    */
   @Override
   protected void configure() {
-
     bind(AnnotationHolder.class).toInstance(config.getAnnotationHolder());
 
     bindPersistenceServiceAndEntityManagerFactoryProviderAndProperties();
@@ -102,9 +105,8 @@ public class PersistenceUnitModule extends PrivateModule {
   }
 
   /**
-   * exposes the following interfaces (optionally annotated if an annotation is defined in the configuration), along with any contained in
-   * the configuration
-   * object
+   * exposes the following interfaces (optionally annotated if an annotation is defined in the configuration).
+   * along with any contained in the configuration object
    * <ul>
    * <li>{@link PersistenceService}</li>
    * <li>{@link EntityManagerProvider}</li>
@@ -113,7 +115,6 @@ public class PersistenceUnitModule extends PrivateModule {
    */
   private void exposePersistenceServiceAndEntityManagerProviderAndUnitOfWork() {
     if (config.isAnnotated()) {
-
       bindAndExposedAnnotated(PersistenceService.class);
       bindAndExposedAnnotated(EntityManagerProvider.class);
       bindAndExposedAnnotated(UnitOfWork.class);
@@ -163,8 +164,7 @@ public class PersistenceUnitModule extends PrivateModule {
    * @param <T> the type to expose.
    */
   private <T> void bindAndExposedAnnotated(Class<T> type) {
-    bind(type).annotatedWith(config.getAnnotation())
-        .to(Key.get(type));
+    bind(type).annotatedWith(config.getAnnotation()).to(Key.get(type));
     expose(type).annotatedWith(config.getAnnotation());
   }
 
@@ -196,25 +196,24 @@ public class PersistenceUnitModule extends PrivateModule {
   private void bindApplicationManagedPersistenceServiceAndEntityManagerFactoryProviderAndProperties() {
     bind(PersistenceService.class).to(ApplicationManagedEntityManagerFactoryProvider.class);
     bind(EntityManagerFactoryProvider.class).to(ApplicationManagedEntityManagerFactoryProvider.class);
-    bind(Properties.class).annotatedWith(ForContainerManaged.class)
-        .toProvider(Providers.of(null));
-    bind(Properties.class).annotatedWith(ForApplicationManaged.class)
-        .toProvider(Providers.of(config.getProperties()));
+    bind(Properties.class).annotatedWith(ForContainerManaged.class).toProvider(
+        Providers.<Properties>of(null));
+    bind(Properties.class).annotatedWith(ForApplicationManaged.class).toProvider(
+        Providers.of(config.getProperties()));
 
     // required in ApplicationManagedEntityManagerFactoryProvider
     bind(EntityManagerFactoryFactory.class);
     // required in EntityManagerFactoryFactory
-    bind(String.class).annotatedWith(ForApplicationManaged.class)
-        .toInstance(config.getPuName());
+    bind(String.class).annotatedWith(ForApplicationManaged.class).toInstance(config.getPuName());
   }
 
   private void bindContainerManagedPersistenceServiceAndEntityManagerFactoryProviderAndProperties() {
     bind(PersistenceService.class).to(ContainerManagedEntityManagerFactoryProvider.class);
     bind(EntityManagerFactoryProvider.class).to(ContainerManagedEntityManagerFactoryProvider.class);
-    bind(Properties.class).annotatedWith(ForContainerManaged.class)
-        .toProvider(Providers.of(config.getProperties()));
-    bind(Properties.class).annotatedWith(ForApplicationManaged.class)
-        .toProvider(Providers.of(null));
+    bind(Properties.class).annotatedWith(ForContainerManaged.class).toProvider(
+        Providers.of(config.getProperties()));
+    bind(Properties.class).annotatedWith(ForApplicationManaged.class).toProvider(
+        Providers.<Properties>of(null));
 
     // required in ContainerManagedEntityManagerFactoryProvider
     bindEntityManagerFactorySource();
@@ -225,8 +224,7 @@ public class PersistenceUnitModule extends PrivateModule {
       bind(EntityManagerFactorySource.class).to(EntityManagerFactorySourceByJndiLookup.class);
 
       // required in EntityManagerFactorySourceByJndiLookup
-      bind(String.class).annotatedWith(ForContainerManaged.class)
-          .toInstance(config.getEmfJndiName());
+      bind(String.class).annotatedWith(ForContainerManaged.class).toInstance(config.getEmfJndiName());
     } else {
       bind(EntityManagerFactorySource.class).to(EntityManagerFactorySourceViaProvider.class);
 
@@ -237,14 +235,13 @@ public class PersistenceUnitModule extends PrivateModule {
 
   private void bindInternalEntityManagerFactoryProvider() {
     if (config.isEmfProvidedByInstance()) {
-      bind(EntityManagerFactory.class).annotatedWith(ForContainerManaged.class)
-          .toInstance(config.getEmf());
+      bind(EntityManagerFactory.class).annotatedWith(ForContainerManaged.class).toInstance(config.getEmf());
     } else if (config.isEmfProvidedByProvider()) {
-      bind(EntityManagerFactory.class).annotatedWith(ForContainerManaged.class)
-          .toProvider(Providers.guicify(config.getEmfProvider()));
+      bind(EntityManagerFactory.class).annotatedWith(ForContainerManaged.class).toProvider(
+          Providers.guicify(config.getEmfProvider()));
     } else if (config.isEmfProvidedByProviderKey()) {
-      bind(EntityManagerFactory.class).annotatedWith(ForContainerManaged.class)
-          .toProvider(config.getEmfProviderKey());
+      bind(EntityManagerFactory.class).annotatedWith(ForContainerManaged.class).toProvider(
+          config.getEmfProviderKey());
     } else {
       throw new RuntimeException("EntityManager is improperly configured");
     }
@@ -272,8 +269,7 @@ public class PersistenceUnitModule extends PrivateModule {
       bind(UserTransaction.class).toProvider(UserTransactionProviderByJndiLookup.class);
 
       // required in UserTransactionProviderByJndiLookup
-      bind(String.class).annotatedWith(UserTransactionJndiName.class)
-          .toInstance(config.getUtJndiName());
+      bind(String.class).annotatedWith(UserTransactionJndiName.class).toInstance(config.getUtJndiName());
     } else if (config.isUserTransactionProvidedByProvider()) {
       bind(UserTransaction.class).toProvider(Providers.guicify(config.getUtProvider()));
     } else if (config.isUserTransactionProvidedByProviderKey()) {
@@ -282,5 +278,4 @@ public class PersistenceUnitModule extends PrivateModule {
       throw new RuntimeException("UserTransaction is improperly configured");
     }
   }
-
 }

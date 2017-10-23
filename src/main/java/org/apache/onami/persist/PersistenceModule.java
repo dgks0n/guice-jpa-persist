@@ -1,17 +1,23 @@
-/*
- *
- *  * Copyright (c) 2016. David Sowerby
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- *  * the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- *  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- *  * specific language governing permissions and limitations under the License.
- *
- */
-
 package org.apache.onami.persist;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import static com.google.inject.matcher.Matchers.annotatedWith;
 import static com.google.inject.matcher.Matchers.any;
@@ -27,7 +33,7 @@ import javax.inject.Provider;
 import javax.persistence.EntityManagerFactory;
 
 /**
- * Main module of the onami common guice extension.
+ * Main module of the onami persist guice extension.
  */
 public abstract class PersistenceModule extends AbstractModule {
 
@@ -50,7 +56,6 @@ public abstract class PersistenceModule extends AbstractModule {
     } finally {
       configurations = null;
     }
-
   }
 
   /**
@@ -59,8 +64,7 @@ public abstract class PersistenceModule extends AbstractModule {
   private void configurePersistenceUnits() {
     configurePersistence();
 
-    bind(PersistenceFilter.class).to(PersistenceFilterImpl.class)
-        .in(Scopes.SINGLETON);
+    bind(PersistenceFilter.class).to(PersistenceFilterImpl.class).in(Scopes.SINGLETON);
 
     final AllPersistenceUnits allPersistenceUnits = new AllPersistenceUnits();
     requestInjection(allPersistenceUnits);
@@ -77,12 +81,10 @@ public abstract class PersistenceModule extends AbstractModule {
     }
   }
 
-
   /**
    * Configures the persistence units over the exposed methods.
    */
   protected abstract void configurePersistence();
-
 
   /**
    * Binds an application managed persistence unit.
@@ -94,12 +96,6 @@ public abstract class PersistenceModule extends AbstractModule {
     checkNotNull(configurations, "calling bindApplicationManagedPersistenceUnit outside of configurePersistence is not supported");
     final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
     configurator.setPuName(puName);
-    return configurator;
-  }
-
-  private PersistenceUnitModuleConfiguration createAndAddConfiguration() {
-    final PersistenceUnitModuleConfiguration configurator = new PersistenceUnitModuleConfiguration();
-    configurations.add(configurator);
     return configurator;
   }
 
@@ -148,8 +144,9 @@ public abstract class PersistenceModule extends AbstractModule {
    * @param emfProviderClass the provider for the entity manager factory.
    * @return the next builder step.
    */
-  protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(Class<? extends Provider<EntityManagerFactory>>
-      emfProviderClass) {
+  protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(
+      Class<? extends Provider<EntityManagerFactory>> emfProviderClass
+  ) {
     checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
     final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
     configurator.setEmfProviderClass(emfProviderClass);
@@ -163,8 +160,8 @@ public abstract class PersistenceModule extends AbstractModule {
    * @return the next builder step.
    */
   protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(
-      TypeLiteral<? extends Provider<EntityManagerFactory>>
-          emfProviderType) {
+      TypeLiteral<? extends Provider<EntityManagerFactory>> emfProviderType
+  ) {
     checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
     final PersistenceUnitModuleConfiguration configurator = createAndAddConfiguration();
     configurator.setEmfProviderType(emfProviderType);
@@ -178,11 +175,17 @@ public abstract class PersistenceModule extends AbstractModule {
    * @return the next builder step.
    */
   protected UnannotatedPersistenceUnitBuilder bindContainerManagedPersistenceUnitProvidedBy(
-      Key<? extends Provider<EntityManagerFactory>> emfProviderKey) {
+      Key<? extends Provider<EntityManagerFactory>> emfProviderKey
+  ) {
     checkNotNull(configurations, "calling bindContainerManagedPersistenceUnit outside of configurePersistence is not supported");
     final PersistenceUnitModuleConfiguration configuration = createAndAddConfiguration();
     configuration.setEmfProviderKey(emfProviderKey);
     return configuration;
   }
 
+  private PersistenceUnitModuleConfiguration createAndAddConfiguration() {
+    final PersistenceUnitModuleConfiguration configurator = new PersistenceUnitModuleConfiguration();
+    configurations.add(configurator);
+    return configurator;
+  }
 }

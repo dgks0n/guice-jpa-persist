@@ -1,17 +1,23 @@
-/*
- *
- *  * Copyright (c) 2016. David Sowerby
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- *  * the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- *  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
- *  * specific language governing permissions and limitations under the License.
- *
- */
-
 package org.apache.onami.persist;
+
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
@@ -20,8 +26,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link EntityManagerProvider} and {@link UnitOfWork}.
@@ -29,9 +33,8 @@ import org.slf4j.LoggerFactory;
 @Singleton
 class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWork {
 
-  private static Logger log = LoggerFactory.getLogger(EntityManagerProviderImpl.class);
   /**
-   * Provider for {@link EntityManagerFactory}.
+   * Provider for {@link javax.persistence.EntityManagerFactory}.
    */
   private final EntityManagerFactoryProvider emfProvider;
 
@@ -60,8 +63,8 @@ class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWork {
   /**
    * {@inheritDoc}
    */
-  // @Override
-  public EntityManager get() {
+  @Override
+  public EntityManager get() throws IllegalStateException {
     final EntityManager entityManager = entityManagers.get();
     if (entityManager != null) {
       return entityManager;
@@ -73,9 +76,8 @@ class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWork {
   /**
    * {@inheritDoc}
    */
-  // @Override
+  @Override
   public void begin() {
-    log.debug("Starting Unit of Work");
     if (isActive()) {
       throw new IllegalStateException("Unit of work has already been started.");
     } else {
@@ -99,7 +101,7 @@ class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWork {
   /**
    * {@inheritDoc}
    */
-  // @Override
+  @Override
   public boolean isActive() {
     return entityManagers.get() != null;
   }
@@ -107,13 +109,12 @@ class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWork {
   /**
    * {@inheritDoc}
    */
-  // @Override
+  @Override
   public void end() {
     final EntityManager em = entityManagers.get();
     if (em != null) {
       closeAndRemoveEntityManager(em);
     }
-    log.debug("End Unit of Work");
   }
 
   /**
@@ -128,5 +129,4 @@ class EntityManagerProviderImpl implements EntityManagerProvider, UnitOfWork {
       entityManagers.remove();
     }
   }
-
 }
