@@ -28,8 +28,8 @@ import javax.persistence.EntityManagerFactory;
  */
 interface EntityManagerFactorySource {
 
-    /**
-     * @return a entity manager factory which is obtained from some source. The instance is not newly created.
-     */
-    EntityManagerFactory getEntityManagerFactory();
+  /**
+   * @return a entity manager factory which is obtained from some source. The instance is not newly created.
+   */
+  EntityManagerFactory getEntityManagerFactory();
 }

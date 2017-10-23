@@ -58,23 +58,23 @@ import javax.persistence.EntityManager;
  */
 public interface UnitOfWork {
 
-    /**
-     * Begins the unit of work.
-     * When a unit of work has already been started for the current thread an {@link IllegalStateException} is thrown.
-     *
-     * @throws IllegalStateException if a unit of work is already active for this thread.
-     */
-    void begin();
+  /**
+   * Begins the unit of work.
+   * When a unit of work has already been started for the current thread an {@link IllegalStateException} is thrown.
+   *
+   * @throws IllegalStateException if a unit of work is already active for this thread.
+   */
+  void begin();
 
-    /**
-     * @return {@code true} if the unit of work is active for the current thread
-     * {@code false} otherwise.
-     */
-    boolean isActive();
+  /**
+   * @return {@code true} if the unit of work is active for the current thread
+   * {@code false} otherwise.
+   */
+  boolean isActive();
 
-    /**
-     * Ends the unit of work.
-     * When the unit of work is not active this method will do nothing.
-     */
-    void end();
+  /**
+   * Ends the unit of work.
+   * When the unit of work is not active this method will do nothing.
+   */
+  void end();
 }

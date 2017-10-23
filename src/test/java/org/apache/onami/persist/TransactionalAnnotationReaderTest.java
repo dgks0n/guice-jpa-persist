@@ -21,7 +21,6 @@ package org.apache.onami.persist;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
-
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,107 +31,111 @@ import org.junit.Test;
  */
 public class TransactionalAnnotationReaderTest {
 
-    private TransactionalAnnotationReader sut;
+  private TransactionalAnnotationReader sut;
 
-    @Before
-    public void setUp() throws Exception {
-        sut = new TransactionalAnnotationReader();
+  @Before
+  public void setUp() throws Exception {
+    sut = new TransactionalAnnotationReader();
+  }
+
+  @Test
+  public void shouldReadFromMethodWithAnnotation() throws Exception {
+    final MethodInvocation invocation = methodInvocation(new WithMethodAnnotations(), "withAnno");
+    final Transactional result = sut.readAnnotationFrom(invocation);
+
+    Assert.assertThat(result, TransactionalAnnotationMatcher.transactionalAnnotation(
+        new Class[]{OtherPersistenceUnit.class}, new Class[]{NullPointerException.class}, new Class[]{}));
+  }
+
+  @Test
+  public void shouldReadFromClassWithAnnotation() throws Exception {
+    final MethodInvocation invocation = methodInvocation(new WithClassAnnotations(), "noAnno");
+    final Transactional result = sut.readAnnotationFrom(invocation);
+
+    Assert.assertThat(result, TransactionalAnnotationMatcher.transactionalAnnotation(
+        new Class[]{TestPersistenceUnit.class}, new Class[]{IllegalArgumentException.class}, new Class[]{}));
+  }
+
+  @Test
+  public void shouldReadFromDefaultsClassAndMethodWithoutAnnotation() throws Exception {
+    final MethodInvocation invocation = methodInvocation(new WithoutAnyAnnotations(), "noAnno");
+    final Transactional result = sut.readAnnotationFrom(invocation);
+
+    Assert.assertThat(result, TransactionalAnnotationMatcher.transactionalAnnotation(new Class[]{}, new Class[]{
+        RuntimeException.class}, new Class[]{}));
+  }
+
+  @Test
+  public void shouldReadFromMethodWithAnnotationWhenBothClassAndMethodAnnotationAreGiven() throws Exception {
+    final MethodInvocation invocation = methodInvocation(new WithClassAndMethodAnnotations(), "withAnno");
+    final Transactional result = sut.readAnnotationFrom(invocation);
+
+    Assert.assertThat(result, TransactionalAnnotationMatcher.transactionalAnnotation(
+        new Class[]{OtherPersistenceUnit.class}, new Class[]{NullPointerException.class}, new Class[]{}));
+  }
+
+  // classes and methods to pass to the TransactionalAnnotationReader for testing
+
+  private static class WithoutAnyAnnotations {
+
+    public void noAnno() {
+      // nop
     }
+  }
 
-    @Test
-    public void shouldReadFromMethodWithAnnotation() throws Exception {
-        final MethodInvocation invocation = methodInvocation(new WithMethodAnnotations(), "withAnno");
-        final Transactional result = sut.readAnnotationFrom(invocation);
+  @Transactional(onUnits = TestPersistenceUnit.class, rollbackOn = IllegalArgumentException.class)
+  private static class WithClassAnnotations {
 
-        Assert.assertThat(result, TransactionalAnnotationMatcher.transactionalAnnotation(
-                new Class[]{OtherPersistenceUnit.class}, new Class[]{NullPointerException.class}, new Class[]{}));
+    public void noAnno() {
+      // nop
     }
+  }
 
-    @Test
-    public void shouldReadFromClassWithAnnotation() throws Exception {
-        final MethodInvocation invocation = methodInvocation(new WithClassAnnotations(), "noAnno");
-        final Transactional result = sut.readAnnotationFrom(invocation);
+  private static class WithMethodAnnotations {
 
-        Assert.assertThat(result, TransactionalAnnotationMatcher.transactionalAnnotation(
-                new Class[]{TestPersistenceUnit.class}, new Class[]{IllegalArgumentException.class}, new Class[]{}));
+    @Transactional(onUnits = OtherPersistenceUnit.class, rollbackOn = NullPointerException.class)
+    public void withAnno() {
+      // nop
     }
+  }
 
-    @Test
-    public void shouldReadFromDefaultsClassAndMethodWithoutAnnotation() throws Exception {
-        final MethodInvocation invocation = methodInvocation(new WithoutAnyAnnotations(), "noAnno");
-        final Transactional result = sut.readAnnotationFrom(invocation);
+  @Transactional(onUnits = TestPersistenceUnit.class, rollbackOn = IllegalArgumentException.class)
+  private static class WithClassAndMethodAnnotations {
 
-        Assert.assertThat(result, TransactionalAnnotationMatcher.transactionalAnnotation(new Class[]{}, new Class[]{
-                RuntimeException.class}, new Class[]{}));
+    @Transactional(onUnits = OtherPersistenceUnit.class, rollbackOn = NullPointerException.class)
+    public void withAnno() {
+      // nop
     }
+  }
 
-    @Test
-    public void shouldReadFromMethodWithAnnotationWhenBothClassAndMethodAnnotationAreGiven() throws Exception {
-        final MethodInvocation invocation = methodInvocation(new WithClassAndMethodAnnotations(), "withAnno");
-        final Transactional result = sut.readAnnotationFrom(invocation);
 
-        Assert.assertThat(result, TransactionalAnnotationMatcher.transactionalAnnotation(
-                new Class[]{OtherPersistenceUnit.class}, new Class[]{NullPointerException.class}, new Class[]{}));
-    }
-
-    // classes and methods to pass to the TransactionalAnnotationReader for testing
-
-    private static class WithoutAnyAnnotations {
-        public void noAnno() {
-            // nop
+  private static MethodInvocation methodInvocation(final Object instance, String name) {
+    try {
+      final Method method = instance.getClass().getDeclaredMethod(name);
+      return new MethodInvocation() {
+        public Method getMethod() {
+          return method;
         }
-    }
 
-    @Transactional(onUnits = TestPersistenceUnit.class, rollbackOn = IllegalArgumentException.class)
-    private static class WithClassAnnotations {
-        public void noAnno() {
-            // nop
+        public Object[] getArguments() {
+          throw new RuntimeException("not implemented in mock");
         }
-    }
 
-    private static class WithMethodAnnotations {
-        @Transactional(onUnits = OtherPersistenceUnit.class, rollbackOn = NullPointerException.class)
-        public void withAnno() {
-            // nop
+        public Object proceed() throws Throwable {
+          throw new RuntimeException("not implemented in mock");
         }
-    }
 
-    @Transactional(onUnits = TestPersistenceUnit.class, rollbackOn = IllegalArgumentException.class)
-    private static class WithClassAndMethodAnnotations {
-        @Transactional(onUnits = OtherPersistenceUnit.class, rollbackOn = NullPointerException.class)
-        public void withAnno() {
-            // nop
+        public Object getThis() {
+          return instance;
         }
-    }
 
-
-    private static MethodInvocation methodInvocation(final Object instance, String name) {
-        try {
-            final Method method = instance.getClass().getDeclaredMethod(name);
-            return new MethodInvocation() {
-                public Method getMethod() {
-                    return method;
-                }
-
-                public Object[] getArguments() {
-                    throw new RuntimeException("not implemented in mock");
-                }
-
-                public Object proceed() throws Throwable {
-                    throw new RuntimeException("not implemented in mock");
-                }
-
-                public Object getThis() {
-                    return instance;
-                }
-
-                public AccessibleObject getStaticPart() {
-                    throw new RuntimeException("not implemented in mock");
-                }
-            };
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+        public AccessibleObject getStaticPart() {
+          throw new RuntimeException("not implemented in mock");
         }
+      };
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException(e);
     }
+  }
 }

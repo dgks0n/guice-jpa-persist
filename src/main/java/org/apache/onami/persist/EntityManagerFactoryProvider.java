@@ -26,8 +26,8 @@ import javax.persistence.EntityManagerFactory;
  */
 interface EntityManagerFactoryProvider {
 
-    /**
-     * @throws IllegalStateException if {@link PersistenceService#isRunning()} returns {@code false}.
-     */
-    EntityManagerFactory get() throws IllegalStateException;
+  /**
+   * @throws IllegalStateException if {@link PersistenceService#isRunning()} returns {@code false}.
+   */
+  EntityManagerFactory get() throws IllegalStateException;
 }

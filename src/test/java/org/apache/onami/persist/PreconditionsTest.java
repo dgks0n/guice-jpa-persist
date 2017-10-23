@@ -19,59 +19,59 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import org.junit.Test;
+
 /**
  * Test for {@link Preconditions}.
  */
 public class PreconditionsTest {
 
-    private static final String MESSAGE = "test message";
+  private static final String MESSAGE = "test message";
 
-    @Test
-    public void throwing() throws Exception {
-        try {
-            Preconditions.checkNotNull(null);
-        } catch (NullPointerException e) {
-            assertThat(e.getMessage(), is(nullValue()));
-            return;
-        }
-        fail("expected NullPointerException to be thrown");
+  @Test
+  public void throwing() throws Exception {
+    try {
+      Preconditions.checkNotNull(null);
+    } catch (NullPointerException e) {
+      assertThat(e.getMessage(), is(nullValue()));
+      return;
     }
+    fail("expected NullPointerException to be thrown");
+  }
 
-    @Test
-    public void notThrowing() {
-        final Object input = new Object();
-        final Object result = Preconditions.checkNotNull(input);
-        assertThat(result, sameInstance(input));
-    }
+  @Test
+  public void notThrowing() {
+    final Object input = new Object();
+    final Object result = Preconditions.checkNotNull(input);
+    assertThat(result, sameInstance(input));
+  }
 
-    @Test
-    public void throwingWithMessage() throws Exception {
-        try {
-            Preconditions.checkNotNull(null, MESSAGE);
-        } catch (NullPointerException e) {
-            assertThat(e.getMessage(), is(MESSAGE));
-            return;
-        }
-        fail("expected NullPointerException to be thrown");
+  @Test
+  public void throwingWithMessage() throws Exception {
+    try {
+      Preconditions.checkNotNull(null, MESSAGE);
+    } catch (NullPointerException e) {
+      assertThat(e.getMessage(), is(MESSAGE));
+      return;
     }
+    fail("expected NullPointerException to be thrown");
+  }
 
-    @Test
-    public void notThrowingWithMessage() {
-        final Object input = new Object();
-        final Object result = Preconditions.checkNotNull(input, MESSAGE);
-        assertThat(result, sameInstance(input));
-    }
+  @Test
+  public void notThrowingWithMessage() {
+    final Object input = new Object();
+    final Object result = Preconditions.checkNotNull(input, MESSAGE);
+    assertThat(result, sameInstance(input));
+  }
 
-    @Test
-    public void canBeCreated() {
-        new Preconditions();
-    }
+  @Test
+  public void canBeCreated() {
+    new Preconditions();
+  }
 }

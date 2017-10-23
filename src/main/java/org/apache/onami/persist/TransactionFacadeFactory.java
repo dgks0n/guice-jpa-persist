@@ -24,10 +24,10 @@ package org.apache.onami.persist;
  */
 interface TransactionFacadeFactory {
 
-    /**
-     * Creates a new transaction facade.
-     *
-     * @return the transaction facade
-     */
-    TransactionFacade createTransactionFacade();
+  /**
+   * Creates a new transaction facade.
+   *
+   * @return the transaction facade
+   */
+  TransactionFacade createTransactionFacade();
 }

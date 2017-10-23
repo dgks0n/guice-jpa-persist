@@ -19,87 +19,86 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InOrder;
-
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
 
 /**
  * Test for {@link PersistenceFilterImpl}.
  */
 public class PersistenceFilterImplTest {
 
-    private PersistenceFilterImpl sut;
+  private PersistenceFilterImpl sut;
 
-    private AllPersistenceServices allPersistenceServices;
-    private AllUnitsOfWork allUnitsOfWork;
+  private AllPersistenceServices allPersistenceServices;
+  private AllUnitsOfWork allUnitsOfWork;
 
-    @Before
-    public void setUp() throws Exception {
-        allPersistenceServices = mock(AllPersistenceServices.class);
-        allUnitsOfWork = mock(AllUnitsOfWork.class);
-        sut = new PersistenceFilterImpl(allPersistenceServices, allUnitsOfWork);
+  @Before
+  public void setUp() throws Exception {
+    allPersistenceServices = mock(AllPersistenceServices.class);
+    allUnitsOfWork = mock(AllUnitsOfWork.class);
+    sut = new PersistenceFilterImpl(allPersistenceServices, allUnitsOfWork);
+  }
+
+  @Test
+  public void initShouldStartService() throws Exception {
+    sut.init(mock(FilterConfig.class));
+    verify(allPersistenceServices).startAllStoppedPersistenceServices();
+  }
+
+  @Test
+  public void destroyShouldStopService() {
+    sut.destroy();
+    verify(allPersistenceServices).stopAllPersistenceServices();
+  }
+
+  @Test
+  public void doFilterShouldSpanUnitOfWork() throws Exception {
+    // given
+    final FilterChain chain = mock(FilterChain.class);
+    final InOrder inOrder = inOrder(allUnitsOfWork, chain);
+
+    final ServletRequest request = mock(ServletRequest.class);
+    final ServletResponse response = mock(ServletResponse.class);
+
+    // when
+    sut.doFilter(request, response, chain);
+
+    // then
+    inOrder.verify(allUnitsOfWork).beginAllInactiveUnitsOfWork();
+    inOrder.verify(chain).doFilter(request, response);
+    inOrder.verify(allUnitsOfWork).endAllUnitsOfWork();
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void doFilterShouldEndUnitOfWorkInCaseOfException() throws Exception {
+    // given
+    final FilterChain chain = mock(FilterChain.class);
+    final InOrder inOrder = inOrder(allUnitsOfWork, chain);
+
+    final ServletRequest request = mock(ServletRequest.class);
+    final ServletResponse response = mock(ServletResponse.class);
+
+    doThrow(new RuntimeException()).when(chain).doFilter(request, response);
+
+    // when
+    try {
+      sut.doFilter(request, response, chain);
     }
-
-    @Test
-    public void initShouldStartService() throws Exception {
-        sut.init(mock(FilterConfig.class));
-        verify(allPersistenceServices).startAllStoppedPersistenceServices();
+    // then
+    finally {
+      inOrder.verify(allUnitsOfWork).beginAllInactiveUnitsOfWork();
+      inOrder.verify(chain).doFilter(request, response);
+      inOrder.verify(allUnitsOfWork).endAllUnitsOfWork();
     }
-
-    @Test
-    public void destroyShouldStopService() {
-        sut.destroy();
-        verify(allPersistenceServices).stopAllPersistenceServices();
-    }
-
-    @Test
-    public void doFilterShouldSpanUnitOfWork() throws Exception {
-        // given
-        final FilterChain chain = mock(FilterChain.class);
-        final InOrder inOrder = inOrder(allUnitsOfWork, chain);
-
-        final ServletRequest request = mock(ServletRequest.class);
-        final ServletResponse response = mock(ServletResponse.class);
-
-        // when
-        sut.doFilter(request, response, chain);
-
-        // then
-        inOrder.verify(allUnitsOfWork).beginAllInactiveUnitsOfWork();
-        inOrder.verify(chain).doFilter(request, response);
-        inOrder.verify(allUnitsOfWork).endAllUnitsOfWork();
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void doFilterShouldEndUnitOfWorkInCaseOfException() throws Exception {
-        // given
-        final FilterChain chain = mock(FilterChain.class);
-        final InOrder inOrder = inOrder(allUnitsOfWork, chain);
-
-        final ServletRequest request = mock(ServletRequest.class);
-        final ServletResponse response = mock(ServletResponse.class);
-
-        doThrow(new RuntimeException()).when(chain).doFilter(request, response);
-
-        // when
-        try {
-            sut.doFilter(request, response, chain);
-        }
-        // then
-        finally {
-            inOrder.verify(allUnitsOfWork).beginAllInactiveUnitsOfWork();
-            inOrder.verify(chain).doFilter(request, response);
-            inOrder.verify(allUnitsOfWork).endAllUnitsOfWork();
-        }
-    }
+  }
 }

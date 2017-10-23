@@ -42,9 +42,9 @@ import javax.persistence.EntityManager;
  */
 public interface EntityManagerProvider extends Provider<EntityManager> {
 
-    /**
-     * @return the {@link EntityManager}.
-     * @throws IllegalStateException if {@link UnitOfWork#isActive()} returns false.
-     */
-    EntityManager get() throws IllegalStateException;
+  /**
+   * @return the {@link EntityManager}.
+   * @throws IllegalStateException if {@link UnitOfWork#isActive()} returns false.
+   */
+  EntityManager get() throws IllegalStateException;
 }

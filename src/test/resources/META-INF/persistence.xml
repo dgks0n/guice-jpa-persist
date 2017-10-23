@@ -18,71 +18,71 @@
  | under the License.
 -->
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
         http://java.sun.com/xml/ns/persistence/persistence_2_1.xsd" version="1.0">
 
-    <!-- JPA test "unit" -->
-    <persistence-unit name="testUnit" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+  <!-- JPA test "unit" -->
+  <persistence-unit name="testUnit" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>org.apache.onami.persist.test.TestEntity</class>
+    <class>org.apache.onami.persist.test.TestEntity</class>
 
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
-        <properties>
-            <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
-            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:persistence"/>
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.connection.password" value="sa"/>
-            <property name="hibernate.connection.pool_size" value="2"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
-            <property name="hibernate.cache_provider" value="org.hibernate.cache.NoCacheProvider"/>
+    <properties>
+      <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
+      <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:persistence"/>
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.connection.password" value="sa"/>
+      <property name="hibernate.connection.pool_size" value="2"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+      <property name="hibernate.cache_provider" value="org.hibernate.cache.NoCacheProvider"/>
 
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
-        </properties>
-    </persistence-unit>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+    </properties>
+  </persistence-unit>
 
-    <!-- JPA first "unit" -->
-    <persistence-unit name="firstUnit" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+  <!-- JPA first "unit" -->
+  <persistence-unit name="firstUnit" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>org.apache.onami.persist.test.TestEntity</class>
+    <class>org.apache.onami.persist.test.TestEntity</class>
 
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
-        <properties>
-            <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
-            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:first"/>
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.connection.password" value="sa"/>
-            <property name="hibernate.connection.pool_size" value="2"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
-            <property name="hibernate.cache_provider" value="org.hibernate.cache.NoCacheProvider"/>
+    <properties>
+      <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
+      <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:first"/>
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.connection.password" value="sa"/>
+      <property name="hibernate.connection.pool_size" value="2"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+      <property name="hibernate.cache_provider" value="org.hibernate.cache.NoCacheProvider"/>
 
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
-        </properties>
-    </persistence-unit>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+    </properties>
+  </persistence-unit>
 
-    <!-- JPA second "unit" -->
-    <persistence-unit name="secondUnit" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+  <!-- JPA second "unit" -->
+  <persistence-unit name="secondUnit" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>org.apache.onami.persist.test.TestEntity</class>
+    <class>org.apache.onami.persist.test.TestEntity</class>
 
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
-        <properties>
-            <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
-            <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:second"/>
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.connection.password" value="sa"/>
-            <property name="hibernate.connection.pool_size" value="2"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
-            <property name="hibernate.cache_provider" value="org.hibernate.cache.NoCacheProvider"/>
+    <properties>
+      <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
+      <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:second"/>
+      <property name="hibernate.connection.username" value="sa"/>
+      <property name="hibernate.connection.password" value="sa"/>
+      <property name="hibernate.connection.pool_size" value="2"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+      <property name="hibernate.cache_provider" value="org.hibernate.cache.NoCacheProvider"/>
 
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
-        </properties>
-    </persistence-unit>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+    </properties>
+  </persistence-unit>
 
 </persistence>

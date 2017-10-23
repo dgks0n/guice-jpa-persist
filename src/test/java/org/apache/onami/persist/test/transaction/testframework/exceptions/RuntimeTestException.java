@@ -24,28 +24,28 @@ package org.apache.onami.persist.test.transaction.testframework.exceptions;
  */
 public class RuntimeTestException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final String message;
+  private final String message;
 
-    /**
-     * Constructor.
-     */
-    public RuntimeTestException() {
-        this.message = RuntimeTestException.class.getSimpleName();
-    }
+  /**
+   * Constructor.
+   */
+  public RuntimeTestException() {
+    this.message = RuntimeTestException.class.getSimpleName();
+  }
 
-    /**
-     * Constructor.
-     *
-     * @param message the message of the exception.
-     */
-    public RuntimeTestException(String message) {
-        this.message = message;
-    }
+  /**
+   * Constructor.
+   *
+   * @param message the message of the exception.
+   */
+  public RuntimeTestException(String message) {
+    this.message = message;
+  }
 
-    @Override
-    public String getMessage() {
-        return message;
-    }
+  @Override
+  public String getMessage() {
+    return message;
+  }
 }

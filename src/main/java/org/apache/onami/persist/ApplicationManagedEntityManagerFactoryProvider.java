@@ -19,11 +19,11 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import static org.apache.onami.persist.Preconditions.checkNotNull;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManagerFactory;
-
-import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Implementation of {@link PersistenceService} and {@link EntityManagerFactoryProvider} for
@@ -32,69 +32,69 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 @Singleton
 class ApplicationManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider, PersistenceService {
 
-    /**
-     * Factory for creating the {@link EntityManagerFactory}.
-     */
-    private final EntityManagerFactoryFactory emfFactory;
+  /**
+   * Factory for creating the {@link EntityManagerFactory}.
+   */
+  private final EntityManagerFactoryFactory emfFactory;
 
-    /**
-     * Currently active entity manager factory.
-     * Is {@code null} when the persistence service is not running.
-     */
-    private EntityManagerFactory emf;
+  /**
+   * Currently active entity manager factory.
+   * Is {@code null} when the persistence service is not running.
+   */
+  private EntityManagerFactory emf;
 
-    /**
-     * Constructor.
-     *
-     * @param emfFactory the factory for the  {@link EntityManagerFactory}. Must not be {@code null}.
-     */
-    @Inject
-    ApplicationManagedEntityManagerFactoryProvider(EntityManagerFactoryFactory emfFactory) {
-        this.emfFactory = checkNotNull(emfFactory, "emfFactory is mandatory!");
+  /**
+   * Constructor.
+   *
+   * @param emfFactory the factory for the  {@link EntityManagerFactory}. Must not be {@code null}.
+   */
+  @Inject
+  ApplicationManagedEntityManagerFactoryProvider(EntityManagerFactoryFactory emfFactory) {
+    this.emfFactory = checkNotNull(emfFactory, "emfFactory is mandatory!");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public EntityManagerFactory get() {
+    if (isRunning()) {
+      return emf;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public EntityManagerFactory get() {
-        if (isRunning()) {
-            return emf;
-        }
+    throw new IllegalStateException("PersistenceService is not running.");
+  }
 
-        throw new IllegalStateException("PersistenceService is not running.");
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void start() {
+    if (isRunning()) {
+      throw new IllegalStateException("PersistenceService is already running.");
     }
+    emf = emfFactory.createApplicationManagedEntityManagerFactory();
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void start() {
-        if (isRunning()) {
-            throw new IllegalStateException("PersistenceService is already running.");
-        }
-        emf = emfFactory.createApplicationManagedEntityManagerFactory();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isRunning() {
+    return null != emf;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isRunning() {
-        return null != emf;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void stop() {
+    if (isRunning()) {
+      try {
+        emf.close();
+      } finally {
+        emf = null;
+      }
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void stop() {
-        if (isRunning()) {
-            try {
-                emf.close();
-            } finally {
-                emf = null;
-            }
-        }
-    }
+  }
 }

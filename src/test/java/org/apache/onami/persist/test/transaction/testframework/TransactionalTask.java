@@ -19,12 +19,11 @@ package org.apache.onami.persist.test.transaction.testframework;
  * under the License.
  */
 
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import com.google.common.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.annotations.VisibleForTesting;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import org.apache.onami.persist.EntityManagerProvider;
 import org.apache.onami.persist.test.TestEntity;
 import org.apache.onami.persist.test.transaction.testframework.exceptions.RuntimeTestException;
@@ -41,51 +40,51 @@ import org.apache.onami.persist.test.transaction.testframework.exceptions.TestEx
  */
 public abstract class TransactionalTask {
 
-    @Inject
-    private EntityManagerProvider emProvider;
+  @Inject
+  private EntityManagerProvider emProvider;
 
-    private TransactionalWorker worker;
+  private TransactionalWorker worker;
 
-    private final List<TestEntity> persistedEntities = new ArrayList<TestEntity>();
+  private final List<TestEntity> persistedEntities = new ArrayList<TestEntity>();
 
-    /**
-     * Should 'try to' create entities in the persistent storage (i.e. DB).
-     * Use {@link #storeEntity(org.apache.onami.persist.test.TestEntity)} to persist entities.
-     *
-     * @throws TestException may be thrown to test rollback.
-     * @throws RuntimeTestException may be thrown to test rollback.
-     */
-    public abstract void doTransactional() throws TestException, RuntimeTestException;
+  /**
+   * Should 'try to' create entities in the persistent storage (i.e. DB).
+   * Use {@link #storeEntity(org.apache.onami.persist.test.TestEntity)} to persist entities.
+   *
+   * @throws TestException may be thrown to test rollback.
+   * @throws RuntimeTestException may be thrown to test rollback.
+   */
+  public abstract void doTransactional() throws TestException, RuntimeTestException;
 
-    /**
-     * Does other tasks.
-     *
-     * @throws TestException may be thrown to test rollback.
-     * @throws RuntimeTestException may be thrown to test rollback.
-     */
-    protected final void doOtherTasks() throws TestException, RuntimeTestException {
-        worker.doNextTask();
-    }
+  /**
+   * Does other tasks.
+   *
+   * @throws TestException may be thrown to test rollback.
+   * @throws RuntimeTestException may be thrown to test rollback.
+   */
+  protected final void doOtherTasks() throws TestException, RuntimeTestException {
+    worker.doNextTask();
+  }
 
-    /**
-     * Stores an entity.
-     *
-     * @param entity the entity to store.
-     */
-    protected final void storeEntity(TestEntity entity) {
-        final EntityManager entityManager = emProvider.get();
-        entityManager.persist(entity);
-        entityManager.flush();
-        persistedEntities.add(entity);
-    }
+  /**
+   * Stores an entity.
+   *
+   * @param entity the entity to store.
+   */
+  protected final void storeEntity(TestEntity entity) {
+    final EntityManager entityManager = emProvider.get();
+    entityManager.persist(entity);
+    entityManager.flush();
+    persistedEntities.add(entity);
+  }
 
-    @VisibleForTesting
-    void setWorker(TransactionalWorker transactionalWorker) {
-        worker = transactionalWorker;
-    }
+  @VisibleForTesting
+  void setWorker(TransactionalWorker transactionalWorker) {
+    worker = transactionalWorker;
+  }
 
-    @VisibleForTesting
-    List<TestEntity> getPersistedEntities() {
-        return persistedEntities;
-    }
+  @VisibleForTesting
+  List<TestEntity> getPersistedEntities() {
+    return persistedEntities;
+  }
 }

@@ -26,28 +26,28 @@ package org.apache.onami.persist;
  */
 public interface PersistenceService {
 
-    /**
-     * Starts the underlying persistence engine and makes onami-persist ready for use.
-     * This method must be called by your code prior to using any other onami-persist artifacts.
-     * If you are using onami-persist in a web container {@link PersistenceFilter} will call this
-     * method upon initialization of the web application.
-     *
-     * @throws IllegalStateException if the service is already running.
-     */
-    void start();
+  /**
+   * Starts the underlying persistence engine and makes onami-persist ready for use.
+   * This method must be called by your code prior to using any other onami-persist artifacts.
+   * If you are using onami-persist in a web container {@link PersistenceFilter} will call this
+   * method upon initialization of the web application.
+   *
+   * @throws IllegalStateException if the service is already running.
+   */
+  void start();
 
-    /**
-     * @return {@code true} if the underlying persistence engine is running.
-     * {@code false} otherwise.
-     */
-    boolean isRunning();
+  /**
+   * @return {@code true} if the underlying persistence engine is running.
+   * {@code false} otherwise.
+   */
+  boolean isRunning();
 
-    /**
-     * Stops the underlying persistence engine.
-     * <ul>
-     * <li>If already stopped, calling this method does nothing.</li>
-     * <li>If not yet started, it also does nothing.</li>
-     * </ul>
-     */
-    void stop();
+  /**
+   * Stops the underlying persistence engine.
+   * <ul>
+   * <li>If already stopped, calling this method does nothing.</li>
+   * <li>If not yet started, it also does nothing.</li>
+   * </ul>
+   */
+  void stop();
 }
