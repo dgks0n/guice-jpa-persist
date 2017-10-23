@@ -30,4 +30,5 @@ import javax.servlet.Filter;
  * </pre>
  */
 public interface PersistenceFilter extends Filter {
+
 }

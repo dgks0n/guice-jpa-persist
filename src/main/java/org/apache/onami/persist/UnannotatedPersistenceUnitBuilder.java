@@ -19,14 +19,12 @@ import java.lang.annotation.Annotation;
  */
 public interface UnannotatedPersistenceUnitBuilder extends AnnotatedPersistenceUnitBuilder {
 
-    /**
-     * Defines an annotation for the persistence unit.
-     *
-     * @param annotation
-     *         the annotation to use when referencing the persistence unit.
-     *
-     * @return the next builder step.
-     */
-    AnnotatedPersistenceUnitBuilder annotatedWith(Class<? extends Annotation> annotation);
+  /**
+   * Defines an annotation for the persistence unit.
+   *
+   * @param annotation the annotation to use when referencing the persistence unit.
+   * @return the next builder step.
+   */
+  AnnotatedPersistenceUnitBuilder annotatedWith(Class<? extends Annotation> annotation);
 
 }

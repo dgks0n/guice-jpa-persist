@@ -19,12 +19,11 @@ import java.util.Properties;
  */
 public interface UnconfiguredPersistenceUnitBuilder {
 
-    /**
-     * Defines additional properties to use. These properties overrule the ones defined in the persistence.xml
-     *
-     * @param properties
-     *         the properties to use for the persistence unit.
-     */
-    void setProperties(Properties properties);
+  /**
+   * Defines additional properties to use. These properties overrule the ones defined in the persistence.xml
+   *
+   * @param properties the properties to use for the persistence unit.
+   */
+  void setProperties(Properties properties);
 
 }

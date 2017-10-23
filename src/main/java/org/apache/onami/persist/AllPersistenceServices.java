@@ -16,14 +16,14 @@ package org.apache.onami.persist;
  */
 public interface AllPersistenceServices {
 
-    /**
-     * Calls {@link PersistenceService#start()} on all persistence services which are not running.
-     */
-    void startAllStoppedPersistenceServices();
+  /**
+   * Calls {@link PersistenceService#start()} on all persistence services which are not running.
+   */
+  void startAllStoppedPersistenceServices();
 
-    /**
-     * Calls {@link PersistenceService#stop()} on all persistence services.
-     */
-    void stopAllPersistenceServices();
+  /**
+   * Calls {@link PersistenceService#stop()} on all persistence services.
+   */
+  void stopAllPersistenceServices();
 
 }

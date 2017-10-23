@@ -16,14 +16,14 @@ package org.apache.onami.persist;
  */
 public interface AllUnitsOfWork {
 
-    /**
-     * Calls {@link UnitOfWork#begin()} on all units of work which are not active.
-     */
-    void beginAllInactiveUnitsOfWork();
+  /**
+   * Calls {@link UnitOfWork#begin()} on all units of work which are not active.
+   */
+  void beginAllInactiveUnitsOfWork();
 
-    /**
-     * Calls {@link UnitOfWork#end()} on all units of work.
-     */
-    void endAllUnitsOfWork();
+  /**
+   * Calls {@link UnitOfWork#end()} on all units of work.
+   */
+  void endAllUnitsOfWork();
 
 }

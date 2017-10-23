@@ -12,12 +12,11 @@
 package org.apache.onami.persist;
 
 import com.google.inject.BindingAnnotation;
-
-import javax.inject.Qualifier;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
 /**
  * Annotation to mark bindings which are specific for container managed persistence units.
@@ -27,4 +26,5 @@ import java.lang.annotation.Target;
 @Qualifier
 @BindingAnnotation
 @interface ForContainerManaged {
+
 }

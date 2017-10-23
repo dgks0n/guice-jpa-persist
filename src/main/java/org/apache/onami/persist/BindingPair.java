@@ -13,32 +13,34 @@
 
 package org.apache.onami.persist;
 
+import java.io.Serializable;
 import uk.q3c.krail.persist.jpa.common.JpaInstanceConfiguration;
 
-import java.io.Serializable;
-
 /**
- * An interface-implementation pair which enables binding of implementations via the Onami-common private modules.  If you have a binding which needs to be
- * bound "to" an {@link EntityManagerProvider} (including those bound with annotations) use {@link JpaInstanceConfiguration#bind(Class, Class)}
+ * An interface-implementation pair which enables binding of implementations via the Onami-common private modules.  If you have a binding
+ * which needs to be
+ * bound "to" an {@link EntityManagerProvider} (including those bound with annotations) use {@link JpaInstanceConfiguration#bind(Class,
+ * Class)}
  * Created by David Sowerby on 11/04/15.
  */
 public class BindingPair<E extends Object> implements Serializable {
-    private final Class<? extends E> implementationClass;
-    private final Class<E> interfaceClass;
+
+  private final Class<? extends E> implementationClass;
+  private final Class<E> interfaceClass;
 
 
-    public BindingPair(Class<E> interfaceClass, Class<? extends E> implementationClass) {
-        this.implementationClass = implementationClass;
-        this.interfaceClass = interfaceClass;
-    }
+  public BindingPair(Class<E> interfaceClass, Class<? extends E> implementationClass) {
+    this.implementationClass = implementationClass;
+    this.interfaceClass = interfaceClass;
+  }
 
 
-    public Class<? extends E> getImplementationClass() {
-        return implementationClass;
-    }
+  public Class<? extends E> getImplementationClass() {
+    return implementationClass;
+  }
 
-    public Class<E> getInterfaceClass() {
-        return interfaceClass;
-    }
+  public Class<E> getInterfaceClass() {
+    return interfaceClass;
+  }
 }
 

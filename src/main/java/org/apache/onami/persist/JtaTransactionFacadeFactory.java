@@ -11,11 +11,11 @@
 
 package org.apache.onami.persist;
 
+import static org.apache.onami.persist.Preconditions.checkNotNull;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
-
-import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Factory for transaction facades in case of JTA transactions.
@@ -23,126 +23,126 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 @Singleton
 class JtaTransactionFacadeFactory implements TransactionFacadeFactory {
 
-    /**
-     * The facade to the user transaction.
-     */
-    private final UserTransactionFacade utFacade;
+  /**
+   * The facade to the user transaction.
+   */
+  private final UserTransactionFacade utFacade;
 
-    /**
-     * Provider for the entity manager.
-     * The entity manager will be joined to the the transaction.
-     */
-    private final EntityManagerProvider emProvider;
+  /**
+   * Provider for the entity manager.
+   * The entity manager will be joined to the the transaction.
+   */
+  private final EntityManagerProvider emProvider;
 
-    /**
-     * Constructor.
-     *
-     * @param utFacade
-     *         the user transaction facade.
-     * @param emProvider
-     *         the entity manager provider.
-     */
-    @Inject
-    public JtaTransactionFacadeFactory(UserTransactionFacade utFacade, EntityManagerProvider emProvider) {
-        this.utFacade = checkNotNull(utFacade, "utFacade is mandatory!");
-        this.emProvider = checkNotNull(emProvider, "emProvider is mandatory!");
+  /**
+   * Constructor.
+   *
+   * @param utFacade the user transaction facade.
+   * @param emProvider the entity manager provider.
+   */
+  @Inject
+  public JtaTransactionFacadeFactory(UserTransactionFacade utFacade, EntityManagerProvider emProvider) {
+    this.utFacade = checkNotNull(utFacade, "utFacade is mandatory!");
+    this.emProvider = checkNotNull(emProvider, "emProvider is mandatory!");
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  // @Override
+  public TransactionFacade createTransactionFacade() {
+    if (utFacade.isActive()) {
+      return new Inner(utFacade, emProvider.get());
+    } else {
+      return new Outer(utFacade, emProvider.get());
+    }
+  }
+
+  /**
+   * TransactionFacade representing an inner (nested) transaction. Starting and
+   * committing a transaction has no effect. This Facade will set the
+   * rollbackOnly flag on the underlying transaction in case of a rollback.
+   */
+  private static class Inner implements TransactionFacade {
+
+    private final UserTransactionFacade txn;
+
+    private final EntityManager em;
+
+    Inner(UserTransactionFacade txn, EntityManager em) {
+      this.txn = checkNotNull(txn, "txn is mandatory!");
+      this.em = checkNotNull(em, "em is mandatory!");
     }
 
     /**
      * {@inheritDoc}
      */
     // @Override
-    public TransactionFacade createTransactionFacade() {
-        if (utFacade.isActive()) {
-            return new Inner(utFacade, emProvider.get());
-        } else {
-            return new Outer(utFacade, emProvider.get());
-        }
+    public void begin() {
+      em.joinTransaction();
     }
 
     /**
-     * TransactionFacade representing an inner (nested) transaction. Starting and
-     * committing a transaction has no effect. This Facade will set the
-     * rollbackOnly flag on the underlying transaction in case of a rollback.
+     * {@inheritDoc}
      */
-    private static class Inner implements TransactionFacade {
-        private final UserTransactionFacade txn;
-
-        private final EntityManager em;
-
-        Inner(UserTransactionFacade txn, EntityManager em) {
-            this.txn = checkNotNull(txn, "txn is mandatory!");
-            this.em = checkNotNull(em, "em is mandatory!");
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        // @Override
-        public void begin() {
-            em.joinTransaction();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        // @Override
-        public void commit() {
-            // Do nothing
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        // @Override
-        public void rollback() {
-            txn.setRollbackOnly();
-        }
+    // @Override
+    public void commit() {
+      // Do nothing
     }
 
     /**
-     * TransactionFacade representing an outer transaction. This Facade starts
-     * and ends the transaction. If an inner transaction has set the rollbackOnly
-     * flag the transaction will be rolled back in any case.
+     * {@inheritDoc}
      */
-    private static class Outer implements TransactionFacade {
-        private final UserTransactionFacade txn;
-
-        private final EntityManager em;
-
-        Outer(UserTransactionFacade txn, EntityManager em) {
-            this.txn = checkNotNull(txn, "txn is mandatory!");
-            this.em = checkNotNull(em, "em is mandatory!");
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        // @Override
-        public void begin() {
-            txn.begin();
-            em.joinTransaction();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        // @Override
-        public void commit() {
-            if (txn.getRollbackOnly()) {
-                txn.rollback();
-            } else {
-                txn.commit();
-            }
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        // @Override
-        public void rollback() {
-            txn.rollback();
-        }
+    // @Override
+    public void rollback() {
+      txn.setRollbackOnly();
     }
+  }
+
+  /**
+   * TransactionFacade representing an outer transaction. This Facade starts
+   * and ends the transaction. If an inner transaction has set the rollbackOnly
+   * flag the transaction will be rolled back in any case.
+   */
+  private static class Outer implements TransactionFacade {
+
+    private final UserTransactionFacade txn;
+
+    private final EntityManager em;
+
+    Outer(UserTransactionFacade txn, EntityManager em) {
+      this.txn = checkNotNull(txn, "txn is mandatory!");
+      this.em = checkNotNull(em, "em is mandatory!");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // @Override
+    public void begin() {
+      txn.begin();
+      em.joinTransaction();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // @Override
+    public void commit() {
+      if (txn.getRollbackOnly()) {
+        txn.rollback();
+      } else {
+        txn.commit();
+      }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    // @Override
+    public void rollback() {
+      txn.rollback();
+    }
+  }
 
 }
