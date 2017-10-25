@@ -23,29 +23,17 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 import com.google.inject.Key;
 import com.google.inject.PrivateModule;
-import com.google.inject.Provider;
-import com.google.inject.multibindings.MapBinder;
 import com.google.inject.util.Providers;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.lang.annotation.Annotation;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
-import uk.q3c.krail.core.option.jpa.DefaultJpaContainerProvider;
-import uk.q3c.krail.core.option.jpa.DefaultJpaOptionContainerProvider;
-import uk.q3c.krail.core.option.jpa.JpaContainerProvider;
-import uk.q3c.krail.core.option.jpa.JpaOptionContainerProvider;
-import uk.q3c.krail.i18n.persist.PatternDao;
-import uk.q3c.krail.option.persist.OptionContainerProvider;
-import uk.q3c.krail.option.persist.OptionDaoDelegate;
-import uk.q3c.krail.persist.VaadinContainerProvider;
 
 /**
  * Module for configuring a single persistence unit.
  *
  * @see PersistenceModule
  */
-public class PersistenceUnitModule extends PrivateModule {
+class PersistenceUnitModule extends PrivateModule {
 
   /**
    * The configuration for the persistence unit.
@@ -61,8 +49,6 @@ public class PersistenceUnitModule extends PrivateModule {
    * Container for adding this persistence unit.
    */
   private final AllPersistenceUnits allPersistenceUnits;
-  private MapBinder<Class<? extends Annotation>, Provider<OptionDaoDelegate>> optionDaoProviders;
-  private MapBinder<Class<? extends Annotation>, Provider<PatternDao>> patternDaoProviders;
 
   /**
    * Constructor.
@@ -94,7 +80,10 @@ public class PersistenceUnitModule extends PrivateModule {
     bind(EntityManagerProvider.class).to(EntityManagerProviderImpl.class);
     bind(UnitOfWork.class).to(EntityManagerProviderImpl.class);
 
+    bindAdditionalBindings();
+
     exposePersistenceServiceAndEntityManagerProviderAndUnitOfWork();
+    exposeAdditionalBindings();
 
     // request injection into transaction interceptor - this adds the required dependencies to the interceptor.
     if (transactionInterceptor != null) {
@@ -104,9 +93,21 @@ public class PersistenceUnitModule extends PrivateModule {
     allPersistenceUnits.add(getPersistenceKey(), getUnitOfWorkKey());
   }
 
+  private void bindAdditionalBindings() {
+    for (BindingPair<?> bindingPair : config.getAdditionalBindings()) {
+      bindAdditionalBindings(bindingPair);
+    }
+    for (BindingPair<?> bindingPair : config.getAdditionalExposedBindings()) {
+      bindAdditionalBindings(bindingPair);
+    }
+  }
+
+  private <E> void bindAdditionalBindings(BindingPair<E> bindingPair) {
+    bind(bindingPair.getInterfaceClass()).to(bindingPair.getImplementationClass());
+  }
+
   /**
    * exposes the following interfaces (optionally annotated if an annotation is defined in the configuration).
-   * along with any contained in the configuration object
    * <ul>
    * <li>{@link PersistenceService}</li>
    * <li>{@link EntityManagerProvider}</li>
@@ -118,41 +119,20 @@ public class PersistenceUnitModule extends PrivateModule {
       bindAndExposedAnnotated(PersistenceService.class);
       bindAndExposedAnnotated(EntityManagerProvider.class);
       bindAndExposedAnnotated(UnitOfWork.class);
-
-      //bind additional interfaces to their implementations, but do not annotate & expose yet
-      for (BindingPair bindingPair : config.getAdditionalBindings()) {
-        bind(bindingPair.getInterfaceClass()).to(Key.get(bindingPair.getImplementationClass()));
-      }
-
-      bind(JpaContainerProvider.class).to(DefaultJpaContainerProvider.class);
-      bind(VaadinContainerProvider.class).to(JpaContainerProvider.class);
-      bind(OptionContainerProvider.class).to(JpaOptionContainerProvider.class);
-      bind(JpaOptionContainerProvider.class).to(DefaultJpaOptionContainerProvider.class);
-
-      //now bind the interfaces to annotation & expose
-      for (BindingPair bindingPair : config.getAdditionalBindings()) {
-        bindAndExposedAnnotated(bindingPair.getInterfaceClass());
-      }
-
-      bindAndExposedAnnotated(VaadinContainerProvider.class);
-      bindAndExposedAnnotated(JpaContainerProvider.class);
-      bindAndExposedAnnotated(OptionContainerProvider.class);
-
     } else {
       expose(PersistenceService.class);
       expose(EntityManagerProvider.class);
       expose(UnitOfWork.class);
+    }
+  }
 
-      //bind additional interfaces to their implementations, but do not expose yet
-      for (BindingPair bindingPair : config.getAdditionalBindings()) {
-        bind(bindingPair.getInterfaceClass()).to(Key.get(bindingPair.getImplementationClass()));
-      }
-
-      //now expose the interfaces
-      for (BindingPair bindingPair : config.getAdditionalBindings()) {
+  private void exposeAdditionalBindings() {
+    for (BindingPair bindingPair : config.getAdditionalExposedBindings()) {
+      if (config.isAnnotated()) {
+        bindAndExposedAnnotated(bindingPair.getInterfaceClass());
+      } else {
         expose(bindingPair.getInterfaceClass());
       }
-
     }
   }
 

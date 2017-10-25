@@ -30,7 +30,7 @@ import javax.persistence.EntityManagerFactory;
  * application managed persistence units.
  */
 @Singleton
-public class ApplicationManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider, PersistenceService {
+class ApplicationManagedEntityManagerFactoryProvider implements EntityManagerFactoryProvider, PersistenceService {
 
   /**
    * Factory for creating the {@link EntityManagerFactory}.
@@ -49,7 +49,7 @@ public class ApplicationManagedEntityManagerFactoryProvider implements EntityMan
    * @param emfFactory the factory for the  {@link EntityManagerFactory}. Must not be {@code null}.
    */
   @Inject
-  protected ApplicationManagedEntityManagerFactoryProvider(EntityManagerFactoryFactory emfFactory) {
+  ApplicationManagedEntityManagerFactoryProvider(EntityManagerFactoryFactory emfFactory) {
     this.emfFactory = checkNotNull(emfFactory, "emfFactory is mandatory!");
   }
 

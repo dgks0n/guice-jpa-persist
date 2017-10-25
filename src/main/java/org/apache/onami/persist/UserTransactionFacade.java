@@ -24,6 +24,7 @@ import static org.apache.onami.persist.Preconditions.checkNotNull;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -56,6 +57,7 @@ class UserTransactionFacade {
    *
    * @param txn the actual user transaction to wrap. Must not be {@code null}.
    */
+  @Inject
   UserTransactionFacade(UserTransaction txn) {
     this.txn = checkNotNull(txn, "txn is mandatory!");
   }

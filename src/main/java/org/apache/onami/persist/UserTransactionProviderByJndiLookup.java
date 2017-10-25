@@ -21,6 +21,7 @@ package org.apache.onami.persist;
 
 import static org.apache.onami.persist.Preconditions.checkNotNull;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.transaction.UserTransaction;
@@ -40,6 +41,7 @@ class UserTransactionProviderByJndiLookup implements Provider<UserTransaction> {
    *
    * @param jndiName jndi name of the entity manager factory. Must not be {@code null}.
    */
+  @Inject
   UserTransactionProviderByJndiLookup(@UserTransactionJndiName String jndiName, JndiLookupHelper jndiLookupHelper) {
     this.jndiName = checkNotNull(jndiName, "jndiName is mandatory!");
     this.jndiLookupHelper = checkNotNull(jndiLookupHelper, "jndiLookupHelper is mandatory!");

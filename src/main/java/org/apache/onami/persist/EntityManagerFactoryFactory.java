@@ -31,7 +31,7 @@ import javax.persistence.Persistence;
  * Factory for {@link EntityManagerFactory}.
  */
 @Singleton
-public class EntityManagerFactoryFactory {
+class EntityManagerFactoryFactory {
 
   /**
    * Name of the persistence unit as defined in the persistence.xml.
@@ -61,7 +61,7 @@ public class EntityManagerFactoryFactory {
    *
    * @return the newly created entity manager factory.
    */
-  public EntityManagerFactory createApplicationManagedEntityManagerFactory() {
+  EntityManagerFactory createApplicationManagedEntityManagerFactory() {
     return Persistence.createEntityManagerFactory(puName, properties);
   }
 }

@@ -32,48 +32,35 @@ import javax.transaction.UserTransaction;
 /**
  * Class holding the configuration for a single persistence unit.
  */
-public class PersistenceUnitModuleConfiguration implements UnannotatedPersistenceUnitBuilder, AnnotatedPersistenceUnitBuilder,
-    UnconfiguredPersistenceUnitBuilder {
+class PersistenceUnitModuleConfiguration implements UnannotatedPersistenceUnitBuilder {
 
-  private List<BindingPair<?>> additionalBindings = new ArrayList<>();
+  private List<BindingPair<?>> additionalBindings = new ArrayList<BindingPair<?>>();
+
+  private List<BindingPair<?>> additionalExposedBindings = new ArrayList<BindingPair<?>>();
+
   private Class<? extends Annotation> annotation;
-  private EntityManagerFactory emf;
-  private String emfJndiName;
-  private Provider<EntityManagerFactory> emfProvider;
-  private Key<? extends Provider<EntityManagerFactory>> emfProviderKey;
+
   private boolean isJta = false;
-  private Properties properties;
-  private boolean providesOptionDao;
-  private boolean providesPatternDao;
-  private String puName;
+
   private UserTransaction userTransaction;
+
   private String utJndiName;
+
   private Provider<UserTransaction> utProvider;
+
   private Key<? extends Provider<UserTransaction>> utProviderKey;
 
-  public PersistenceUnitModuleConfiguration() {
+  private Properties properties;
 
-  }
+  private String puName;
 
-  public boolean providesPatternDao() {
-    return providesPatternDao;
-  }
+  private EntityManagerFactory emf;
 
-  public boolean providesOptionDao() {
-    return providesOptionDao;
-  }
+  private String emfJndiName;
 
-  /**
-   * Adds a interface-implementation pair which will be bound in the {@link PersistenceUnitModule}, and attached to an annotation if {@link
-   * #annotation} is
-   * not null
-   *
-   * @return this
-   */
-  public PersistenceUnitModuleConfiguration addPrivateBinding(BindingPair<?> bindingPair) {
-    additionalBindings.add(bindingPair);
-    return this;
-  }
+  private Provider<EntityManagerFactory> emfProvider;
+
+  private Key<? extends Provider<EntityManagerFactory>> emfProviderKey;
 
   /**
    * {@inheritDoc}
@@ -91,16 +78,11 @@ public class PersistenceUnitModuleConfiguration implements UnannotatedPersistenc
     return this;
   }
 
-  public List<BindingPair<?>> getAdditionalBindings() {
-    return additionalBindings;
-  }
-
   /**
    * {@inheritDoc}
    */
   public UnconfiguredPersistenceUnitBuilder useGlobalTransaction(UserTransaction userTransaction) {
     this.isJta = true;
-
     this.userTransaction = userTransaction;
     return this;
   }
@@ -133,6 +115,15 @@ public class PersistenceUnitModuleConfiguration implements UnannotatedPersistenc
   /**
    * {@inheritDoc}
    */
+  public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
+      TypeLiteral<? extends Provider<UserTransaction>> utProviderType
+  ) {
+    return useGlobalTransactionProvidedBy(Key.get(utProviderType));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
   public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(Key<? extends Provider<UserTransaction>> utProviderKey) {
     this.isJta = true;
     this.utProviderKey = utProviderKey;
@@ -142,9 +133,41 @@ public class PersistenceUnitModuleConfiguration implements UnannotatedPersistenc
   /**
    * {@inheritDoc}
    */
-  public UnconfiguredPersistenceUnitBuilder useGlobalTransactionProvidedBy(
-      TypeLiteral<? extends Provider<UserTransaction>> utProviderType) {
-    return useGlobalTransactionProvidedBy(Key.get(utProviderType));
+  public ConfiguredPersistenceUnitBuilder setProperties(Properties properties) {
+    this.properties = properties;
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public PersistenceUnitModuleConfiguration addBinding(BindingPair<?> bindingPair) {
+    additionalBindings.add(bindingPair);
+    return this;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public PersistenceUnitModuleConfiguration addExposedBinding(BindingPair<?> bindingPair) {
+    additionalExposedBindings.add(bindingPair);
+    return this;
+  }
+
+  void setPuName(String puName) {
+    this.puName = puName;
+  }
+
+  void setEmf(EntityManagerFactory emf) {
+    this.emf = emf;
+  }
+
+  void setEmfJndiName(String emfJndiName) {
+    this.emfJndiName = emfJndiName;
+  }
+
+  void setEmfProvider(Provider<EntityManagerFactory> emfProvider) {
+    this.emfProvider = emfProvider;
   }
 
   void setEmfProviderClass(Class<? extends Provider<EntityManagerFactory>> emfProviderClass) {
@@ -155,9 +178,14 @@ public class PersistenceUnitModuleConfiguration implements UnannotatedPersistenc
     this.emfProviderKey = Key.get(emfProviderType);
   }
 
+  void setEmfProviderKey(Key<? extends Provider<EntityManagerFactory>> emfProviderKey) {
+    this.emfProviderKey = emfProviderKey;
+  }
+
   boolean isApplicationManagedPersistenceUnit() {
     return puName != null;
   }
+
 
   UserTransaction getUserTransaction() {
     return userTransaction;
@@ -179,51 +207,24 @@ public class PersistenceUnitModuleConfiguration implements UnannotatedPersistenc
     return properties;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public void setProperties(Properties properties) {
-    this.properties = properties;
-  }
-
   String getPuName() {
     return puName;
-  }
-
-  void setPuName(String puName) {
-    this.puName = puName;
   }
 
   EntityManagerFactory getEmf() {
     return emf;
   }
 
-  void setEmf(EntityManagerFactory emf) {
-    this.emf = emf;
-  }
-
   String getEmfJndiName() {
     return emfJndiName;
-  }
-
-  void setEmfJndiName(String emfJndiName) {
-    this.emfJndiName = emfJndiName;
   }
 
   Provider<EntityManagerFactory> getEmfProvider() {
     return emfProvider;
   }
 
-  void setEmfProvider(Provider<EntityManagerFactory> emfProvider) {
-    this.emfProvider = emfProvider;
-  }
-
   Key<? extends Provider<EntityManagerFactory>> getEmfProviderKey() {
     return emfProviderKey;
-  }
-
-  void setEmfProviderKey(Key<? extends Provider<EntityManagerFactory>> emfProviderKey) {
-    this.emfProviderKey = emfProviderKey;
   }
 
   boolean isEmfProvidedByJndiLookup() {
@@ -271,15 +272,15 @@ public class PersistenceUnitModuleConfiguration implements UnannotatedPersistenc
     return new AnnotationHolder(annotation);
   }
 
-  public Class<? extends Annotation> getAnnotation() {
+  Class<? extends Annotation> getAnnotation() {
     return annotation;
   }
 
-  public void provideOptionDao(boolean provides) {
-    this.providesOptionDao = provides;
+  List<BindingPair<?>> getAdditionalBindings() {
+    return additionalBindings;
   }
 
-  public void providePatternDao(boolean provides) {
-    this.providesPatternDao = provides;
+  List<BindingPair<?>> getAdditionalExposedBindings() {
+    return additionalExposedBindings;
   }
 }

@@ -19,18 +19,24 @@ package org.apache.onami.persist;
  * under the License.
  */
 
-import java.util.Properties;
-
 /**
- * 4th step of the persistence unit builder process.
- * Define properties.
+ * 5th step of the persistence unit builder process.
+ * Define additional bindings.
  */
-public interface UnconfiguredPersistenceUnitBuilder extends ConfiguredPersistenceUnitBuilder {
+public interface ConfiguredPersistenceUnitBuilder {
 
   /**
-   * Defines additional properties to use. These properties overrule the ones defined in the persistence.xml
+   * Adds a interface-implementation pair which will be bound in the {@link PersistenceUnitModule} but is not exposed.
    *
-   * @param properties the properties to use for the persistence unit.
+   * @return this
    */
-  ConfiguredPersistenceUnitBuilder setProperties(Properties properties);
+  PersistenceUnitModuleConfiguration addBinding(BindingPair<?> bindingPair);
+
+  /**
+   * Adds a interface-implementation pair which will be bound in the {@link PersistenceUnitModule}
+   * and is also exposed with the annotation of the persistence unit.
+   *
+   * @return this
+   */
+  PersistenceUnitModuleConfiguration addExposedBinding(BindingPair<?> bindingPair);
 }
