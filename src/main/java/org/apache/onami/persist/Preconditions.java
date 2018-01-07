@@ -22,42 +22,36 @@ package org.apache.onami.persist;
 /**
  * Checks to ensure arguments are in a valid state.
  */
-class Preconditions
-{
+class Preconditions {
 
-    /**
-     * Check that a reference is not null.
-     *
-     * @param <T>       the type of the reference
-     * @param reference the reference to check.
-     * @return the reference itself.
-     * @throws NullPointerException if the reference is null.
-     */
-    static <T> T checkNotNull( T reference )
-    {
-        if ( reference == null )
-        {
-            throw new NullPointerException();
-        }
-        return reference;
+  /**
+   * Check that a reference is not null.
+   *
+   * @param <T> the type of the reference
+   * @param reference the reference to check.
+   * @return the reference itself.
+   * @throws NullPointerException if the reference is null.
+   */
+  static <T> T checkNotNull(T reference) {
+    if (reference == null) {
+      throw new NullPointerException();
     }
+    return reference;
+  }
 
-    /**
-     * Check that a reference is not null.
-     *
-     * @param <T>       the type of the reference
-     * @param reference the reference to check.
-     * @param message   the message of the NullPointerException if one is thrown.
-     * @return the reference itself.
-     * @throws NullPointerException if the reference is null.
-     */
-    static <T> T checkNotNull( T reference, String message )
-    {
-        if ( reference == null )
-        {
-            throw new NullPointerException( message );
-        }
-        return reference;
+  /**
+   * Check that a reference is not null.
+   *
+   * @param <T> the type of the reference
+   * @param reference the reference to check.
+   * @param message the message of the NullPointerException if one is thrown.
+   * @return the reference itself.
+   * @throws NullPointerException if the reference is null.
+   */
+  static <T> T checkNotNull(T reference, String message) {
+    if (reference == null) {
+      throw new NullPointerException(message);
     }
-
+    return reference;
+  }
 }

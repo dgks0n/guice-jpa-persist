@@ -22,14 +22,12 @@ package org.apache.onami.persist;
 /**
  * Factory for {@link TransactionFacade}.
  */
-interface TransactionFacadeFactory
-{
+interface TransactionFacadeFactory {
 
-    /**
-     * Creates a new transaction facade.
-     *
-     * @return the transaction facade
-     */
-    TransactionFacade createTransactionFacade();
-
+  /**
+   * Creates a new transaction facade.
+   *
+   * @return the transaction facade
+   */
+  TransactionFacade createTransactionFacade();
 }

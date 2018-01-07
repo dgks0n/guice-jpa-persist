@@ -19,55 +19,49 @@ package org.apache.onami.persist;
  * under the License.
  */
 
+import static org.apache.onami.persist.Preconditions.checkNotNull;
+
+import java.util.Properties;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.util.Properties;
-
-import static org.apache.onami.persist.Preconditions.checkNotNull;
 
 /**
  * Factory for {@link EntityManagerFactory}.
  */
 @Singleton
-class EntityManagerFactoryFactory
-{
+class EntityManagerFactoryFactory {
 
-    /**
-     * Name of the persistence unit as defined in the persistence.xml.
-     */
-    private final String puName;
+  /**
+   * Name of the persistence unit as defined in the persistence.xml.
+   */
+  private final String puName;
 
-    /**
-     * Additional properties. Theses override the ones defined in the persistence.xml.
-     */
-    private final Properties properties;
+  /**
+   * Additional properties. Theses override the ones defined in the persistence.xml.
+   */
+  private final Properties properties;
 
-    /**
-     * Constructor.
-     *
-     * @param puName     the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
-     * @param properties the additional properties. Theses override the ones defined in the persistence.xml.
-     *                   Must not be {@code null}.
-     */
-    @Inject
-    EntityManagerFactoryFactory( @ForApplicationManaged String puName,
-                                 @Nullable @ForApplicationManaged Properties properties )
-    {
-        this.puName = checkNotNull( puName, "puName is mandatory!" );
-        this.properties = properties;
-    }
+  /**
+   * Constructor.
+   *
+   * @param puName the name of the persistence unit as defined in the persistence.xml. Must not be {@code null}.
+   * @param properties the additional properties. Theses override the ones defined in the persistence.xml.
+   * Must not be {@code null}.
+   */
+  @Inject
+  EntityManagerFactoryFactory(@ForApplicationManaged String puName, @Nullable @ForApplicationManaged Properties properties) {
+    this.puName = checkNotNull(puName, "puName is mandatory!");
+    this.properties = properties;
+  }
 
-    /**
-     * Creates a new {@link EntityManagerFactory}.
-     *
-     * @return the newly created entity manager factory.
-     */
-    EntityManagerFactory createApplicationManagedEntityManagerFactory()
-    {
-        return Persistence.createEntityManagerFactory( puName, properties );
-    }
-
+  /**
+   * Creates a new {@link EntityManagerFactory}.
+   *
+   * @return the newly created entity manager factory.
+   */
+  EntityManagerFactory createApplicationManagedEntityManagerFactory() {
+    return Persistence.createEntityManagerFactory(puName, properties);
+  }
 }
